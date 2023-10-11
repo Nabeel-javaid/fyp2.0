@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import CountryList from "react-select-country-list";
-import Layout from '../Layout/Layout';
 import InboxIcon from '@mui/icons-material/Inbox';
 import {
   FormControl,
@@ -26,7 +25,7 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { DropzoneArea } from "mui-file-dropzone";
-import "./Styles/CreateMarket.css";
+import "../css/CreateMarket.css";
 
 
 import contractABI from '../ABIs/marketRegistery.json'; // Adjust the path as per your project structure
@@ -181,7 +180,6 @@ const CreateMarket = () => {
   };
 
   return (
-    <Layout>
       <Grid
         container
         justify="center"
@@ -608,7 +606,6 @@ const CreateMarket = () => {
           </DialogActions>
         </Dialog>
       </Grid>
-    </Layout>
   )
 }
 

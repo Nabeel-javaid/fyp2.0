@@ -1,0 +1,65 @@
+/* MarketForm.css */
+
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.custom-grid>.MuiGrid-item {
+  margin-right: 0px;
+  /* Adjust this value as needed */
+}
+
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.youMakeTheHeading span {
+  animation: fadeOut 1s forwards;
+}
+
+.youMakeTheHeading span.active {
+  animation: fadeIn 1s forwards;
+}
+
+
+/* Add this to your existing CSS file or create a new one */
+
+.loading-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
