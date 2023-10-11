@@ -49,8 +49,8 @@ button:focus,
 }
 
 .form-check-input:checked {
-  background-color: #3E80FF;
-  border-color: #3E80FF;
+  background-color: #ff0000;
+  border-color: #ff0000;
 }
 
 select {
@@ -956,7 +956,7 @@ ol {
 
 .call-action .text h2 span {
   display: block;
-  color: #3E80FF;
+  color: #ff0000;
 }
 
 .call-action .button {
@@ -1107,7 +1107,7 @@ ol {
 }
 
 .breadcrumbs .breadcrumb-nav li a:hover {
-  color: #e4e4e4;
+  color: #ff4d4d;
 }
 
 .section {
@@ -1144,7 +1144,7 @@ ol {
   font-weight: 600;
   display: inline-block;
   margin-bottom: 20px;
-  color: #3E80FF;
+  color: #ff0000;
   text-transform: capitalize;
 }
 
@@ -1224,7 +1224,7 @@ ol {
   bottom: -1px;
   height: 2px;
   width: 50px;
-  background: #3E80FF;
+  background: #ff0000;
   content: "";
 }
 
@@ -1243,7 +1243,7 @@ ol {
   width: 45px;
   height: 45px;
   line-height: 45px;
-  background: #3E80FF;
+  background: #ff0000;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1270,7 +1270,7 @@ ol {
   box-shadow: 0 1rem 3rem rgba(35, 38, 45, 0.15) !important;
   -webkit-transform: translate3d(0, -5px, 0);
   transform: translate3d(0, -5px, 0);
-  background-color: #3E80FF;
+  background-color: #ff4d4d;
 }
 
 /* Overlay */
@@ -1352,7 +1352,7 @@ ol {
 
 .pagination .pagination-list li.active a,
 .pagination .pagination-list li:hover a {
-  background: #3E80FF;
+  background: #ff4d4d;
   color: #fff;
   border-color: transparent;
 }
@@ -1372,7 +1372,7 @@ ol {
   font-size: 15px;
   font-weight: 500;
   padding: 14px 30px;
-  background-color: #3E80FF;
+  background-color: #ff0000;
   color: #fff;
   border: none;
   -webkit-transition: all 0.4s ease;
@@ -1411,7 +1411,7 @@ ol {
 
 .button .btn:hover {
   color: #fff;
-  background-color: #24126A;
+  background-color: #ff4d4d;
 }
 
 .button {
@@ -1419,7 +1419,7 @@ ol {
 }
 
 .button .btn-alt {
-  background-color: #24126A !important;
+  background-color: #ff0000 !important;
   color: #fff !important;
 }
 
@@ -1440,7 +1440,7 @@ ol {
 }
 
 .button .btn-alt:hover {
-  background-color: #3E80FF !important;
+  background-color: #ff4d4d !important;
   color: #fff !important;
 }
 
@@ -1489,7 +1489,7 @@ ol {
   width: 100px;
   height: 100px;
   border-radius: 100%;
-  background: #3E80FF;
+  background: #ff0000;
   -webkit-animation: preloader-fx 1.6s linear infinite;
   animation: preloader-fx 1.6s linear infinite;
 }
@@ -1528,7 +1528,7 @@ ol {
 ========================================*/
 .header {
   width: 100%;
-  background: transparent;
+  background: rgba(255, 26, 26, 0.3);
   position: absolute;
   width: 100%;
   left: 0;
@@ -1561,16 +1561,16 @@ ol {
     border-radius: 8px;
   }
   .header .navbar .navbar-nav .nav-item a:hover {
-    color: #3E80FF !important;
+    color: #ff4d4d !important;
   }
   .header .navbar .navbar-nav .nav-item a.active {
-    color: #3E80FF !important;
+    color: #ff0000 !important;
   }
   .header .navbar-nav .nav-item {
     margin: 0;
   }
   .header .navbar-nav .nav-item:hover a {
-    color: #3E80FF;
+    color: #ff4d4d;
   }
   .header .navbar-nav .nav-item a {
     padding: 12px 16px !important;
@@ -1594,7 +1594,7 @@ ol {
     padding: 12px 12px;
   }
   .header .navbar-nav .nav-item .sub-menu .nav-item a:hover {
-    color: #3E80FF !important;
+    color: #ff4d4d !important;
   }
   .header .navbar-nav .nav-item a {
     color: #051441;
@@ -1612,7 +1612,7 @@ ol {
   }
   .header .navbar-nav .nav-item .sub-menu li.active {
     background: #fff !important;
-    color: #3E80FF !important;
+    color: #ff0000 !important;
   }
   .header .navbar-nav .nav-item .sub-menu .nav-item {
     margin: 0 !important;
@@ -1621,14 +1621,14 @@ ol {
     padding: 10px 12px !important;
   }
   .header .navbar-nav .nav-item .sub-menu li:hover {
-    background: #fff !important;
-    color: #3E80FF !important;
+    background: #ff4d4d !important;
+    color: #ffffff !important;
   }
   .header .navbar-nav .nav-item a {
     font-size: 14px;
   }
   .header .navbar-nav .nav-item a:hover {
-    color: #3E80FF;
+    color: #ff4d4d;
   }
 }
 
@@ -1655,16 +1655,16 @@ ol {
     border-radius: 8px;
   }
   .header .navbar .navbar-nav .nav-item a:hover {
-    color: #3E80FF !important;
+    color: #ff4d4d !important;
   }
   .header .navbar .navbar-nav .nav-item a.active {
-    color: #3E80FF !important;
+    color: #ff0000 !important;
   }
   .header .navbar-nav .nav-item {
     margin: 0;
   }
   .header .navbar-nav .nav-item:hover a {
-    color: #3E80FF;
+    color: #ff4d4d;
   }
   .header .navbar-nav .nav-item a {
     padding: 12px 16px !important;
@@ -1688,7 +1688,7 @@ ol {
     padding: 12px 12px;
   }
   .header .navbar-nav .nav-item .sub-menu .nav-item a:hover {
-    color: #3E80FF !important;
+    color: #ff4d4d !important;
   }
   .header .navbar-nav .nav-item a {
     color: #051441;
@@ -1706,7 +1706,7 @@ ol {
   }
   .header .navbar-nav .nav-item .sub-menu li.active {
     background: #fff !important;
-    color: #3E80FF !important;
+    color: #ff0000 !important;
   }
   .header .navbar-nav .nav-item .sub-menu .nav-item {
     margin: 0 !important;
@@ -1715,14 +1715,14 @@ ol {
     padding: 10px 12px !important;
   }
   .header .navbar-nav .nav-item .sub-menu li:hover {
-    background: #fff !important;
-    color: #3E80FF !important;
+    background: #ff4d4d !important;
+    color: #ff0000 !important;
   }
   .header .navbar-nav .nav-item a {
     font-size: 14px;
   }
   .header .navbar-nav .nav-item a:hover {
-    color: #3E80FF;
+    color: #ff4d4d;
   }
 }
 
@@ -1743,12 +1743,12 @@ ol {
 }
 
 .header.sticky .button .btn {
-  background-color: #3E80FF;
+  background-color: #ff0000;
   color: #fff;
 }
 
 .header.sticky .button .btn:hover {
-  background-color: #24126A;
+  background-color: #ff4d4d;
   color: #fff;
 }
 
@@ -1774,7 +1774,7 @@ ol {
 }
 
 .sticky .navbar .navbar-nav .nav-item a.active {
-  color: #3E80FF;
+  color: #ff0000;
 }
 
 .sticky .navbar .navbar-nav .nav-item a {
@@ -1873,11 +1873,11 @@ ol {
 }
 
 .navbar-nav .nav-item:hover a {
-  color: #3E80FF;
+  color: #ff4d4d;
 }
 
 .sticky .navbar-nav .nav-item:hover a {
-  color: #3E80FF;
+  color: #ff4d4d;
 }
 
 .navbar-nav .nav-item a {
@@ -2006,7 +2006,7 @@ ol {
 }
 
 .navbar-nav .nav-item .sub-menu .nav-item a:hover {
-  color: #3E80FF;
+  color: #ff4d4d;
 }
 
 .navbar-nav .nav-item .sub-menu.left-menu {
@@ -2033,7 +2033,7 @@ ol {
 }
 
 .navbar-nav .nav-item .sub-menu > li.active > a {
-  color: #3E80FF !important;
+  color: #ff0000 !important;
 }
 
 .navbar-nav .nav-item .sub-menu > li > a {
@@ -2068,16 +2068,16 @@ ol {
 
 .header .button .btn:hover {
   color: #fff;
-  background-color: #3E80FF;
+  background-color: #ff4d4d;
 }
 
 .sticky .button .btn {
-  background-color: #3E80FF;
+  background-color: #ff0000;
   color: #fff;
 }
 
 .sticky .button .btn:hover {
-  background-color: #3E80FF;
+  background-color: #ff4d4d;
   color: #fff;
 }
 
@@ -2086,14 +2086,14 @@ ol {
     color: #24126A;
   }
   .header .button .signin:hover {
-    color: #3E80FF;
+    color: #ff4d4d;
   }
   .header .button .signup {
-    background-color: #3E80FF;
+    background-color: #ff0000;
     color: #fff;
   }
   .header .button .signup:hover {
-    background-color: #3E80FF;
+    background-color: #ff4d4d;
     color: #fff;
   }
 }
@@ -2106,7 +2106,8 @@ ol {
 ========================================*/
 .hero-area {
   position: relative;
-  background-color: #24126A;
+  /* background-color: #24126A; */
+  background-color: #6A0A03;
   padding: 180px 0 180px 0;
   z-index: 0;
 }
@@ -2205,7 +2206,7 @@ ol {
 
 .hero-area .hero-content .button .btn:hover {
   color: #24126A;
-  background-color: #fff;
+  background-color: #ff4d4d;
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -2620,7 +2621,7 @@ ol {
 .feature .upper-content .lasthead {
   font-size: 16px;
   font-weight: 600;
-  color: #3E80FF;
+  color: #ff0000;
   margin-bottom: 15px;
 }
 
@@ -2658,8 +2659,8 @@ ol {
 .feature .feature-box:hover {
   -webkit-transform: scale(1.05);
           transform: scale(1.05);
-  border-top-color: #3E80FF;
-  border-bottom-color: #3E80FF;
+  border-top-color: #ff0000;
+  border-bottom-color: #ff0000;
 }
 
 .feature .feature-box .tumb img {
@@ -2684,7 +2685,7 @@ ol {
 	Footer CSS
 ========================================*/
 .footer {
-  background-color: #24126A;
+  background-color: #6A0A03;
   position: relative;
   padding-bottom: 0;
 }
@@ -2773,7 +2774,7 @@ ol {
 }
 
 .footer .single-footer.f-about .social li a:hover {
-  color: #3E80FF;
+  color: #ff4d4d;
 }
 
 .footer .single-footer.f-about .copyright-text {
@@ -2813,7 +2814,7 @@ ol {
 }
 
 .footer .single-footer.f-link li a:hover {
-  color: #3E80FF;
+  color: #ff4d4d;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1399px), only screen and (min-width: 1400px) {
@@ -2868,11 +2869,11 @@ ol {
 }
 
 .footer .newsletter-form input:hover {
-  border-color: #3E80FF;
+  border-color: #ff4d4d;
 }
 
 .footer .newsletter-form input:focus {
-  border-color: #3E80FF;
+  border-color: #ff0000;
 }
 
 .footer .newsletter-form .button {
@@ -2900,7 +2901,7 @@ ol {
 
 .footer .newsletter-form .button .sub-btn:hover {
   color: #fff;
-  background-color: #3E80FF;
+  background-color: #ff4d4d;
 }
 
 .footer .copyright-area .inner-content {
@@ -2939,5 +2940,10 @@ ol {
 }
 
 .footer .copyright-area p a:hover {
-  color: #3E80FF;
+  color: #ff4d4d;
+}
+
+.Logo {
+  max-height: 7rem;
+  max-width: 7rem;
 }

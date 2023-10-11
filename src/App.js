@@ -1,20 +1,17 @@
 import React from 'react';
 import './App.css';
-import NavBar from './components/NavBar';
-import HeroArea from './components/HeroArea';
-import FeatureArea from './components/FeatureArea';
-import CallAction from './components/CallAction';
-import Footer from './components/Footer';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import CreateMarket from './pages/CreateMarket';
 
 function App() {
   return (
-    <div className="App">
-      <NavBar />
-      <HeroArea />
-      <FeatureArea />
-      <CallAction />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/create-market" element={<CreateMarket />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
