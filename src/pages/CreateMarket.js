@@ -27,6 +27,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { DropzoneArea } from "mui-file-dropzone";
 import "../css/CreateMarket.css";
 
+import Layout from "../components/Layout";
+
 
 import contractABI from '../ABIs/marketRegistery.json'; // Adjust the path as per your project structure
 
@@ -44,7 +46,7 @@ const CreateMarket = () => {
   const [loanProcessFee, setLoanProcessFee] = useState("");
   const [marketDescription, setMarketDescription] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(1);
   const [hasInput, setHasInput] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
@@ -108,6 +110,33 @@ const CreateMarket = () => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleNext = () => {
     if (
       page === 1 &&
@@ -140,7 +169,7 @@ const CreateMarket = () => {
   };
 
   const handleImageUpload = (info) => {
-    console.log(info);
+    // console.log(info);
   };
 
   const handleTermsAcceptance = () => {
@@ -180,11 +209,12 @@ const CreateMarket = () => {
   };
 
   return (
+    <Layout>
       <Grid
         container
         justify="center"
         alignItems="center"
-        style={{ minHeight: "100vh", marginLeft: "80px" }}
+        style={{ minHeight: "100vh", marginLeft: "80px", paddingTop: "5rem", paddingBottom: "5rem" }}
         className="MarketFormContainer"
       >
         <Grid item xs={6} md={6}>
@@ -202,7 +232,7 @@ const CreateMarket = () => {
               style={{
                 display: "flex",
                 fontWeight: "bold",
-                color: "white",
+                color: "black",
                 justifyContent: "center",
                 marginLeft: "49px",
                 alignItems: "center",
@@ -405,7 +435,6 @@ const CreateMarket = () => {
                             setisToolOpen(false);
                           }}
                           onOpen={() => {
-                            console.debug("kkkkkkkk");
                             setisToolOpen(true);
                           }}
                         >
@@ -606,6 +635,7 @@ const CreateMarket = () => {
           </DialogActions>
         </Dialog>
       </Grid>
+    </Layout>
   )
 }
 
