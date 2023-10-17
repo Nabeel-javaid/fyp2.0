@@ -110,6 +110,33 @@ const CreateMarket = () => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleNext = () => {
     if (
       page === 1 &&
@@ -142,7 +169,7 @@ const CreateMarket = () => {
   };
 
   const handleImageUpload = (info) => {
-    console.log(info);
+    // console.log(info);
   };
 
   const handleTermsAcceptance = () => {
@@ -408,7 +435,6 @@ const CreateMarket = () => {
                             setisToolOpen(false);
                           }}
                           onOpen={() => {
-                            console.debug("kkkkkkkk");
                             setisToolOpen(true);
                           }}
                         >
