@@ -2681,6 +2681,10 @@ ol {
   font-size: 15px;
 }
 
+.feature .feature-box a {
+  text-align: center;
+}
+
 /*======================================
 	Footer CSS
 ========================================*/
