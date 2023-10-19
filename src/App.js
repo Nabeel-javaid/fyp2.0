@@ -6,7 +6,6 @@ import YourComponent from './pages/YourComponent'; // Make sure to use the corre
 function App() {
   return (
     <div className="App">
-      <h1>Market Count App</h1>
       <YourComponent />
     </div>
   );

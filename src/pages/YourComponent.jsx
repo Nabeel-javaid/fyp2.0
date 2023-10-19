@@ -63,15 +63,19 @@ const YourComponent = () => {
       {error && <p>{error}</p>}
       {marketCount !== null && !loading && !error && (
         <div>
-          <h2>Market Count</h2>
-          <p>{marketCount}</p>
-
           <h2>Market Data</h2>
           <ul>
             {marketData.map((data, index) => (
-              <li key={index}>Market {index + 1}: {JSON.stringify(data)}</li>
+              <li key={index}>Market {index + 1}:
+                <ul>
+                  <li>Field 1: {data.field1 ? data.field1.toString() : ''}</li>
+                  <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li>
+                  {/* Add more fields if necessary */}
+                </ul>
+              </li>
             ))}
           </ul>
+
         </div>
       )}
     </div>
