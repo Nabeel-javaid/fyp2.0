@@ -75,6 +75,7 @@ function FeatureArea() {
 
                 {/* <FeatureBox delay=".4s" />
                 <FeatureBox delay=".6s" /> */}
+
             </div>
         </div>
     </div>
