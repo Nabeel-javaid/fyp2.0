@@ -72,8 +72,17 @@ const YourComponent = () => {
               marketData.map((data, index) => (
                 <li key={index}>Market {index + 1}:
                   <ul>
-                    <li>Field 1: {data.field1 ? data.field1.toString() : ''}</li>
-                    <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li>
+                    {/* <li>Field 1: {data.field1 ? data.field1.toString() : ''}</li>
+                    <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li> */}
+                    <li>Field 1: {data.owner}</li>
+                    <li>Field 1: {data.paymentCycleDuration.toString()}</li>
+                    <li>Field 1: {data.paymentDefaultDuration.toString()}</li>
+                    <li>Field 1: {data.loanExpirationTime.toString()}</li>
+                    <li>Field 1: {data.metadataURI.toString()}</li>
+                    <li>Field 1: {data.marketplaceFeePercent.toString()}</li>
+                    <li>Field 1: {data.lenderAttestationRequired.toString()}</li>
+
+                    {/* <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li> */}
                     {/* Add more fields if necessary */}
                   </ul>
                 </li>
