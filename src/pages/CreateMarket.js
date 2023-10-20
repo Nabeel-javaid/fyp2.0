@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import InboxIcon from '@mui/icons-material/Inbox';
+
 import {
   FormControl,
   InputLabel,
@@ -22,9 +21,10 @@ import {
 
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Layout from "../components/Layout";
-import contractABI from '../ABIs/marketRegistery.json';
+import contractABI from "../ABIs/marketRegistery.json";
+
 const CreateMarket = () => {
   const [marketName, setMarketName] = useState("");
   const [marketType, setMarketType] = useState("");
@@ -42,12 +42,30 @@ const CreateMarket = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
+  const [isMobileView, setIsMobileView] = useState(false);
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMobileView(true);
+      } else {
+        setIsMobileView(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeout(() => {
-        setHeading((prevHeading) => (prevHeading === "RULES" ? "MARKET" : "RULES"));
+        setHeading((prevHeading) =>
+          prevHeading === "RULES" ? "MARKET" : "RULES"
+        );
       }, 1000);
     }, 5000);
 
@@ -56,10 +74,16 @@ const CreateMarket = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+   
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
       const userAddress = await signer.getAddress();
       const txResponse = await contract.createMarket(
         userAddress,
@@ -83,21 +107,21 @@ const CreateMarket = () => {
   const handleNext = () => {
     if (
       (page === 1 &&
-      (!marketName ||
-      !marketType ||
-      !assetClass ||
-      !website ||
-      !dataRoomLink)) ||
+        (!marketName ||
+          !marketType ||
+          !assetClass ||
+          !website ||
+          !dataRoomLink)) ||
       (page === 2 &&
-      (!loanRequestsExpire ||
-      !loanPaymentCycle ||
-      !defaultLoans ||
-      !loanProcessFee))
+        (!loanRequestsExpire ||
+          !loanPaymentCycle ||
+          !defaultLoans ||
+          !loanProcessFee))
     ) {
       setHasInput(true);
       return;
     }
-    
+
     setPage(page + 1);
     setHasInput(false);
   };
@@ -105,6 +129,7 @@ const CreateMarket = () => {
   const handleBack = () => {
     setPage(page - 1);
   };
+
   const handleTermsAcceptance = () => {
     setTermsAccepted(!termsAccepted);
   };
@@ -140,18 +165,21 @@ const CreateMarket = () => {
     setCancelDialogOpen(false);
   };
 
-
-
   return (
     <Layout>
       <Grid
         container
         justify="center"
         alignItems="center"
-        style={{ minHeight: "100vh", marginLeft: "80px", paddingTop: "5rem", paddingBottom: "5rem" }}
+        style={{
+          minHeight: "100vh",
+          marginLeft: isMobileView ? "0" : "80px",
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+        }}
         className="MarketFormContainer"
       >
-        <Grid item xs={6} md={6}>
+        <Grid item xs={12} md={6}>
           <div
             style={{
               display: "flex",
@@ -215,7 +243,6 @@ const CreateMarket = () => {
                     margin="normal"
                     value={marketName}
                     onChange={(e) => setMarketName(e.target.value)}
-                    required
                     style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
                     InputLabelProps={{
                       style: {
@@ -233,7 +260,6 @@ const CreateMarket = () => {
                     margin="normal"
                     value={marketDescription}
                     onChange={(e) => setMarketDescription(e.target.value)}
-                    required
                     style={{ marginBottom: "1rem", width: "70%" }}
                   />
                 </Grid>
@@ -281,7 +307,6 @@ const CreateMarket = () => {
                     value={assetClass}
                     onChange={(e) => setAssetClass(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
                     style={{ width: "70%" }}
                   />
@@ -295,7 +320,6 @@ const CreateMarket = () => {
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
                     style={{ width: "70%", paddingLeft: "3.5rem" }}
                     InputLabelProps={{
@@ -314,7 +338,6 @@ const CreateMarket = () => {
                     value={dataRoomLink}
                     onChange={(e) => setDataRoomLink(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
                     style={{ width: "70%" }}
                   />
@@ -345,7 +368,6 @@ const CreateMarket = () => {
                     value={loanRequestsExpire}
                     onChange={(e) => setLoanRequestsExpire(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                     style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
@@ -379,7 +401,6 @@ const CreateMarket = () => {
                     value={loanPaymentCycle}
                     onChange={(e) => setLoanPaymentCycle(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                   />
                 </Grid>
@@ -403,7 +424,6 @@ const CreateMarket = () => {
                     value={defaultLoans}
                     onChange={(e) => setDefaultLoans(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                     style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
@@ -428,7 +448,6 @@ const CreateMarket = () => {
                     value={loanProcessFee}
                     onChange={(e) => setLoanProcessFee(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                     inputProps={{ max: 100 }}
                   />
@@ -517,9 +536,8 @@ const CreateMarket = () => {
               </MUIButton>
             </div>
           </form>
-
         </Grid>
-        <Grid item xs={6} md={6}>
+        <Grid item xs={12} md={6}>
           <img
             src="https://v2.teller.org/assets/teller_v2_Step3.0c1ebb64.svg"
             alt="Form Illustration"
