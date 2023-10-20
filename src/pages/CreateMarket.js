@@ -1,10 +1,7 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import CountryList from "react-select-country-list";
-import InboxIcon from '@mui/icons-material/Inbox';
-import Web3 from 'web3';
+
 import {
   FormControl,
   InputLabel,
@@ -24,20 +21,11 @@ import {
 
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { DropzoneArea } from "mui-file-dropzone";
-import "../css/CreateMarket.css";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Layout from "../components/Layout";
-
-import contractABI from '../ABIs/marketRegistery.json'; // Adjust the path as per your project structure
-
-import { create } from 'ipfs-http-client';
-import web3 from 'web3';
+import contractABI from "../ABIs/marketRegistery.json";
 
 const CreateMarket = () => {
-
-  const [country, setCountry] = useState("");
   const [marketName, setMarketName] = useState("");
   const [marketType, setMarketType] = useState("");
   const [assetClass, setAssetClass] = useState("");
@@ -54,18 +42,30 @@ const CreateMarket = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
-  const [imageBuffer, setImageBuffer] = useState(null);
-
-  const countryOptions = CountryList().getData();
-
+  const [isMobileView, setIsMobileView] = useState(false);
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
 
-  const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMobileView(true);
+      } else {
+        setIsMobileView(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeout(() => {
-        setHeading((prevHeading) => (prevHeading === "RULES" ? "MARKET" : "RULES"));
+        setHeading((prevHeading) =>
+          prevHeading === "RULES" ? "MARKET" : "RULES"
+        );
       }, 1000);
     }, 5000);
 
@@ -74,37 +74,17 @@ const CreateMarket = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Image File: ", imageBuffer);
-    console.log("Market Name: ", marketName);
-    console.log("Market Description: ", marketDescription);
+
+   
     try {
-      // Connect to the Ethereum provider (MetaMask)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-      const web3 = new Web3(window.ethereum);
-      await window.ethereum.enable(); // Request user permission to connect
-
-      // Load the contract
-      const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
-      // const marketContract = new web3.eth.Contract(abi, contractAddress);
-
-      // Call the marketCount function
-      
-      // setMarketCount(count);
-
-
-      // Get the signer (account) from the provider
       const signer = provider.getSigner();
-
-      // Load the contract
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-      const marketContract = new web3.eth.Contract(contractABI, contractAddress);
-      
-      
-
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
       const userAddress = await signer.getAddress();
-
       const txResponse = await contract.createMarket(
         userAddress,
         parseInt(loanPaymentCycle),
@@ -115,43 +95,33 @@ const CreateMarket = () => {
         false,
         " "
       );
-
       await txResponse.wait();
-
-      // Display a success message
+      console.log("Market added successfully!");
       toast.success("Market function called successfully!");
-      const marketID = await marketContract.methods.marketCount().call();
-      
-      uploadMarketToIPFS(marketID, marketName, marketDescription, imageBuffer);
     } catch (error) {
-      console.error(error);
+      console.error("Error adding market:", error);
       toast.error("Error calling market function. Please try again.");
     }
   };
 
   const handleNext = () => {
     if (
-      page === 1 &&
-      (!country ||
-        !marketName ||
-        !marketType ||
-        !assetClass ||
-        !website ||
-        !dataRoomLink)
+      (page === 1 &&
+        (!marketName ||
+          !marketType ||
+          !assetClass ||
+          !website ||
+          !dataRoomLink)) ||
+      (page === 2 &&
+        (!loanRequestsExpire ||
+          !loanPaymentCycle ||
+          !defaultLoans ||
+          !loanProcessFee))
     ) {
       setHasInput(true);
       return;
     }
-    if (
-      page === 2 &&
-      (!loanRequestsExpire ||
-        !loanPaymentCycle ||
-        !defaultLoans ||
-        !loanProcessFee)
-    ) {
-      setHasInput(true);
-      return;
-    }
+
     setPage(page + 1);
     setHasInput(false);
   };
@@ -160,52 +130,12 @@ const CreateMarket = () => {
     setPage(page - 1);
   };
 
-  const createMarketData = (id, name, description, imageBuffer) => {
-    const idNumber = Number(id);
-    const marketData = {
-      id: idNumber,
-      name: name,
-      description: description,
-      image: imageBuffer,
-    };
-  
-    // Convert the JSON object to a buffer
-    const marketDataBuffer = Buffer.from(JSON.stringify(marketData));
-    console.log("CreateMarketData FUnction Running");  
-    return marketDataBuffer;
-  };  
-
-  const uploadMarketToIPFS = async (id, name, description, imageFile) => {
-    try {
-      // Create the market data buffer
-      const marketDataBuffer = createMarketData(id, name, description, imageFile);
-      
-      // Add the combined data to IPFS
-      const result = await ipfs.add(marketDataBuffer);
-      
-      // Log the IPFS hash of the uploaded data
-      console.log('Uploaded to IPFS:', result.path);
-      toast.success('Uploaded to IPFS:', result.path);
-  
-      // You can use result.path to retrieve the IPFS hash for later use.
-    } catch (error) {
-      console.error('Error uploading to IPFS:', error);
-    }
-  };
-  
-  const handleImageUpload = (file) => {
-    if (file) {
-      setImageBuffer(file);
-    }
-  };
-
   const handleTermsAcceptance = () => {
     setTermsAccepted(!termsAccepted);
   };
 
   const handleCancel = () => {
     if (
-      country ||
       marketName ||
       marketType ||
       assetClass ||
@@ -241,10 +171,15 @@ const CreateMarket = () => {
         container
         justify="center"
         alignItems="center"
-        style={{ minHeight: "100vh", marginLeft: "80px", paddingTop: "5rem", paddingBottom: "5rem" }}
+        style={{
+          minHeight: "100vh",
+          marginLeft: isMobileView ? "0" : "80px",
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+        }}
         className="MarketFormContainer"
       >
-        <Grid item xs={6} md={6}>
+        <Grid item xs={12} md={6}>
           <div
             style={{
               display: "flex",
@@ -265,7 +200,7 @@ const CreateMarket = () => {
                 alignItems: "center",
               }}
             >
-              You make the
+              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; You make the
               <span
                 style={{
                   display: "flex",
@@ -301,42 +236,6 @@ const CreateMarket = () => {
             {page === 1 && (
               <Grid container spacing={2} className="custom-grid">
                 <Grid item xs={6}>
-                  <FormControl
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    sx={{ m: 6, minWidth: 200, marginTop: "1rem" }}
-                    style={{ marginBottom: "1rem", width: "70%" }}
-                  >
-                    <InputLabel id="demo-simple-select-label">Country</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Country"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      MenuProps={{
-                        transformOrigin: {
-                          vertical: "top",
-                          horizontal: "left",
-                        },
-                        anchorOrigin: {
-                          vertical: "bottom",
-                          horizontal: "left",
-                        },
-                        getContentAnchorEl: null,
-                      }}
-                    >
-                      {countryOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="outlined"
@@ -344,18 +243,39 @@ const CreateMarket = () => {
                     margin="normal"
                     value={marketName}
                     onChange={(e) => setMarketName(e.target.value)}
-                    required
+                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
+                    InputLabelProps={{
+                      style: {
+                        paddingLeft: "4.4rem"
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Market Description"
+                    margin="normal"
+                    value={marketDescription}
+                    onChange={(e) => setMarketDescription(e.target.value)}
                     style={{ marginBottom: "1rem", width: "70%" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <FormControl
                     fullWidth
                     variant="outlined"
                     margin="normal"
-                    style={{ marginBottom: "1rem", width: "70%" }}
+                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
                   >
-                    <InputLabel>Market Type</InputLabel>
+                    <InputLabel
+                      style={{ paddingLeft: "4.4rem" }}
+                    >
+                      Market Type
+                    </InputLabel>
                     <Select
                       label="Market Type"
                       value={marketType}
@@ -378,6 +298,7 @@ const CreateMarket = () => {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -386,11 +307,11 @@ const CreateMarket = () => {
                     value={assetClass}
                     onChange={(e) => setAssetClass(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
                     style={{ width: "70%" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -399,11 +320,16 @@ const CreateMarket = () => {
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
-                    style={{ width: "70%" }}
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
+                    InputLabelProps={{
+                      style: {
+                        paddingLeft: "4.4rem"
+                      }
+                    }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -412,7 +338,6 @@ const CreateMarket = () => {
                     value={dataRoomLink}
                     onChange={(e) => setDataRoomLink(e.target.value)}
                     margin="normal"
-                    required
                     className="MarketFormTextField"
                     style={{ width: "70%" }}
                   />
@@ -426,7 +351,7 @@ const CreateMarket = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
                     label={
                       <div>
                         Loan Requests Expire
@@ -443,10 +368,11 @@ const CreateMarket = () => {
                     value={loanRequestsExpire}
                     onChange={(e) => setLoanRequestsExpire(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -475,15 +401,15 @@ const CreateMarket = () => {
                     value={loanPaymentCycle}
                     onChange={(e) => setLoanPaymentCycle(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
                     label={
                       <div>
                         Default Loans
@@ -498,10 +424,11 @@ const CreateMarket = () => {
                     value={defaultLoans}
                     onChange={(e) => setDefaultLoans(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -521,7 +448,6 @@ const CreateMarket = () => {
                     value={loanProcessFee}
                     onChange={(e) => setLoanProcessFee(e.target.value)}
                     margin="normal"
-                    required
                     type="number"
                     inputProps={{ max: 100 }}
                   />
@@ -530,34 +456,6 @@ const CreateMarket = () => {
             )}
 
             {page === 3 && (
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <div className="upload-container">
-                    <DropzoneArea
-                      dropzoneText={"Supports single file upload"}
-                      filesLimit={1}
-                      onChange={handleImageUpload}
-                      Icon={InboxIcon}
-                    />
-                  </div>
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Market Description"
-                    value={marketDescription}
-                    onChange={(e) => setMarketDescription(e.target.value)}
-                    margin="normal"
-                    required
-                    multiline
-                    style={{ width: "70%" }}
-                  />
-                </Grid>
-              </Grid>
-            )}
-
-            {page === 4 && (
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <h2 style={{ fontWeight: "bold" }}>Terms of Service</h2>
@@ -593,7 +491,7 @@ const CreateMarket = () => {
                   <ArrowBackIcon /> Back
                 </MUIButton>
               )}
-              {page < 4 && (
+              {page < 3 && (
                 <MUIButton
                   type="button"
                   onClick={handleNext}
@@ -605,10 +503,10 @@ const CreateMarket = () => {
                     marginLeft: "10px",
                   }}
                 >
-                  {`Continue ${page} of 4`}
+                  {`Continue ${page} of 3`}
                 </MUIButton>
               )}
-              {page === 4 && (
+              {page === 3 && (
                 <MUIButton
                   type="submit"
                   variant="contained"
@@ -638,9 +536,8 @@ const CreateMarket = () => {
               </MUIButton>
             </div>
           </form>
-
         </Grid>
-        <Grid item xs={6} md={6}>
+        <Grid item xs={12} md={6}>
           <img
             src="https://v2.teller.org/assets/teller_v2_Step3.0c1ebb64.svg"
             alt="Form Illustration"
