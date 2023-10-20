@@ -20,7 +20,7 @@ function HeroArea() {
                                 </span>
                             </h1>
                             <p className="wow fadeInUp" data-wow-delay=".6s">Invest your spare change in Bitcoin and save
-                                with<br /> Lend to earn interest in real time.
+                                with<br /> Lend to earn passive income.
                             </p>
                             <div className="button wow fadeInUp" data-wow-delay=".8s">
                                 <a href="about-us.html" className="btn ">Discover More</a>

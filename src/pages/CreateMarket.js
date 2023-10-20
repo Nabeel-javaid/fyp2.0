@@ -1,8 +1,7 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import CountryList from "react-select-country-list";
 import InboxIcon from '@mui/icons-material/Inbox';
 import {
   FormControl,
@@ -24,17 +23,9 @@ import {
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { DropzoneArea } from "mui-file-dropzone";
-import "../css/CreateMarket.css";
-
 import Layout from "../components/Layout";
-
-
-import contractABI from '../ABIs/marketRegistery.json'; // Adjust the path as per your project structure
-
+import contractABI from '../ABIs/marketRegistery.json';
 const CreateMarket = () => {
-
-  const [country, setCountry] = useState("");
   const [marketName, setMarketName] = useState("");
   const [marketType, setMarketType] = useState("");
   const [assetClass, setAssetClass] = useState("");
@@ -51,9 +42,6 @@ const CreateMarket = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
-
-  const countryOptions = CountryList().getData();
-
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
 
   useEffect(() => {
@@ -66,29 +54,13 @@ const CreateMarket = () => {
     return () => clearInterval(interval);
   }, []);
 
-
-
-
-
-
-
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Connect to the Ethereum provider (MetaMask)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-      // Get the signer (account) from the provider
       const signer = provider.getSigner();
-
-      // Load the contract
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
       const userAddress = await signer.getAddress();
-
       const txResponse = await contract.createMarket(
         userAddress,
         parseInt(loanPaymentCycle),
@@ -99,67 +71,33 @@ const CreateMarket = () => {
         false,
         " "
       );
-
       await txResponse.wait();
-
-      // Display a success message
+      console.log("Market added successfully!");
       toast.success("Market function called successfully!");
     } catch (error) {
-      console.error(error);
+      console.error("Error adding market:", error);
       toast.error("Error calling market function. Please try again.");
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleNext = () => {
     if (
-      page === 1 &&
-      (!country ||
-        !marketName ||
-        !marketType ||
-        !assetClass ||
-        !website ||
-        !dataRoomLink)
-    ) {
-      setHasInput(true);
-      return;
-    }
-    if (
-      page === 2 &&
+      (page === 1 &&
+      (!marketName ||
+      !marketType ||
+      !assetClass ||
+      !website ||
+      !dataRoomLink)) ||
+      (page === 2 &&
       (!loanRequestsExpire ||
-        !loanPaymentCycle ||
-        !defaultLoans ||
-        !loanProcessFee)
+      !loanPaymentCycle ||
+      !defaultLoans ||
+      !loanProcessFee))
     ) {
       setHasInput(true);
       return;
     }
+    
     setPage(page + 1);
     setHasInput(false);
   };
@@ -167,18 +105,12 @@ const CreateMarket = () => {
   const handleBack = () => {
     setPage(page - 1);
   };
-
-  const handleImageUpload = (info) => {
-    // console.log(info);
-  };
-
   const handleTermsAcceptance = () => {
     setTermsAccepted(!termsAccepted);
   };
 
   const handleCancel = () => {
     if (
-      country ||
       marketName ||
       marketType ||
       assetClass ||
@@ -207,6 +139,8 @@ const CreateMarket = () => {
   const handleCancelCancel = () => {
     setCancelDialogOpen(false);
   };
+
+
 
   return (
     <Layout>
@@ -238,7 +172,7 @@ const CreateMarket = () => {
                 alignItems: "center",
               }}
             >
-              You make the
+              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; You make the
               <span
                 style={{
                   display: "flex",
@@ -274,42 +208,6 @@ const CreateMarket = () => {
             {page === 1 && (
               <Grid container spacing={2} className="custom-grid">
                 <Grid item xs={6}>
-                  <FormControl
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    sx={{ m: 6, minWidth: 200, marginTop: "1rem" }}
-                    style={{ marginBottom: "1rem", width: "70%" }}
-                  >
-                    <InputLabel id="demo-simple-select-label">Country</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Country"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      MenuProps={{
-                        transformOrigin: {
-                          vertical: "top",
-                          horizontal: "left",
-                        },
-                        anchorOrigin: {
-                          vertical: "bottom",
-                          horizontal: "left",
-                        },
-                        getContentAnchorEl: null,
-                      }}
-                    >
-                      {countryOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="outlined"
@@ -318,17 +216,40 @@ const CreateMarket = () => {
                     value={marketName}
                     onChange={(e) => setMarketName(e.target.value)}
                     required
+                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
+                    InputLabelProps={{
+                      style: {
+                        paddingLeft: "4.4rem"
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Market Description"
+                    margin="normal"
+                    value={marketDescription}
+                    onChange={(e) => setMarketDescription(e.target.value)}
+                    required
                     style={{ marginBottom: "1rem", width: "70%" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <FormControl
                     fullWidth
                     variant="outlined"
                     margin="normal"
-                    style={{ marginBottom: "1rem", width: "70%" }}
+                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
                   >
-                    <InputLabel>Market Type</InputLabel>
+                    <InputLabel
+                      style={{ paddingLeft: "4.4rem" }}
+                    >
+                      Market Type
+                    </InputLabel>
                     <Select
                       label="Market Type"
                       value={marketType}
@@ -351,6 +272,7 @@ const CreateMarket = () => {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -364,6 +286,7 @@ const CreateMarket = () => {
                     style={{ width: "70%" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -374,9 +297,15 @@ const CreateMarket = () => {
                     margin="normal"
                     required
                     className="MarketFormTextField"
-                    style={{ width: "70%" }}
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
+                    InputLabelProps={{
+                      style: {
+                        paddingLeft: "4.4rem"
+                      }
+                    }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -399,7 +328,7 @@ const CreateMarket = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
                     label={
                       <div>
                         Loan Requests Expire
@@ -418,8 +347,10 @@ const CreateMarket = () => {
                     margin="normal"
                     required
                     type="number"
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -452,11 +383,12 @@ const CreateMarket = () => {
                     type="number"
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
                     label={
                       <div>
                         Default Loans
@@ -473,8 +405,10 @@ const CreateMarket = () => {
                     margin="normal"
                     required
                     type="number"
+                    style={{ width: "70%", paddingLeft: "3.5rem" }}
                   />
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -503,34 +437,6 @@ const CreateMarket = () => {
             )}
 
             {page === 3 && (
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <div className="upload-container">
-                    <DropzoneArea
-                      dropzoneText={"Supports single file upload"}
-                      filesLimit={1}
-                      onChange={handleImageUpload}
-                      Icon={InboxIcon}
-                    />
-                  </div>
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Market Description"
-                    value={marketDescription}
-                    onChange={(e) => setMarketDescription(e.target.value)}
-                    margin="normal"
-                    required
-                    multiline
-                    style={{ width: "70%" }}
-                  />
-                </Grid>
-              </Grid>
-            )}
-
-            {page === 4 && (
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <h2 style={{ fontWeight: "bold" }}>Terms of Service</h2>
@@ -566,7 +472,7 @@ const CreateMarket = () => {
                   <ArrowBackIcon /> Back
                 </MUIButton>
               )}
-              {page < 4 && (
+              {page < 3 && (
                 <MUIButton
                   type="button"
                   onClick={handleNext}
@@ -578,10 +484,10 @@ const CreateMarket = () => {
                     marginLeft: "10px",
                   }}
                 >
-                  {`Continue ${page} of 4`}
+                  {`Continue ${page} of 3`}
                 </MUIButton>
               )}
-              {page === 4 && (
+              {page === 3 && (
                 <MUIButton
                   type="submit"
                   variant="contained"

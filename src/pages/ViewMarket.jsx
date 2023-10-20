@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
+import FeatureBox from '../components/FeatureBox';
 
-const YourComponent = () => {
+const ViewMarket = () => {
   const [marketCount, setMarketCount] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ const YourComponent = () => {
 
         // Get market data for each market
         const data = [];
-        for (let i = 1; i <= count; i++) {
+        for (let i = 25; i <= count; i++) {
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
@@ -58,43 +59,31 @@ const YourComponent = () => {
   };
 
   return (
-    <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {marketCount !== null && !loading && !error && (
-        <div>
-          <h2>Market Count</h2>
-          <p>{marketCount}</p>
-
-          <h2>Market Data</h2>
-          <ul>
-            {marketData.length > 0 ? (
+    <div className="feature section">
+      <div className="container">
+        <div className="row">
+          {loading && <p>Loading...</p>}
+          {error && <p>{error}</p>}
+          {marketCount !== null && !loading && !error && (
+            marketData.length > 0 ? (
               marketData.map((data, index) => (
-                <li key={index}>Market {index + 1}:
-                  <ul>
-                    {/* <li>Field 1: {data.field1 ? data.field1.toString() : ''}</li>
-                    <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li> */}
-                    <li>Field 1: {data.owner}</li>
-                    <li>Field 1: {data.paymentCycleDuration.toString()}</li>
-                    <li>Field 1: {data.paymentDefaultDuration.toString()}</li>
-                    <li>Field 1: {data.loanExpirationTime.toString()}</li>
-                    <li>Field 1: {data.metadataURI.toString()}</li>
-                    <li>Field 1: {data.marketplaceFeePercent.toString()}</li>
-                    <li>Field 1: {data.lenderAttestationRequired.toString()}</li>
-
-                    {/* <li>Field 2: {data.field2 ? data.field2.toString() : ''}</li> */}
-                    {/* Add more fields if necessary */}
-                  </ul>
-                </li>
+                <FeatureBox
+                  key={index}
+                  delay={'.4s'}
+                  title={"Market Name"}
+                  description={"Market Description"}
+                  ownerAddress={data.owner}
+                  marketID={index + 1}
+                />
               ))
             ) : (
               <p>No market data available</p>
-            )}
-          </ul>
+            )
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export default YourComponent;
+export default ViewMarket;
