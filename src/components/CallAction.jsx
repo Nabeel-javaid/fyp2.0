@@ -20,7 +20,7 @@ function CallAction() {
                         </div>
                         <div className="col-lg-6 col-md-5 col-12">
                             <div className="button">
-                                <a href="#" className="btn">Buy Pro Version
+                                <a href="/" className="btn">Buy Pro Version
                                 </a>
                             </div>
                         </div>
