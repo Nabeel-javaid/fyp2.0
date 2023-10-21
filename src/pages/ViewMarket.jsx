@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import FeatureBox from '../components/FeatureBox';
+<<<<<<< HEAD
+=======
+import MarketInfo from '../components/MarketInfo';
+import Layout from "../components/Layout";
+import Button from '@mui/material/Button';
+>>>>>>> MuhammadAhmed
 
 const ViewMarket = () => {
   const [marketCount, setMarketCount] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+<<<<<<< HEAD
+=======
+  const [selectedMarket, setSelectedMarket] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const marketsPerPage = 9;
+>>>>>>> MuhammadAhmed
 
   useEffect(() => {
     const loadBlockchainData = async () => {
@@ -29,7 +41,11 @@ const ViewMarket = () => {
 
         // Get market data for each market
         const data = [];
-        for (let i = 25; i <= count; i++) {
+<<<<<<< HEAD
+        for (let i = 20; i <= count; i++) {
+=======
+        for (let i = 20; i <= count; i++) {
+>>>>>>> MuhammadAhmed
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
@@ -58,6 +74,7 @@ const ViewMarket = () => {
     }
   };
 
+<<<<<<< HEAD
   return (
     <div className="feature section">
       <div className="container">
@@ -85,5 +102,98 @@ const ViewMarket = () => {
     </div>
   );
 };
+=======
+  const handleFeatureBoxClick = (marketID) => {
+    closeMarketBox();
+    const selectedMarketInfo = marketData[marketID - 1];
+    setSelectedMarket(selectedMarketInfo);
+  };
+
+  const closeMarketBox = () => {
+    setSelectedMarket(null);
+  };
+
+  const startIndex = (currentPage - 1) * marketsPerPage;
+  const endIndex = startIndex + marketsPerPage;
+  const marketsToDisplay = marketData.slice(startIndex, endIndex);
+
+  return (
+    <Layout>
+      <div style={{ paddingTop: '5%' }}>
+        {selectedMarket === null ? (
+          <p>No Market Selected</p>
+        ) : (
+          <div className="black-overlay">
+            <div className="market-box">
+              <MarketInfo
+                delay={'.2s'}
+                name={"Name"}
+                description={"Description"}
+                ownerAddress={selectedMarket.owner}
+                LET={selectedMarket.loanExpirationTime}
+                MFE={selectedMarket.marketplaceFeePercent}
+                PCD={selectedMarket.paymentCycleDuration}
+                PDD={selectedMarket.paymentDefaultDuration}
+              />
+              <div className="col-lg-6 col-md-7 col-12">
+                <div className="button">
+                  <button onClick={closeMarketBox} className="btn">
+                    Close Market
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="feature section">
+          <div className="container">
+            <div className="row">
+              {loading && <p>Loading...</p>}
+              {error && <p>{error}</p>}
+              {marketCount !== null && !loading && !error && (
+                marketsToDisplay.length > 0 ? (
+                  marketsToDisplay.map((data, index) => (
+                    <FeatureBox
+                      key={index}
+                      delay={'.2s'}
+                      title={"Market Name"}
+                      description={"Market Description"}
+                      ownerAddress={data.owner}
+                      marketID={startIndex + index + 1} // Adjust index
+                      onClick={handleFeatureBoxClick}
+                    />
+                  ))
+                ) : (
+                  <p>No market data available</p>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center space-x-4 mt-4">
+          <Button
+            variant="contained"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            Previous Page
+          </Button>
+          <span className="text-lg font-bold">{currentPage}</span>
+          <Button
+            variant="contained"
+            disabled={endIndex >= marketData.length}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Next Page
+          </Button>
+        </div>
+
+      </div>
+    </Layout>
+  );
+}
+>>>>>>> MuhammadAhmed
 
 export default ViewMarket;

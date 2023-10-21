@@ -1,5 +1,5 @@
 import React from 'react';
-import FeatureBox from './FeatureBox';
+import Feature from './Feature';
 import '../css/main.css';
 import '../css/animate.css';
 
@@ -18,9 +18,24 @@ function FeatureArea() {
                 </div>
             </div>
             <div className="row">
-                <FeatureBox delay=".2s" />
-                <FeatureBox delay=".4s" />
-                <FeatureBox delay=".6s" />
+                <Feature 
+                    delay=".2s"
+                    title="Feature 1"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                    imgSrc={"http://localhost:3000/assets/features/feature-icon-1.png"} 
+                />
+                <Feature 
+                    delay=".2s"
+                    title="Feature 2"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                    imgSrc={"http://localhost:3000/assets/features/feature-icon-1.png"} 
+                />
+                <Feature 
+                    delay=".2s"
+                    title="Feature 3"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                    imgSrc={"http://localhost:3000/assets/features/feature-icon-1.png"} 
+                />
             </div>
         </div>
     </div>

@@ -32,7 +32,11 @@ function NavBar() {
                         <div className="nav-inner">
                             <nav className="navbar navbar-expand-lg">
                                 <a className="navbar-brand" href="index.html">
+<<<<<<< HEAD
                                     <img src="http://localhost:3000/assets/logo/logo.png" alt="Logo" className='Logo' />
+=======
+                                    <img src="http://localhost:3000/assets/logo/logo.svg" alt="Logo" className='Logo' />
+>>>>>>> MuhammadAhmed
                                 </a>
                                 <button className="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -50,16 +54,20 @@ function NavBar() {
                                             <a href="about-us.html" aria-label="Toggle navigation">About us</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
+                                            <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-1" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Market</a>
                                             <ul className="sub-menu collapse" id="submenu-1-1">
+<<<<<<< HEAD
                                                 <li className="nav-item"><a href="">View All Markets</a></li>
+=======
+                                                <li className="nav-item"><a href="/view-market">View All Markets</a></li>
+>>>>>>> MuhammadAhmed
                                                 <li className="nav-item"><a href="/create-market">Create Market</a></li>
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
+                                            <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Blog</a>
                                             <ul className="sub-menu collapse" id="submenu-1-2">
