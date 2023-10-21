@@ -41,11 +41,7 @@ const ViewMarket = () => {
 
         // Get market data for each market
         const data = [];
-<<<<<<< HEAD
         for (let i = 20; i <= count; i++) {
-=======
-        for (let i = 20; i <= count; i++) {
->>>>>>> MuhammadAhmed
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
