@@ -479,7 +479,7 @@ const CreateMarket = () => {
               </Typography>
             )}
 
-            <div style={{ marginTop: "12px" }}>
+            <div style={{ marginTop: "12px", paddingLeft: "14.2rem", paddingTop: "3rem" }}>
               {page > 1 && (
                 <MUIButton
                   type="button"

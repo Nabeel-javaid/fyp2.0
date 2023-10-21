@@ -1,52 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import FeatureBox from '../components/FeatureBox';
-<<<<<<< HEAD
-=======
 import MarketInfo from '../components/MarketInfo';
 import Layout from "../components/Layout";
-import Button from '@mui/material/Button';
->>>>>>> MuhammadAhmed
+import { Button } from '@mui/material';
+
+const useStyles = {
+  button: {
+    borderRadius: '20px',
+    textTransform: 'none',
+    boxShadow: 'none',
+    backgroundColor: '#1976D2',  // Add background color for initial state
+    transition: 'background-color 0.3s',  // Add transition for hover effect
+  },
+  span: {
+    fontSize: '20px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+  },
+};
+
+const CustomButton = ({ variant, disabled, onClick, children }) => {
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+    onClick();
+  };
+
+  return (
+    <Button
+      variant={variant}
+      disabled={disabled}
+      onClick={scrollToTop}
+      style={useStyles.button}
+      className="transition-colors duration-300 hover:bg-blue-500 px-4 py-2 text-white rounded-md"
+    >
+      {children}
+    </Button>
+  );
+};
+
+// ... rest of the code remains the same
 
 const ViewMarket = () => {
   const [marketCount, setMarketCount] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-<<<<<<< HEAD
-=======
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const marketsPerPage = 9;
->>>>>>> MuhammadAhmed
 
   useEffect(() => {
     const loadBlockchainData = async () => {
       try {
-        // Load the ABI
         const abi = require('../ABIs/marketRegistery.json');
-
-        // Connect to the Ethereum network
         const web3 = new Web3(window.ethereum);
-        await window.ethereum.enable(); // Request user permission to connect
-
-        // Load the contract
+        await window.ethereum.enable();
         const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
         const marketContract = new web3.eth.Contract(abi, contractAddress);
-
-        // Call the marketCount function
         const count = await marketContract.methods.marketCount().call();
-        console.log('Market Count:', count);
         setMarketCount(count);
-
-        // Get market data for each market
         const data = [];
-        for (let i = 20; i <= count; i++) {
+        for (let i = 15; i <= count; i++) {
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
         setMarketData(data);
-
       } catch (error) {
         console.error('Error calling marketCount:', error);
         setError('Error loading data from blockchain. Please try again later.');
@@ -70,35 +89,6 @@ const ViewMarket = () => {
     }
   };
 
-<<<<<<< HEAD
-  return (
-    <div className="feature section">
-      <div className="container">
-        <div className="row">
-          {loading && <p>Loading...</p>}
-          {error && <p>{error}</p>}
-          {marketCount !== null && !loading && !error && (
-            marketData.length > 0 ? (
-              marketData.map((data, index) => (
-                <FeatureBox
-                  key={index}
-                  delay={'.4s'}
-                  title={"Market Name"}
-                  description={"Market Description"}
-                  ownerAddress={data.owner}
-                  marketID={index + 1}
-                />
-              ))
-            ) : (
-              <p>No market data available</p>
-            )
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-=======
   const handleFeatureBoxClick = (marketID) => {
     closeMarketBox();
     const selectedMarketInfo = marketData[marketID - 1];
@@ -168,28 +158,27 @@ const ViewMarket = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center space-x-4 mt-4">
-          <Button
+        <div className="flex items-center justify-center space-x-4 mt-6 mb-4">
+          <CustomButton
             variant="contained"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(currentPage - 1)}
           >
             Previous Page
-          </Button>
-          <span className="text-lg font-bold">{currentPage}</span>
-          <Button
+          </CustomButton>
+          <span style={useStyles.span}>{currentPage}</span>
+          <CustomButton
             variant="contained"
             disabled={endIndex >= marketData.length}
             onClick={() => setCurrentPage(currentPage + 1)}
           >
             Next Page
-          </Button>
+          </CustomButton>
         </div>
 
       </div>
     </Layout>
   );
 }
->>>>>>> MuhammadAhmed
 
 export default ViewMarket;
