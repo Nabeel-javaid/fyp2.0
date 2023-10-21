@@ -31,7 +31,7 @@ function Feature({ delay, title, description, imgSrc }) {
       <div className="feature-box">
         <div className="tumb">
           {/* Your box content */}
-          <img src={imgSrc} alt="Image" />
+          <img src={imgSrc} alt="Feature Images" />
         </div>
         <h4 className="text-title">{title}</h4>
         <p>{description}</p>

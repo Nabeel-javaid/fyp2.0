@@ -12,15 +12,6 @@ const MarketInfo = ({
   PDD
 }) => {
   const etherscanUrl = `https://goerli.etherscan.io/address/${ownerAddress}`;
-// //   console log parameters
-//     console.log("delay", delay);
-//     console.log("name", name);
-//     console.log("description", description);
-//     console.log("ownerAddress", ownerAddress);
-//     console.log("LET", LET);
-//     console.log("MFE", MFE);
-//     console.log("PCD", PCD);
-//     console.log("PDD", PDD);
 
   return (
     <div className="feature section">
@@ -54,14 +45,14 @@ const MarketInfo = ({
           <div className="row align-items-center">
             <div className="col-lg-6 col-md-7 col-12">
               <div className="button">
-                <a href="/" className="btn">
+                <a href="/create-loan" className="btn">
                   Create Loan
                 </a>
               </div>
             </div>
             <div className="col-lg-6 col-md-5 col-12">
               <div className="button">
-                <a href="/" className="btn">
+                <a href="/view-loan" className="btn">
                   View Loans
                 </a>
               </div>

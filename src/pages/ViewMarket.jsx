@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import FeatureBox from '../components/FeatureBox';
 import MarketInfo from '../components/MarketInfo';
+import Layout from "../components/Layout";
 
 const ViewMarket = () => {
   const [marketCount, setMarketCount] = useState(null);
@@ -9,7 +10,6 @@ const ViewMarket = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedMarket, setSelectedMarket] = useState(null);
-  const [isMarketBoxVisible, setIsMarketBoxVisible] = useState(false);
 
   useEffect(() => {
     const loadBlockchainData = async () => {
@@ -63,72 +63,73 @@ const ViewMarket = () => {
 
 // Handle the click event on a FeatureBox
 const handleFeatureBoxClick = (marketID) => {
+  closeMarketBox();
   const selectedMarketInfo = marketData[marketID - 1];
   setSelectedMarket(selectedMarketInfo);
-  setIsMarketBoxVisible(true);
 };
 
 // Close the MarketBox
 const closeMarketBox = () => {
-  setIsMarketBoxVisible(false);
   setSelectedMarket(null);
 };
 
 return (
-  <div>
+  <Layout>
+    <div style={{ paddingTop: '5%' }}>
 
-  {selectedMarket===null ? (
-      <p>No Market Selected</p>
-    ): (
-      <div className="black-overlay">
-        <div className="market-box">
-          <MarketInfo
-            delay={'.2s'}
-            name={"Name"}
-            description={"Description"}
-            ownerAddress={selectedMarket.owner}
-            LET={selectedMarket.loanExpirationTime}
-            MFE={selectedMarket.marketplaceFeePercent}
-            PCD={selectedMarket.paymentCycleDuration}
-            PDD={selectedMarket.paymentDefaultDuration}
-          />
-          <div className="col-lg-6 col-md-7 col-12">
-              <div className="button">
-                <button onClick={closeMarketBox} className="btn">
-                  Close Market
-                </button>
+    {selectedMarket===null ? (
+        <p>No Market Selected</p>
+      ): (
+        <div className="black-overlay">
+          <div className="market-box">
+            <MarketInfo
+              delay={'.2s'}
+              name={"Name"}
+              description={"Description"}
+              ownerAddress={selectedMarket.owner}
+              LET={selectedMarket.loanExpirationTime}
+              MFE={selectedMarket.marketplaceFeePercent}
+              PCD={selectedMarket.paymentCycleDuration}
+              PDD={selectedMarket.paymentDefaultDuration}
+            />
+            <div className="col-lg-6 col-md-7 col-12">
+                <div className="button">
+                  <button onClick={closeMarketBox} className="btn">
+                    Close Market
+                  </button>
+                </div>
               </div>
-            </div>
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
-    <div className="feature section">
-      <div className="container">
-        <div className="row">
-          {loading && <p>Loading...</p>}
-          {error && <p>{error}</p>}
-          {marketCount !== null && !loading && !error && (
-            marketData.length > 0 ? (
-              marketData.map((data, index) => (
-                <FeatureBox
-                  key={index}
-                  delay={'.2s'}
-                  title={"Market Name"}
-                  description={"Market Description"}
-                  ownerAddress={data.owner}
-                  marketID={index + 1} // Adjust index
-                  onClick={handleFeatureBoxClick}
-                />
-              ))
-            ) : (
-              <p>No market data available</p>
-            )
-          )}
+      <div className="feature section">
+        <div className="container">
+          <div className="row">
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            {marketCount !== null && !loading && !error && (
+              marketData.length > 0 ? (
+                marketData.map((data, index) => (
+                  <FeatureBox
+                    key={index}
+                    delay={'.2s'}
+                    title={"Market Name"}
+                    description={"Market Description"}
+                    ownerAddress={data.owner}
+                    marketID={index + 1} // Adjust index
+                    onClick={handleFeatureBoxClick}
+                  />
+                ))
+              ) : (
+                <p>No market data available</p>
+              )
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Layout>
 );
 
 }
