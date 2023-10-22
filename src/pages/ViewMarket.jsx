@@ -32,7 +32,7 @@ const ViewMarket = () => {
 
         // Get market data for each market
         const data = [];
-        for (let i = 25; i <= count; i++) {
+        for (let i = 45; i <= count; i++) {
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
