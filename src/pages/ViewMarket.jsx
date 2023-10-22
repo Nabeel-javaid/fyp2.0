@@ -12,6 +12,7 @@ const useStyles = {
     boxShadow: 'none',
     backgroundColor: '#1976D2',  // Add background color for initial state
     transition: 'background-color 0.3s',  // Add transition for hover effect
+    
   },
   span: {
     fontSize: '20px',
@@ -107,7 +108,7 @@ const ViewMarket = () => {
     <Layout>
       <div style={{ paddingTop: '5%' }}>
         {selectedMarket === null ? (
-          <p>No Market Selected</p>
+          <p>   </p>
         ) : (
           <div className="black-overlay">
             <div className="market-box">
