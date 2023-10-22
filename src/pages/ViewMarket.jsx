@@ -61,7 +61,7 @@ const ViewMarket = () => {
         const count = await marketContract.methods.marketCount().call();
         setMarketCount(count);
         const data = [];
-        for (let i = 45; i <= count; i++) {
+        for (let i = 5; i <= count; i++) {
           const marketInfo = await getMarketData(marketContract, i);
           data.push(marketInfo);
         }
