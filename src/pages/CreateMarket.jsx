@@ -75,7 +75,8 @@ const CreateMarket = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
+   const checking = 33;
+   const checking2 = 33;
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
