@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
+import Web3 from 'web3';
 
 import {
   FormControl,
@@ -24,6 +25,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Layout from "../components/Layout";
 import contractABI from "../ABIs/marketRegistery.json";
+
+import NewMarket from "../ABIs/store/NewMarket";
 
 const CreateMarket = () => {
   const [marketName, setMarketName] = useState("");
@@ -75,7 +78,8 @@ const CreateMarket = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
+   const checking = 33;
+   const checking2 = 33;
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
@@ -97,6 +101,20 @@ const CreateMarket = () => {
       );
       await txResponse.wait();
       console.log("Market added successfully!");
+
+      const web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+      const marketContract = new web3.eth.Contract(contractABI, contractAddress);
+      const marketID = await marketContract.methods.marketCount().call();
+
+      const ID = Number(marketID);
+
+      console.log("Market ID", typeof(ID));
+      console.log("Market Name", typeof(marketName));
+      console.log("Market Description", typeof(marketDescription));
+      console.log("User Address", typeof(userAddress));
+
+      await NewMarket(ID, marketName, marketDescription, userAddress);
       toast.success("Market function called successfully!");
     } catch (error) {
       console.error("Error adding market:", error);
@@ -479,7 +497,7 @@ const CreateMarket = () => {
               </Typography>
             )}
 
-            <div style={{ marginTop: "12px" }}>
+            <div style={{ marginTop: "12px", paddingLeft: "14.2rem", paddingTop: "3rem" }}>
               {page > 1 && (
                 <MUIButton
                   type="button"
