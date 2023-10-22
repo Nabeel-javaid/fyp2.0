@@ -27,7 +27,6 @@ const ViewM = () => {
                 setMarketCount(Markets.length);
                 setMarketData(Markets);
                 setLoading(false);
-                console.log(marketData);
             }
         }
 
@@ -44,7 +43,7 @@ const ViewM = () => {
             <div className="feature section">
               <div className="container">
                 <div className="row">
-                  {loading && <p>Loading...</p>}
+                  {loading && <iframe src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>}
                   {error && <p>{error}</p>}
                   {marketCount !== null && !loading && !error && (
                     marketData.length > 0 ? (
@@ -60,7 +59,7 @@ const ViewM = () => {
                         />
                       ))
                     ) : (
-                      <p>No market data available</p>
+                        <iframe src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json"></iframe>
                     )
                   )}
                 </div>
