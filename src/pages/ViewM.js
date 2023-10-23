@@ -43,7 +43,7 @@ const ViewM = () => {
             <div className="feature section">
               <div className="container">
                 <div className="row">
-                  {loading && <iframe src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>}
+                  {loading && <iframe title='Loading' src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>}
                   {error && <p>{error}</p>}
                   {marketCount !== null && !loading && !error && (
                     marketData.length > 0 ? (
@@ -59,7 +59,7 @@ const ViewM = () => {
                         />
                       ))
                     ) : (
-                        <iframe src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json"></iframe>
+                        <iframe title='NoMarketData' src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json"></iframe>
                     )
                   )}
                 </div>
