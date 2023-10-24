@@ -7,7 +7,7 @@ const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const MarketI = ({
+const MarketData = ({
   delay,
   marketID,
   onClose
@@ -42,12 +42,13 @@ const MarketI = ({
     }
 
     loadBlockchainData();
-  },[marketData]);
+  },[marketData, 1]);
 
   const getMarketData = async (contract, index) => {
     try {
       const marketInfo = await contract.methods.getMarketData(index).call();
       setMarketData(marketInfo);
+      console.log("Market Data:", marketData);
 
       loadMarketDetails(index);
 
@@ -102,4 +103,4 @@ const MarketI = ({
   );
 };
 
-export default MarketI;
+export default MarketData;
