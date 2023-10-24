@@ -25,7 +25,7 @@ const MarketData = ({
 
         // Connect to the Ethereum network
         const web3 = new Web3(window.ethereum);
-        await window.ethereum.enable(); // Request user permission to connect
+        // await window.ethereum.enable(); // Request user permission to connect
 
         // Load the contract
         const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
@@ -42,39 +42,34 @@ const MarketData = ({
     }
 
     loadBlockchainData();
-  },[marketData, 1]);
+  },[marketID]);
 
   const getMarketData = async (contract, index) => {
     try {
       const marketInfo = await contract.methods.getMarketData(index).call();
       setMarketData(marketInfo);
-      console.log("Market Data:", marketData);
-
+      console.log("Market Data:", marketInfo); // Log the marketInfo, not marketData
+  
       loadMarketDetails(index);
-
-      // return marketInfo;
     } catch (error) {
       console.error(`Error getting data for Market ${index}:`, error);
-      // return null;
     }
   };
-
+  
   const loadMarketDetails = async(marketID) => {
-
     const { data: Market, error } = await supabase
-    .from('Markets')
-    .select('*')
-    .eq('id', marketID);
-
+      .from('Markets')
+      .select('*')
+      .eq('id', marketID);
+  
     if (error) {
-        console.log('Error loading data from blockchain. Please try again later.');
-    }
-    else {
-        setMarketDetails(Market);
-        console.log("Details:", marketDetails);
+      console.log('Error loading data from blockchain. Please try again later.');
+    } else {
+      setMarketDetails(Market);
+      console.log("Details:", Market); // Log the Market, not marketDetails
     }
   }
-
+  
   if (marketDetails === null || marketData === null) {
     // Render an iframe or any other content you want when data is not available
     return (
