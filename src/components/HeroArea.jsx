@@ -1,4 +1,5 @@
 import React from 'react';
+import UserProfile from '../pages/UserProfile';
 import '../css/main.css';
 import '../css/animate.css';
 
@@ -13,7 +14,7 @@ function HeroArea() {
                         <div className="hero-content">
                             <h4 className="wow fadeInUp" data-wow-delay=".2s">Start Envesting & Earn Money</h4>
                             <h1 className="wow fadeInUp" data-wow-delay=".4s">Say goodbye
-                                to <br />idle
+                                to <br />idle &nbsp;
                                 <span>
                                     <img className="text-shape" src="http://localhost:3000/assets/hero/text-shape.svg" alt="#" />
                                     money.
