@@ -22,7 +22,7 @@ const UserProfile = () => {
       setWalletAddress(window.ethereum.selectedAddress);
 
       async function fetchTransactions() {
-        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${window.ethereum.selectedAddress}&startblock=0&endblock=99999999&sort=desc&apikey=WWBV5YZQMI2D6X21TYZU919PVZ9IY35PH4`);
+        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${window.ethereum.selectedAddress}&startblock=0&endblock=99999999&sort=desc&apikey=UXWX37Y2Y4PQM8ZZ1XQ2KBWH6AVZ8J7RYU`);
         const data = await response.json();
 
         if (data.result) {
@@ -39,6 +39,7 @@ const UserProfile = () => {
     }
 
     if (supabase && walletAddress) {
+      console.log("trying to fetch")
       async function fetchMarkets() {
         const { data, error } = await supabase
           .from('Markets')
@@ -47,6 +48,7 @@ const UserProfile = () => {
 
         if (data) {
           setMarkets(data);
+          console.log(data);
         } else if (error) {
           console.error('Error fetching markets:', error);
         }
