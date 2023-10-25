@@ -69,7 +69,7 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <a href="contact.html" aria-label="Toggle navigation">Contact</a>
+                                            <a href="/profile" aria-label="Toggle navigation">Profile</a>
                                         </li>
                                     </ul>
                                 </div> {/* navbar collapse */}

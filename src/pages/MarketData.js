@@ -4,7 +4,8 @@ import Web3 from 'web3';
 import { createClient } from '@supabase/supabase-js';
 
 import Layout from "../components/Layout";
-import '../css/main.css';
+// import '../css/main.css';
+import '../css/MarketData.css';
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
@@ -46,10 +47,10 @@ const MarketData = () => {
       .select('*')
       .eq('id', marketID);
 
+      setMarketDetails(Market[0]);
+
     if (error) {
       console.log('Error loading data from Supabase. Please try again later.');
-    } else {
-      setMarketDetails(Market);
     }
   }
 
@@ -57,7 +58,7 @@ const MarketData = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="market-info-modal" style={{ paddingTop: "10rem", textAlign: "center" }}>
+        <div className="market-data-container">
           <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json" />
         </div>
       </Layout>
@@ -67,7 +68,7 @@ const MarketData = () => {
   if (marketDetails === null || marketData === null) {
     return (
       <Layout>
-        <div className="market-info-modal" style={{ paddingTop: "10rem", textAlign: "center" }}>
+        <div className="market-data-container">
           <iframe title="NoMarketData" src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json" />
         </div>
       </Layout>
@@ -78,7 +79,7 @@ const MarketData = () => {
 
   return (
     <Layout>
-      <h2>NAME</h2>
+      {/* <h2>NAME</h2>
       <h2>NAME</h2>
             <h2>NAME</h2>
             <h2>NAME</h2>
@@ -97,7 +98,38 @@ const MarketData = () => {
             </a>
           </h3>
 
-          {/* MarketBox components go here */}
+          
+        </div>
+      </div> */}
+      <hr />
+      <div className="market-data-container">
+        <div className="market-data-box">
+          <h2>{marketDetails.name}</h2>
+          <p>{marketDetails.description}</p>
+          <p>Owner Address: {marketDetails.owner}</p>
+          <p>ID: {marketDetails.id}</p>
+          <div className="values">
+            <div className="market-box">
+              <h4>{marketData.paymentCycleDuration}</h4>
+              <p>Payment Cycle Duration</p>
+            </div>
+            <div className="market-box">
+              <h4>{marketData.paymentDefaultDuration}</h4>
+              <p>Payment Default Duration</p>
+            </div>
+            <div className="market-box">
+              <h4>{marketData.loanExpirationTime}</h4>
+              <p>Loan Expiration Time</p>
+            </div>
+            <div className="market-box">
+              <h4>{marketData.marketplaceFeePercent}</h4>
+              <p>Marketplace Fee Percent</p>
+            </div>
+          </div>
+          <div className="buttons">
+            <button className="view-button">View Loans</button>
+            <button className="create-button">Create Loan</button>
+          </div>
         </div>
       </div>
     </Layout>
