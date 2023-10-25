@@ -17,6 +17,8 @@ const UserProfile = () => {
 //   const markets = ['Market 1', 'Market 2', 'Market 3'];
 
   useEffect(() => {
+
+    // console.log("Game")
     // Check if Ethereum provider is available and the user is connected
     if (window.ethereum && window.ethereum.selectedAddress) {
       setWalletAddress(window.ethereum.selectedAddress);
@@ -104,7 +106,10 @@ const UserProfile = () => {
                 <Typography variant="h5">Markets Created</Typography>
                 <ul>
                 {markets.map((market, index) => (
+                  <>
                     <li key={index}>{market.name}</li>
+                    <li key={index}>{market.description}</li>
+                    </>
                 ))}
                 </ul>
             </Paper>

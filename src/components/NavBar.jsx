@@ -32,7 +32,7 @@ function NavBar() {
                         <div className="nav-inner">
                             <nav className="navbar navbar-expand-lg">
                                 <a className="navbar-brand" href="index.html">
-                                    <img src="http://localhost:3000/assets/logo/logo.svg" alt="Logo" className='Logo' />
+                                    {/* <img src="http://localhost:3000/assets/logo/logo.svg" alt="Logo" className='Logo' /> */}
                                 </a>
                                 <button className="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
