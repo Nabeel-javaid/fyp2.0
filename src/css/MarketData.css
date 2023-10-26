@@ -1,0 +1,86 @@
+/* Existing styles */
+
+/* Add new styles for improved aesthetics and responsiveness */
+.market-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Change height to min-height */
+    background-color: #f4f4f4;
+    padding: 30rem 0; /* Adjust padding to control the height */
+    width: 100%; /* Set width to 100% to take up the full width of the page */
+}
+
+.market-data-box {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 1000px;
+    width: 90%;
+    max-height: 800px;
+    overflow: auto;
+    /* Add this line */
+}
+
+.values {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.market-box {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin: 10px;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+button.view-button,
+button.create-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+button.view-button:hover,
+button.create-button:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+
+    /* Add responsive styles here */
+    .market-data-container {
+        padding: 20px;
+    }
+
+    .market-data-box {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .values {
+        flex-direction: column;
+    }
+
+    .market-box {
+        margin: 10px 0;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}

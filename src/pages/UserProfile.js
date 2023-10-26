@@ -6,44 +6,39 @@ import { createClient } from '@supabase/supabase-js';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import contractABI from "../ABIs/marketRegistery.json";
 import { ethers } from "ethers";
+import userImage from '../avatar.jpg';
+import Moralis from 'moralis';
+
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
+
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const UserProfile = () => {
   const [walletAddress, setWalletAddress] = useState('');
-  const [markets, setMarkets] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const loans = ['Loan 1', 'Loan 2', 'Loan 3'];
   const [openMarkets, setOpenMarkets] = useState([]);
   const [closedMarkets, setClosedMarkets] = useState([]);
+  const [ownerAddress, setOwnerAddress] = useState('');
 
-  async function initWeb3() {
-    try {
-      await window.ethereum.enable();
-    } catch (error) {
-      console.error('User denied access to their wallet or an error occurred:', error);
-    }
-  }
+  const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  
+
+
+
+  const moralisApiKey = process.env.REACT_APP_MORALIS_API_KEY;
+  const etherscanApiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
 
   async function closeMarket(marketID, name, description, owner) {
     try {
-      const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
 
-      const marketIDAsNumber = parseInt(marketID);
-
-      if (isNaN(marketIDAsNumber)) {
-        console.error('Invalid marketID. Please provide a valid number.');
-        return;
-      }
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      const txResponse = await contract.closeMarket(marketIDAsNumber);
+      const txResponse = await contract.closeMarket(marketID);
 
       await txResponse.wait();
       console.log('Transaction hash:', txResponse.hash);
@@ -62,56 +57,127 @@ const UserProfile = () => {
         ]);
 
       if (error) {
-        console.error('Error updating Supabase table:', error);
+        throw new Error(`Error updating Supabase table: ${error.message}`);
       }
+
+      if (data) {
+        console.log(data);
+      }
+
+      // Trigger re-render by fetching updated markets
+      fetchMarkets();
     } catch (error) {
-      console.error('Error calling closeMarket:', error);
+      console.error('Error calling closeMarket:', error.message);
     }
   }
 
+  async function isMarketOpen(marketID) {
+    const contract = new ethers.Contract(contractAddress, contractABI, provider);
+  
+    try {
+      const isOpen = await contract.isMarketOpen(marketID);
+      console.log(isOpen);
+      return isOpen;
+    } catch (error) {
+      console.error('Error calling isMarketOpen:', error.message);
+      return false;
+    }
+  }
+  
+
+  async function fetchMarkets() {
+    try {
+      const { data, error } = await supabase
+        .from('Markets')
+        .select("*")
+        .ilike('owner', walletAddress);
+  
+      if (error) {
+        throw new Error(`Error fetching markets: ${error.message}`);
+      }
+  
+      if (data) {
+        console.log("data from supabase")
+        const markets = data.map(async market => {
+          const isOpen = await isMarketOpen(market.id);
+          return {
+            ...market,
+            isOpen
+          };
+        });
+  
+        Promise.all(markets).then(updatedMarkets => {
+          const open = updatedMarkets.filter(market => market.isOpen);
+          const closed = updatedMarkets.filter(market => !market.isOpen);
+  
+          setOpenMarkets(open);
+          setClosedMarkets(closed);
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching markets:', error.message);
+    }
+  }
+
+  
+
+
+
   useEffect(() => {
-    if (window.ethereum && window.ethereum.selectedAddress) {
-      setWalletAddress(window.ethereum.selectedAddress);
+    if (window.ethereum.selectedAddress) {
+      const address = window.ethereum.selectedAddress;
+      console.log('Wallet address:', address);
+      setWalletAddress(address);
 
       async function fetchTransactions() {
-        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${window.ethereum.selectedAddress}&startblock=0&endblock=99999999&sort=desc&apikey=UXWX37Y2Y4PQM8ZZ1XQ2KBWH6AVZ8J7RYU`);
-        const data = await response.json();
+        try {
+          const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
+          const data = await response.json();
 
-        if (data.result) {
-          const truncatedTransactions = data.result.slice(0, 3).map(transaction => ({
-            ...transaction,
-            hash: `${transaction.hash.substring(0, 30)}...`
-          }));
-          setTransactions(truncatedTransactions);
+          if (data.result) {
+            const truncatedTransactions = data.result.slice(0, 3).map(transaction => ({
+              ...transaction,
+              hash: `${transaction.hash.substring(0, 30)}...`
+            }));
+            setTransactions(truncatedTransactions);
+          }
+        } catch (error) {
+          console.error('Error fetching transactions:', error.message);
         }
       }
 
       fetchTransactions();
+      checkENS(window.ethereum.selectedAddress);
     }
 
     if (supabase && walletAddress) {
-      async function fetchMarkets() {
-        const { data, error } = await supabase
-          .from('Markets')
-          .select("*")
-          .ilike('owner', walletAddress);
-
-        if (data) {
-          setMarkets(data);
-
-          const open = data.filter((market) => !market.isClosed);
-          const closed = data.filter((market) => market.isClosed);
-
-          setOpenMarkets(open);
-          setClosedMarkets(closed);
-        } else if (error) {
-          console.error('Error fetching markets:', error);
-        }
-      }
-
       fetchMarkets();
     }
   }, [supabase, walletAddress]);
+
+
+
+  async function checkENS(walletAddress) {
+    try {
+      await Moralis.start({
+        apiKey: moralisApiKey,
+      });
+
+      const response = await Moralis.EvmApi.resolve.resolveAddress({
+        "address": walletAddress,
+      });
+
+      const ensName = response.raw.name;
+
+      if (ensName) {
+        setOwnerAddress(ensName);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+
+
 
   return (
     <Layout>
@@ -122,37 +188,36 @@ const UserProfile = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Paper elevation={6} style={{ padding: '2rem', borderRadius: '16px', background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}>
-              <Typography variant="h6" style={{ color: 'white', marginBottom: '1rem' }}> <strong>Owner Address: {walletAddress}</strong></Typography>
-              
-              {/* <Typography variant="body1" style={{ marginBottom: '1rem', color: 'white' }}>
-                <strong>Wallet Address: {walletAddress}</strong>
-              </Typography> */}
+            <Paper elevation={6} style={{ position: 'relative', padding: '2rem', borderRadius: '16px', background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}>
+              <img
+                src={userImage}
+                alt="User"
+                style={{
+                  position: 'absolute',
+                  top: '2.5rem',
+                  left: '63rem',
+                  width: '100px',
+                  height: '100px'
+                }}
+              />
+              <Typography variant="h6" style={{ color: 'white', marginBottom: '1rem' }}>
+                <strong>Owner: {ownerAddress || walletAddress}</strong>
+              </Typography>
 
               <Typography variant="body1" style={{ marginBottom: '1rem', color: 'white' }}>
                 <strong>Network:</strong> <strong>Ethereum</strong>
               </Typography>
 
-
               {walletAddress && (
                 <Button
-                  variant="contained"
-                  style={{
-                    borderRadius: '50px',
-                    transition: 'background-color 0.3s',
-                    background: 'linear-gradient(to right, ##0033cc 0%, #ff99cc 100%)', // Corrected the background property
-                  }}
+                  variant="outlined"
+                  color="secondary"
                   href={`https://goerli.etherscan.io/address/${walletAddress}`}
                   target="_blank"
                 >
                   View on Etherscan
                 </Button>
               )}
-
-
-
-
-
             </Paper>
           </Grid>
 
@@ -161,6 +226,8 @@ const UserProfile = () => {
               <Typography variant="h5">Previous Transactions</Typography>
               <List>
                 {transactions.map((transaction, index) => (
+
+
                   <ListItem key={index}>
                     <ListItemIcon>
                       <LinkIcon />
@@ -177,6 +244,8 @@ const UserProfile = () => {
                       }
                     />
                   </ListItem>
+
+
                 ))}
               </List>
             </Paper>
@@ -204,6 +273,7 @@ const UserProfile = () => {
                         <StorefrontIcon style={{ marginRight: '0.5rem' }} />
                       </ListItemIcon>
                       <ListItemText primary={market.name} secondary={market.description} />
+                      {console.log("market open")}
                       <Button
                         variant="outlined"
                         color="secondary"
@@ -212,7 +282,7 @@ const UserProfile = () => {
                         Close Market
                       </Button>
                     </ListItem>
-                    <hr style={{ borderTop: '1px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
+                    <hr style={{ borderTop: '3px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
                   </div>
                 ))}
               </ul>
@@ -230,8 +300,9 @@ const UserProfile = () => {
                         <StorefrontIcon style={{ marginRight: '0.5rem' }} />
                       </ListItemIcon>
                       <ListItemText primary={market.name} secondary={market.description} />
+                      {console.log("market closed")}
                     </ListItem>
-                    <hr style={{ borderTop: '1px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
+                    <hr style={{ borderTop: '3px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
                   </div>
                 ))}
               </ul>

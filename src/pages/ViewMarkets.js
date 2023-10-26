@@ -1,8 +1,9 @@
 import { React, useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import FeatureBox from '../components/FeatureBox';
-import MarketData from '../components/MarketData';
 import { createClient } from '@supabase/supabase-js';
+
+
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
@@ -14,8 +15,6 @@ const ViewMarkets = () => {
     const [error, setError] = useState(null);
     const [marketCount, setMarketCount] = useState(null);
     const [marketData, setMarketData] = useState([]);
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [id, setID] = useState('');
 
     useEffect(() => {
         const loadMarketData = async() => {
@@ -38,18 +37,13 @@ const ViewMarkets = () => {
 
     const handleFeatureBoxClick = (marketID) => {
         console.log("Open market ", marketID);
-        setID(marketID);
-        setModalOpen(true);
+        window.location.href = `/market/${marketID}`;
     };
 
-    const handleModalClose = () => {
-        setModalOpen(false);
-    }
-
   return (
-        <Layout>
+      <Layout>
           
-          <div style={{ paddingTop: '5%' }}>
+        <div style={{ paddingTop: '5%' }}>
           <div className="feature section">
             <div className="container">
               <div className="row">
@@ -76,15 +70,7 @@ const ViewMarkets = () => {
             </div>
           </div>
         </div>
-        {isModalOpen===true?
-        <MarketData
-        delay={'.3s'}
-        marketID={id}
-        onClose={handleModalClose}
-        />:
-        null
-        }
-        </Layout>
+      </Layout>
   )
 }
 

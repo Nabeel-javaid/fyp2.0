@@ -1,5 +1,5 @@
 import React from 'react';
-import UserProfile from '../pages/UserProfile';
+// import UserProfile from '../pages/UserProfile';
 import '../css/main.css';
 import '../css/animate.css';
 
