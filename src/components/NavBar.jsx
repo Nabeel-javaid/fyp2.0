@@ -3,6 +3,7 @@ import '../css/main.css';
 import '../css/animate.css';
 import '../css/bootstrap.min.css';
 import '../css/LineIcons.3.0.css';
+import { Link } from "react-router-dom";
 
 import {
     ThirdwebProvider,
@@ -17,12 +18,20 @@ import {
     phantomWallet,
 } from "@thirdweb-dev/react";
 
+
+
 function NavBar() {
     const [walletConnected, setWalletConnected] = useState(false);
 
     const handleConnectWallet = () => {
         setWalletConnected(true);
     }
+
+    // const navigateToUserProfile = () => {
+    //     // You can provide the path you want to navigate to in the 'to' prop
+    //     return <Link to="/user-profile" />;
+    // };
+
 
     return (
         <header className="header navbar-area">
@@ -32,7 +41,7 @@ function NavBar() {
                         <div className="nav-inner">
                             <nav className="navbar navbar-expand-lg">
                                 <a className="navbar-brand" href="index.html">
-                                    <img src="http://localhost:3000/assets/logo/logo.png" alt="Logo" className='Logo' />
+                                    {/* <img src="http://localhost:3000/assets/logo/logo.svg" alt="Logo" className='Logo' /> */}
                                 </a>
                                 <button className="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -44,22 +53,26 @@ function NavBar() {
                                 <div className="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                                     <ul id="nav" className="navbar-nav ms-auto">
                                         <li className="nav-item">
-                                            <a href="/" className="active" aria-label="Toggle navigation">Home</a>
+                                            <Link to="/" className="nav-link" aria-label="Toggle navigation">
+                                                Home
+                                            </Link>
                                         </li>
+
                                         <li className="nav-item">
                                             <a href="about-us.html" aria-label="Toggle navigation">About us</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
+                                            <a className="dd-menu collapsed no-underline" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-1" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Market</a>
                                             <ul className="sub-menu collapse" id="submenu-1-1">
-                                                <li className="nav-item"><a href="">View All Markets</a></li>
+                                                <li className="nav-item"><a href="/view-market">View All Markets</a></li>
                                                 <li className="nav-item"><a href="/create-market">Create Market</a></li>
                                             </ul>
                                         </li>
+
                                         <li className="nav-item">
-                                            <a className="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
+                                            <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Blog</a>
                                             <ul className="sub-menu collapse" id="submenu-1-2">
@@ -69,8 +82,11 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <a href="contact.html" aria-label="Toggle navigation">Contact</a>
+                                            <Link to="/profile" className="nav-link" aria-label="Toggle navigation">
+                                                Profile
+                                            </Link>
                                         </li>
+
                                     </ul>
                                 </div> {/* navbar collapse */}
                                 <div className="button">
