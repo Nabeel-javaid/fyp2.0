@@ -25,14 +25,14 @@ const UserProfile = () => {
 
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  
+
 
 
 
   const moralisApiKey = process.env.REACT_APP_MORALIS_API_KEY;
   const etherscanApiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
 
-  async function closeMarket(marketID, name, description, owner) {
+  async function closeMarket(marketID) {
     try {
 
       const signer = provider.getSigner();
@@ -44,25 +44,6 @@ const UserProfile = () => {
       console.log('Transaction hash:', txResponse.hash);
       console.log('Transaction confirmed in block:', txResponse.blockNumber);
 
-      const { data, error } = await supabase
-        .from('Markets')
-        .upsert([
-          {
-            id: marketID,
-            name: name,
-            description: description,
-            owner: owner,
-            isClosed: true,
-          },
-        ]);
-
-      if (error) {
-        throw new Error(`Error updating Supabase table: ${error.message}`);
-      }
-
-      if (data) {
-        console.log(data);
-      }
 
       // Trigger re-render by fetching updated markets
       fetchMarkets();
@@ -73,7 +54,7 @@ const UserProfile = () => {
 
   async function isMarketOpen(marketID) {
     const contract = new ethers.Contract(contractAddress, contractABI, provider);
-  
+
     try {
       const isOpen = await contract.isMarketOpen(marketID);
       console.log(isOpen);
@@ -83,7 +64,7 @@ const UserProfile = () => {
       return false;
     }
   }
-  
+
 
   async function fetchMarkets() {
     try {
@@ -91,11 +72,11 @@ const UserProfile = () => {
         .from('Markets')
         .select("*")
         .ilike('owner', walletAddress);
-  
+
       if (error) {
         throw new Error(`Error fetching markets: ${error.message}`);
       }
-  
+
       if (data) {
         console.log("data from supabase")
         const markets = data.map(async market => {
@@ -105,11 +86,11 @@ const UserProfile = () => {
             isOpen
           };
         });
-  
+
         Promise.all(markets).then(updatedMarkets => {
           const open = updatedMarkets.filter(market => market.isOpen);
           const closed = updatedMarkets.filter(market => !market.isOpen);
-  
+
           setOpenMarkets(open);
           setClosedMarkets(closed);
         });
@@ -119,7 +100,7 @@ const UserProfile = () => {
     }
   }
 
-  
+
 
 
 
@@ -277,7 +258,7 @@ const UserProfile = () => {
                       <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => closeMarket(market.id, market.name, market.description, market.owner)}
+                        onClick={() => closeMarket(market.id)}
                       >
                         Close Market
                       </Button>
