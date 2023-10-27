@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import Web3 from 'web3';
+import { useToasts } from 'react-toast-notifications';
+import {  Paper } from '@material-ui/core';
+
 
 import {
   FormControl,
@@ -47,6 +50,15 @@ const CreateMarket = () => {
   const [heading, setHeading] = useState("RULES");
   const [isMobileView, setIsMobileView] = useState(false);
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
+
+
+  const randomTerms = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Pellentesque vel orci vitae sapien varius congue.",
+    "In nec nisl sed tortor luctus gravida.",
+    "Fusce eget dolor et justo bibendum laoreet.",
+    "Nullam feugiat tortor et leo dignissim, in tincidunt quam tempus.",
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -120,26 +132,50 @@ const CreateMarket = () => {
     }
   };
 
+  //for react toast
+  const { addToast } = useToasts();
+
+  const showErrorToast = (message) => {
+    addToast(message, {
+      appearance: 'error',
+      autoDismiss: true,
+      autoDismissTimeout: 3000, // 3 seconds
+      placement: 'top-right',
+      style: { marginTop: '100px' },
+      
+    });
+  }
+
   const handleNext = () => {
     if (
-      (page === 1 &&
-        (!marketName ||
-          !marketType ||
-          !assetClass ||
-          !website ||
-          !dataRoomLink)) ||
-      (page === 2 &&
-        (!loanRequestsExpire ||
-          !loanPaymentCycle ||
-          !defaultLoans ||
-          !loanProcessFee))
+      page === 1 &&
+      (
+        !marketName ||
+        !marketType ||
+        !assetClass ||
+        !website ||
+        !dataRoomLink)
     ) {
+      showErrorToast('Please fill out all required fields');
+      setHasInput(true);
+      return;
+    }
+
+    if (
+      page === 2 &&
+      (!loanRequestsExpire ||
+        !loanPaymentCycle ||
+        !defaultLoans ||
+        !loanProcessFee)
+    ) {
+      showErrorToast('Please fill out all required fields');
       setHasInput(true);
       return;
     }
 
     setPage(page + 1);
     setHasInput(false);
+
   };
 
   const handleBack = () => {
@@ -252,21 +288,16 @@ const CreateMarket = () => {
             {page === 1 && (
               <Grid container spacing={2} className="custom-grid">
                 <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Market Name"
-                    margin="normal"
-                    value={marketName}
-                    onChange={(e) => setMarketName(e.target.value)}
-                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
-                    InputLabelProps={{
-                      style: {
-                        paddingLeft: "4.4rem"
-                      }
-                    }}
-                  />
-                </Grid>
+  <TextField
+    fullWidth
+    variant="outlined"
+    label="Market Name"
+    margin="normal"
+    value={marketName}
+    onChange={(e) => setMarketName(e.target.value)}
+    style={{ width: "70%", marginLeft: "35px" }}
+  />
+</Grid>
 
                 <Grid item xs={6}>
                   <TextField
@@ -285,10 +316,10 @@ const CreateMarket = () => {
                     fullWidth
                     variant="outlined"
                     margin="normal"
-                    style={{ marginBottom: "1rem", width: "70%", paddingLeft: "3.5rem" }}
+                    style={{ marginBottom: "1rem", width: "70%", marginLeft: "35px"  }}
                   >
                     <InputLabel
-                      style={{ paddingLeft: "4.4rem" }}
+                      style={{ paddingLeft: "0.1rem" }}
                     >
                       Market Type
                     </InputLabel>
@@ -337,10 +368,10 @@ const CreateMarket = () => {
                     onChange={(e) => setWebsite(e.target.value)}
                     margin="normal"
                     className="MarketFormTextField"
-                    style={{ width: "70%", paddingLeft: "3.5rem" }}
+                    style={{ width: "70%", marginLeft: "35px" }}
                     InputLabelProps={{
                       style: {
-                        paddingLeft: "4.4rem"
+                        paddingLeft: "0.1rem"
                       }
                     }}
                   />
@@ -367,7 +398,7 @@ const CreateMarket = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "0.1rem" } }}
                     label={
                       <div>
                         Loan Requests Expire
@@ -376,7 +407,7 @@ const CreateMarket = () => {
                             disableFocusListener
                             disableTouchListener
                             color="primary"
-                            style={{ marginLeft: "5px", fontSize: "16px" }}
+                            style={{ marginLeft: "5px", fontSize: "16px",  }}
                           />
                         </Tooltip>
                       </div>
@@ -385,7 +416,7 @@ const CreateMarket = () => {
                     onChange={(e) => setLoanRequestsExpire(e.target.value)}
                     margin="normal"
                     type="number"
-                    style={{ width: "70%", paddingLeft: "3.5rem" }}
+                    style={{ width: "70%", marginLeft: "50px" }}
                   />
                 </Grid>
 
@@ -394,6 +425,7 @@ const CreateMarket = () => {
                     fullWidth
                     variant="outlined"
                     InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    style={{ width: "70%", marginLeft: "30px" }}
                     label={
                       <>
                         Loan Payment Cycle
@@ -425,7 +457,8 @@ const CreateMarket = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "4.4rem" } }}
+                    InputLabelProps={{ style: { pointerEvents: "auto", paddingLeft: "0.1rem" } }}
+                    style={{ width: "70%", marginLeft: "50px" }}
                     label={
                       <div>
                         Default Loans
@@ -441,7 +474,7 @@ const CreateMarket = () => {
                     onChange={(e) => setDefaultLoans(e.target.value)}
                     margin="normal"
                     type="number"
-                    style={{ width: "70%", paddingLeft: "3.5rem" }}
+                    
                   />
                 </Grid>
 
@@ -466,28 +499,37 @@ const CreateMarket = () => {
                     margin="normal"
                     type="number"
                     inputProps={{ max: 100 }}
+                    style={{ width: "70%", marginLeft: "30px" }}
                   />
                 </Grid>
               </Grid>
             )}
 
-            {page === 3 && (
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <h2 style={{ fontWeight: "bold" }}>Terms of Service</h2>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={termsAccepted}
-                        onChange={handleTermsAcceptance}
-                        color="primary"
-                      />
-                    }
-                    label="I accept the terms of service."
-                  />
-                </Grid>
-              </Grid>
-            )}
+<Grid container spacing={2} >
+      {page === 3 && (
+        <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '200px' }}>
+          <Paper elevation={3} style={{ padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', border: '1px solid #ddd' }}>
+            <h2 style={{ fontWeight: 'bold' }}>Terms of Service</h2>
+            <ul>
+              {randomTerms.map((term, index) => (
+                <li key={index}>{term}</li>
+              ))}
+            </ul>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={termsAccepted}
+                  onChange={handleTermsAcceptance}
+                  color="primary"
+                />
+              }
+              label="I accept the terms of service."
+            />
+          </Paper>
+        </Grid>
+      )}
+    </Grid>
+
 
             {hasInput && (
               <Typography variant="body2" color="error">
