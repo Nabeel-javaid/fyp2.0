@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { 
-  Container, 
-  Grid, 
-  Typography, 
-  Card, 
-  CardContent, 
-  Divider, 
-  Button 
+import {
+  Container,
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+  Button
 } from '@mui/material';
 import Layout from '../components/Layout';
 import Web3 from 'web3';
@@ -87,7 +87,7 @@ const MarketData = () => {
   return (
     <Layout>
       <Container>
-        <Card variant="outlined" style={{ margin: '2rem 0' }}>
+        <Card variant="outlined" style={{ margin: '2rem 0', paddingTop: "5rem" }}>
           <CardContent>
             <Typography variant="h4">{marketDetails.name}</Typography>
             <Typography variant="body1">{marketDetails.description}</Typography>
@@ -97,7 +97,7 @@ const MarketData = () => {
           </CardContent>
         </Card>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={3}>  
           <Grid item xs={12} md={3}>
             <Card variant="outlined">
               <CardContent>

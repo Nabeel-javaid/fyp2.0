@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import Web3 from 'web3';
 import { useToasts } from 'react-toast-notifications';
-import {  Paper } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 
 
 import {
@@ -119,10 +119,10 @@ const CreateMarket = () => {
 
       const ID = Number(marketID);
 
-      console.log("Market ID", typeof(ID));
-      console.log("Market Name", typeof(marketName));
-      console.log("Market Description", typeof(marketDescription));
-      console.log("User Address", typeof(userAddress));
+      console.log("Market ID", typeof (ID));
+      console.log("Market Name", typeof (marketName));
+      console.log("Market Description", typeof (marketDescription));
+      console.log("User Address", typeof (userAddress));
 
       await NewMarket(ID, marketName, marketDescription, userAddress);
       toast.success("Market function called successfully!");
@@ -142,7 +142,7 @@ const CreateMarket = () => {
       autoDismissTimeout: 3000, // 3 seconds
       placement: 'top-right',
       style: { marginTop: '100px' },
-      
+
     });
   }
 
@@ -288,16 +288,16 @@ const CreateMarket = () => {
             {page === 1 && (
               <Grid container spacing={2} className="custom-grid">
                 <Grid item xs={6}>
-  <TextField
-    fullWidth
-    variant="outlined"
-    label="Market Name"
-    margin="normal"
-    value={marketName}
-    onChange={(e) => setMarketName(e.target.value)}
-    style={{ width: "70%", marginLeft: "35px" }}
-  />
-</Grid>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Market Name"
+                    margin="normal"
+                    value={marketName}
+                    onChange={(e) => setMarketName(e.target.value)}
+                    style={{ width: "70%", marginLeft: "35px" }}
+                  />
+                </Grid>
 
                 <Grid item xs={6}>
                   <TextField
@@ -316,7 +316,7 @@ const CreateMarket = () => {
                     fullWidth
                     variant="outlined"
                     margin="normal"
-                    style={{ marginBottom: "1rem", width: "70%", marginLeft: "35px"  }}
+                    style={{ marginBottom: "1rem", width: "70%", marginLeft: "35px" }}
                   >
                     <InputLabel
                       style={{ paddingLeft: "0.1rem" }}
@@ -407,7 +407,7 @@ const CreateMarket = () => {
                             disableFocusListener
                             disableTouchListener
                             color="primary"
-                            style={{ marginLeft: "5px", fontSize: "16px",  }}
+                            style={{ marginLeft: "5px", fontSize: "16px", }}
                           />
                         </Tooltip>
                       </div>
@@ -474,7 +474,7 @@ const CreateMarket = () => {
                     onChange={(e) => setDefaultLoans(e.target.value)}
                     margin="normal"
                     type="number"
-                    
+
                   />
                 </Grid>
 
@@ -505,39 +505,39 @@ const CreateMarket = () => {
               </Grid>
             )}
 
-<Grid container spacing={2} >
-      {page === 3 && (
-        <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '200px' }}>
-          <Paper elevation={3} style={{ padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', border: '1px solid #ddd' }}>
-            <h2 style={{ fontWeight: 'bold' }}>Terms of Service</h2>
-            <ul>
-              {randomTerms.map((term, index) => (
-                <li key={index}>{term}</li>
-              ))}
-            </ul>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={termsAccepted}
-                  onChange={handleTermsAcceptance}
-                  color="primary"
-                />
-              }
-              label="I accept the terms of service."
-            />
-          </Paper>
-        </Grid>
-      )}
-    </Grid>
+            <Grid container spacing={2} >
+              {page === 3 && (
+                <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '130px' }}>
+                  <Paper elevation={3} style={{ padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', border: '1px solid #ddd', width: '600px' }}>
+                    <h2 style={{ fontWeight: 'bold' }}>Terms of Service</h2>
+                    <ul>
+                      {randomTerms.map((term, index) => (
+                        <li key={index}>{term}</li>
+                      ))}
+                    </ul>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={termsAccepted}
+                          onChange={handleTermsAcceptance}
+                          color="primary"
+                        />
+                      }
+                      label="I accept the terms of service."
+                    />
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
 
-
+            {/* 
             {hasInput && (
               <Typography variant="body2" color="error">
                 Please fill in all fields.
               </Typography>
-            )}
+            )} */}
 
-            <div style={{ marginTop: "12px", paddingLeft: "14.2rem", paddingTop: "3rem" }}>
+            <div style={{ marginTop: "12px", paddingLeft: "14rem", paddingTop: "3rem" }}>
               {page > 1 && (
                 <MUIButton
                   type="button"

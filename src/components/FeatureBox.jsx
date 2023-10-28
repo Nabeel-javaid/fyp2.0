@@ -36,14 +36,8 @@ function FeatureBox({ delay, title, description, ownerAddress, marketID, onClick
     const status = await marketContract.methods.isMarketClosed(marketID).call();
     setisClosed(status);
     console.log(status)
-
-    if(status===false){
-      window.location.href = `/market/${marketID}`;
-    }
-
-    else{
-      window.location.href = `/`;
-    }
+    
+   
   };
 
   useEffect(() => {
