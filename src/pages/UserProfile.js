@@ -105,37 +105,37 @@ const UserProfile = () => {
 
 
   useEffect(() => {
-    if (window.ethereum.selectedAddress) {
+    async function fetchData() {
       const address = window.ethereum.selectedAddress;
       console.log('Wallet address:', address);
       setWalletAddress(address);
-
-      async function fetchTransactions() {
-        try {
-          const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
-          const data = await response.json();
-
-          if (data.result) {
-            const truncatedTransactions = data.result.slice(0, 3).map(transaction => ({
-              ...transaction,
-              hash: `${transaction.hash.substring(0, 30)}...`
-            }));
-            setTransactions(truncatedTransactions);
-          }
-        } catch (error) {
-          console.error('Error fetching transactions:', error.message);
+  
+      try {
+        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
+        const data = await response.json();
+  
+        if (data.result) {
+          const truncatedTransactions = data.result.slice(0, 3).map(transaction => ({
+            ...transaction,
+            hash: `${transaction.hash.substring(0, 30)}...`
+          }));
+          setTransactions(truncatedTransactions);
         }
+      } catch (error) {
+        console.error('Error fetching transactions:', error.message);
       }
-
-      fetchTransactions();
-      checkENS(window.ethereum.selectedAddress);
+  
+      checkENS(address);
+  
+      if (supabase && walletAddress) {
+        fetchMarkets();
+      }
     }
-
-    if (supabase && walletAddress) {
-      fetchMarkets();
-    }
+  
+    fetchData();
   }, [supabase, walletAddress]);
-
+  
+  
 
 
   async function checkENS(walletAddress) {
