@@ -1538,7 +1538,6 @@
         "stateMutability": "nonpayable",
         "type": "function"
     },
-    
     {
         "inputs": [
             {
@@ -1575,33 +1574,6 @@
                 "internalType": "address",
                 "name": "_receiver",
                 "type": "address"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "enum CollateralType",
-                        "name": "_collateralType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_tokenId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "_collateralAddress",
-                        "type": "address"
-                    }
-                ],
-                "internalType": "struct Collateral[]",
-                "name": "_collateralInfo",
-                "type": "tuple[]"
             }
         ],
         "name": "submitBid",
@@ -1615,6 +1587,7 @@
         "stateMutability": "nonpayable",
         "type": "function"
     },
+
     {
         "inputs": [
             {

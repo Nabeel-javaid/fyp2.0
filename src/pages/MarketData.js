@@ -12,6 +12,8 @@ import {
 import Layout from '../components/Layout';
 import Web3 from 'web3';
 import { createClient } from '@supabase/supabase-js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
@@ -32,33 +34,49 @@ const MarketData = () => {
         const web3 = new Web3(window.ethereum);
         const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
         const marketContract = new web3.eth.Contract(abi, contractAddress);
-
+    
+        // Fetch market data
         const marketInfo = await marketContract.methods.getMarketData(marketID).call();
         setMarketData(marketInfo);
+    
+        // Fetch market details from Supabase
+        await loadMarketDetails(marketID);
 
-        loadMarketDetails(marketID);
+
       } catch (error) {
-        console.error('Error calling marketCount:', error);
+        console.error('Error loading blockchain data:', error);
+        toast.error('Error loading blockchain data. Please try again.'); // Display error toast
       } finally {
         setLoading(false);
       }
-    }
-
+    };
+    
     loadBlockchainData();
   }, [marketID]);
 
   const loadMarketDetails = async (marketID) => {
-    const { data: Market, error } = await supabase
-      .from('Markets')
-      .select('*')
-      .eq('id', marketID);
-
-    setMarketDetails(Market[0]);
-
-    if (error) {
-      console.log('Error loading data from Supabase. Please try again later.');
+    try {
+      const { data: Market, error } = await supabase
+        .from('Markets')
+        .select('*')
+        .eq('id', marketID);
+  
+      if (error) {
+        console.error('Error loading data from Supabase:', error);
+        toast.error('Error loading data from Supabase. Please try again.'); // Display error toast
+      } else if (Market && Market.length > 0) {
+        setMarketDetails(Market[0]);
+      } else {
+        console.warn('No market details found for ID:', marketID);
+        toast.warn('No market details found.'); // Display warning toast
+        
+      }
+    } catch (error) {
+      console.error('Unexpected error while loading market details:', error);
+      toast.error('Unexpected error. Please try again.'); // Display error toast
     }
-  }
+  };
+  
 
   if (loading) {
     return (
@@ -175,6 +193,7 @@ const MarketData = () => {
             <Button variant="contained" color="secondary">Create Loan</Button>
           </Grid>
         </Grid>
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       </Container>
     </Layout>
   );

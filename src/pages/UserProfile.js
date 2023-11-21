@@ -12,6 +12,7 @@ import Moralis from 'moralis';
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
+const etherscanApiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
 
 
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -29,8 +30,6 @@ const UserProfile = () => {
 
 
 
-  const moralisApiKey = process.env.REACT_APP_MORALIS_API_KEY;
-  const etherscanApiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
 
   async function closeMarket(marketID) {
     try {
@@ -101,19 +100,28 @@ const UserProfile = () => {
   }
 
 
-
+  function getWalletAddress() {
+    const address = window.ethereum.selectedAddress;
+    console.log('Wallet address:', address);
+    setWalletAddress(address);
+  }
 
 
   useEffect(() => {
-    async function fetchData() {
-      const address = window.ethereum.selectedAddress;
-      console.log('Wallet address:', address);
-      setWalletAddress(address);
-  
+    const fetchData = async () => {
       try {
-        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
+        // Call getWalletAddress and wait for it to complete
+        await getWalletAddress();
+
+        // Make sure walletAddress is not null before proceeding
+        if (!walletAddress) {
+          return;
+        }
+
+        // Fetch transactions
+        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${walletAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
         const data = await response.json();
-  
+
         if (data.result) {
           const truncatedTransactions = data.result.slice(0, 3).map(transaction => ({
             ...transaction,
@@ -121,31 +129,33 @@ const UserProfile = () => {
           }));
           setTransactions(truncatedTransactions);
         }
+
+        await checkENS(walletAddress);
+
+        if (supabase && walletAddress) {
+          await fetchMarkets();
+        }
       } catch (error) {
-        console.error('Error fetching transactions:', error.message);
+        console.error('Error fetching data:', error.message);
       }
-  
-      checkENS(address);
-  
-      if (supabase && walletAddress) {
-        fetchMarkets();
-      }
-    }
-  
+    };
+
+    // Call fetchData inside the useEffect
     fetchData();
   }, [supabase, walletAddress]);
-  
-  
 
 
-  async function checkENS(walletAddress) {
+
+
+
+  async function checkENS(walletAddressToCheck) {
     try {
       await Moralis.start({
-        apiKey: moralisApiKey,
+        apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjcxNWQ1ZjQxLTU4ODktNGJjNS04ZjFiLWYwNzlkOWFmY2JlNCIsIm9yZ0lkIjoiMzYyMjkwIiwidXNlcklkIjoiMzcyMzQwIiwidHlwZUlkIjoiYzE4ZmYxMGUtNjkzZS00YzM0LTllOGQtMjU5MWYyM2M0ZmY5IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2OTgzMDY2NzUsImV4cCI6NDg1NDA2NjY3NX0.bPp49P1rhPiuVHl5jJ2LnHc69dSEcsjYtznsxyStUMg",
       });
 
       const response = await Moralis.EvmApi.resolve.resolveAddress({
-        "address": walletAddress,
+        "address": walletAddressToCheck,
       });
 
       const ensName = response.raw.name;
