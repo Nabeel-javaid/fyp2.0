@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../css/main.css';
 import '../css/animate.css';
 import '../css/bootstrap.min.css';
@@ -69,7 +70,9 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <a href="/profile" aria-label="Toggle navigation">Profile</a>
+                                            <Link to="/profile">
+                                                profile
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div> {/* navbar collapse */}
@@ -99,7 +102,7 @@ function NavBar() {
                                                 theme={"dark"}
                                                 btnTitle={"Connect wallet"}
                                                 modalSize={"wide"}
-                                                welcomeScreen={{}}  
+                                                welcomeScreen={{}}
                                                 onSuccess={handleConnectWallet}
                                             />
                                         </ThirdwebProvider>

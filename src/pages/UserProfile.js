@@ -103,6 +103,7 @@ const UserProfile = () => {
   function getWalletAddress() {
     const address = window.ethereum.selectedAddress;
     console.log('Wallet address:', address);
+    console.log('Wallet address:', address);
     setWalletAddress(address);
   }
 
@@ -165,6 +166,8 @@ const UserProfile = () => {
       }
     } catch (e) {
       console.error(e.message);
+      console.error(e.message);
+
     }
   }
 

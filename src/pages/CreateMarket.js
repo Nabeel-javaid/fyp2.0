@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import Web3 from 'web3';
-import { useToasts } from 'react-toast-notifications';
 import { Paper } from '@material-ui/core';
-
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 import {
   FormControl,
@@ -22,14 +21,18 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Layout from "../components/Layout";
-import contractABI from "../ABIs/marketRegistery.json";
 
+
+import contractABI from "../ABIs/marketRegistery.json";
 import NewMarket from "../ABIs/store/NewMarket";
+
+
+
+
 
 const CreateMarket = () => {
   const [marketName, setMarketName] = useState("");
@@ -45,6 +48,7 @@ const CreateMarket = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [page, setPage] = useState(1);
   const [hasInput, setHasInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
@@ -59,6 +63,8 @@ const CreateMarket = () => {
     "Fusce eget dolor et justo bibendum laoreet.",
     "Nullam feugiat tortor et leo dignissim, in tincidunt quam tempus.",
   ];
+
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,6 +95,8 @@ const CreateMarket = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading
+
 
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -125,26 +133,14 @@ const CreateMarket = () => {
       console.log("User Address", typeof (userAddress));
 
       await NewMarket(ID, marketName, marketDescription, userAddress);
+      setIsLoading(false); // Stop loading on success
       toast.success("Market function called successfully!");
     } catch (error) {
+      setIsLoading(false); // Stop loading on error
       console.error("Error adding market:", error);
       toast.error("Error calling market function. Please try again.");
     }
   };
-
-  //for react toast
-  const { addToast } = useToasts();
-
-  const showErrorToast = (message) => {
-    addToast(message, {
-      appearance: 'error',
-      autoDismiss: true,
-      autoDismissTimeout: 3000, // 3 seconds
-      placement: 'top-right',
-      style: { marginTop: '100px' },
-
-    });
-  }
 
   const handleNext = () => {
     if (
@@ -156,7 +152,7 @@ const CreateMarket = () => {
         !website ||
         !dataRoomLink)
     ) {
-      showErrorToast('Please fill out all required fields');
+      toast.error('Please fill out all required fields');
       setHasInput(true);
       return;
     }
@@ -168,7 +164,7 @@ const CreateMarket = () => {
         !defaultLoans ||
         !loanProcessFee)
     ) {
-      showErrorToast('Please fill out all required fields');
+      toast.error('Please fill out all required fields');
       setHasInput(true);
       return;
     }
@@ -219,6 +215,22 @@ const CreateMarket = () => {
 
   return (
     <Layout>
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'transparent',
+          zIndex: 1000,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <ScaleLoader />
+        </div>
+      )}
       <Grid
         container
         justify="center"
@@ -298,7 +310,6 @@ const CreateMarket = () => {
                     style={{ width: "70%", marginLeft: "35px" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -593,6 +604,11 @@ const CreateMarket = () => {
                 Cancel
               </MUIButton>
             </div>
+            {isLoading && (
+              <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                <ScaleLoader color={"#123abc"} loading={isLoading} size={20} />
+              </div>
+            )}
           </form>
         </Grid>
         <Grid item xs={12} md={6}>
