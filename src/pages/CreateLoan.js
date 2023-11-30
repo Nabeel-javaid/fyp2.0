@@ -10,8 +10,11 @@ import {
   Grid,
   Typography,
   Paper,
+  Box,
 } from '@mui/material';
 import Layout from '../components/Layout';
+import ContactArea from './ContactArea';
+
 
 
 import YOUR_CONTRACT_ABI from "../ABIs/tellerv2.json"
@@ -115,11 +118,14 @@ function LoanBid() {
   };
 
   return (
+    
     <Layout>
-    <Paper elevation={3} style={{ padding: '20px',paddingTop: '100px', maxWidth: '600px', margin: '20px auto' }}>
-      <Typography variant="h5" gutterBottom>
-        Loan Bid Submission
-      </Typography>
+       <Box display="flex" justifyContent="space-between"></Box>
+    <Paper elevation={3} style={{ padding: '20px', paddingTop: '100px', maxWidth: '800px', margin: '20px auto', textAlign: 'center', marginLeft: '90px' }}>
+  <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.5rem' }}>
+    Loan Bid Submission
+  </Typography>
+  <ContactArea/>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -192,12 +198,19 @@ function LoanBid() {
               helperText={errors.receiver}
             />
           </Grid>
+
+         
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel>Collateral Type</InputLabel>
+            <InputLabel 
+      style={{ fontWeight: 'normal', marginLeft: '-2px',  }}
+    >
+      Collateral Type
+    </InputLabel>
               <Select
                 value={collateralType}
                 onChange={(e) => setCollateralType(e.target.value)}
+                label="Collateral Type"
               >
                 <MenuItem value={CollateralType.ERC20}>ERC20</MenuItem>
                 <MenuItem value={CollateralType.ERC721}>ERC721</MenuItem>
@@ -205,6 +218,7 @@ function LoanBid() {
               </Select>
             </FormControl>
           </Grid>
+         
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -226,7 +240,7 @@ function LoanBid() {
                 helperText={errors.tokenId}
               />
             </Grid>
-          )}
+           )}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -246,6 +260,7 @@ function LoanBid() {
       </form>
     </Paper>
   </Layout>
+    
   );
 }
 
