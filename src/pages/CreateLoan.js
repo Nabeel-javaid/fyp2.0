@@ -13,7 +13,7 @@ import {
   Box,
 } from '@mui/material';
 import Layout from '../components/Layout';
-import ContactArea from './ContactArea';
+// import ContactArea from './ContactArea';
 
 
 
@@ -90,21 +90,20 @@ function LoanBid() {
   
       console.log(JSON.stringify(collateralInfo)); // Check the console for collateralInfo
   
-      const tx = await contract.submitBid(
-        lendingToken,
-        marketplaceId,
-        principal,
-        duration,
-        APR,
-        metadataURI,
-        receiver,
-        [[collateralInfo]]
-      );
-  
-      await tx.wait();
-      console.log("Bid submitted successfully");
+      // Send ETH to the smart contract
+      if (collateralType === CollateralType.ERC20) {
+        const ethAmount = ethers.utils.parseEther(collateralAmount);
+        const txEth = await provider.getSigner().sendTransaction({
+          to: '0x875724a9f77437827a7cc8d3145957296619cf86',
+          value: ethAmount,
+        });
+
+        await txEth.wait();
+        console.log("ETH sent successfully");
+      }
+
     } catch (error) {
-      console.error("Error submitting bid:", error);
+      console.error("Error: ", error);
     }
   };
   
@@ -125,7 +124,7 @@ function LoanBid() {
   <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.5rem' }}>
     Loan Bid Submission
   </Typography>
-  <ContactArea/>
+  {/* <ContactArea/> */}
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
