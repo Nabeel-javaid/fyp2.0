@@ -153,13 +153,23 @@ const MarketData = () => {
 
         {/* Action Buttons */}
         <div className="action-buttons">
-          <Button variant="contained" color="primary" className="action-button">
+          <Button 
+            variant="contained" 
+            color="primary" 
+            className="action-button"
+            onClick={() => {
+              window.location.href = `/view-loans/${marketID}`;
+            }}
+          >
             View Loans
           </Button>
           <Button
             variant="contained"
             color="secondary"
             className="action-button"
+            onClick={() => {
+              window.location.href = `/create-loan/${marketID}`;
+            }}
           >
             Create Loan
           </Button>

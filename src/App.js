@@ -22,14 +22,8 @@ function App() {
           
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/market/:id" element={<MarketData />} />
-          <Route
-            path="/create-loan"
-            element={
-              <CreateLoan/>
-               
-            }
-          />
-
+          <Route path="/create-loan/:market" element={<CreateLoan/>}/>
+          <Route path="/view-loanS/:market" element={<ViewLoan/>} />
         </Routes>
       </ToastProvider>
     </BrowserRouter>
