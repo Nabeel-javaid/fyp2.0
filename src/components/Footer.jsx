@@ -19,12 +19,12 @@ function Footer() {
                                     <p>Making the world a better place through constructing elegant hierarchies.</p>
                                     <h4 className="social-title">Follow Us On:</h4>
                                     <ul className="social">
-                                        <li><a href="/"><i className="lni lni-facebook-filled"></i></a></li>
-                                        <li><a href="/"><i className="lni lni-instagram"></i></a></li>
-                                        <li><a href="/"><i className="lni lni-twitter-original"></i></a></li>
-                                        <li><a href="/"><i className="lni lni-linkedin-original"></i></a></li>
-                                        <li><a href="/"><i className="lni lni-pinterest"></i></a></li>
-                                        <li><a href="/"><i className="lni lni-youtube"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-facebook-filled"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-instagram"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-twitter-original"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-linkedin-original"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-pinterest"></i></a></li>
+                                        <li><a href="javascript:void(0)"><i className="lni lni-youtube"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -32,10 +32,10 @@ function Footer() {
                                 <div className="single-footer f-link">
                                     <h3>Solutions</h3>
                                     <ul>
-                                        <li><a href="/">Marketing</a></li>
-                                        <li><a href="/">Analytics</a></li>
-                                        <li><a href="/">Commerce</a></li>
-                                        <li><a href="/">Insights</a></li>
+                                        <li><a href="javascript:void(0)">Marketing</a></li>
+                                        <li><a href="javascript:void(0)">Analytics</a></li>
+                                        <li><a href="javascript:void(0)">Commerce</a></li>
+                                        <li><a href="javascript:void(0)">Insights</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -43,10 +43,10 @@ function Footer() {
                                 <div className="single-footer f-link">
                                     <h3>Support</h3>
                                     <ul>
-                                        <li><a href="/">Pricing</a></li>
-                                        <li><a href="/">Documentation</a></li>
-                                        <li><a href="/">Guides</a></li>
-                                        <li><a href="/">API Status</a></li>
+                                        <li><a href="javascript:void(0)">Pricing</a></li>
+                                        <li><a href="javascript:void(0)">Documentation</a></li>
+                                        <li><a href="javascript:void(0)">Guides</a></li>
+                                        <li><a href="javascript:void(0)">API Status</a></li>
                                     </ul>
                                 </div>
                             </div>
