@@ -3,7 +3,10 @@ import { ethers } from 'ethers';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, Typography, Paper, Box } from '@mui/material';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import Layout from '../components/Layout';
-import YOUR_CONTRACT_ABI from "../ABIs/tellerv2.json";
+import CreateLoanBid from '../ABIs/store/CreateLoanBid';
+
+import YOUR_CONTRACT_ABI from '../ABIs/tellerv2.json';
+import { useParams } from 'react-router';
 
 const YOUR_CONTRACT_ADDRESS = '0x18a6bcad5e52cbecc34b987697fc7be15edf9599';
 
@@ -14,11 +17,11 @@ const CollateralType = {
 };
 
 function LoanBid() {
+  const MID = useParams();
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
 
   const [lendingToken, setLendingToken] = useState('');
-  const [marketplaceId, setMarketplaceId] = useState('');
   const [principal, setPrincipal] = useState('');
   const [duration, setDuration] = useState('');
   const [APR, setAPR] = useState('');
@@ -46,23 +49,22 @@ function LoanBid() {
 
   const validate = () => {
     let tempErrors = {};
-    tempErrors.lendingToken = lendingToken ? "" : "This field is required.";
-    tempErrors.marketplaceId = marketplaceId ? "" : "This field is required.";
-    tempErrors.principal = principal ? "" : "This field is required.";
-    tempErrors.duration = duration ? "" : "This field is required.";
-    tempErrors.APR = APR ? "" : "This field is required.";
-    tempErrors.metadataURI = metadataURI ? "" : "This field is required.";
-    tempErrors.receiver = receiver ? "" : "This field is required.";
-    tempErrors.collateralAmount = collateralAmount ? "" : "This field is required.";
-    tempErrors.collateralAddress = collateralAddress ? "" : "This field is required.";
+    tempErrors.lendingToken = lendingToken ? '' : 'This field is required.';
+    tempErrors.principal = principal ? '' : 'This field is required.';
+    tempErrors.duration = duration ? '' : 'This field is required.';
+    tempErrors.APR = APR ? '' : 'This field is required.';
+    tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
+    tempErrors.receiver = receiver ? '' : 'This field is required.';
+    tempErrors.collateralAmount = collateralAmount ? '' : 'This field is required.';
+    tempErrors.collateralAddress = collateralAddress ? '' : 'This field is required.';
 
     if (collateralType !== CollateralType.ERC20) {
-      tempErrors.tokenId = tokenId ? "" : "This field is required.";
+      tempErrors.tokenId = tokenId ? '' : 'This field is required.';
     }
 
     setErrors(tempErrors);
-    return Object.values(tempErrors).every(x => x === "");
-  }
+    return Object.values(tempErrors).every((x) => x === '');
+  };
 
   const handleBidSubmission = async () => {
     if (!provider || !contract) return;
@@ -75,8 +77,23 @@ function LoanBid() {
         _collateralAddress: collateralAddress,
       };
 
-      console.log(JSON.stringify(collateralInfo));
+      console.log(JSON.stringify(collateralInfo)); // Check the console for collateralInfo
 
+      await CreateLoanBid(
+        lendingToken,
+        MID.market,
+        principal,
+        duration,
+        APR,
+        metadataURI,
+        receiver,
+        'ERC20',
+        collateralAmount,
+        collateralAddress,
+        'Pending'
+      );
+
+      // Send ETH to the smart contract
       if (collateralType === CollateralType.ERC20) {
         const ethAmount = ethers.utils.parseEther(collateralAmount);
         const txEth = await provider.getSigner().sendTransaction({
@@ -85,21 +102,14 @@ function LoanBid() {
         });
 
         await txEth.wait();
-        console.log("ETH sent successfully");
+        console.log('ETH sent successfully');
       }
-
     } catch (error) {
-      console.error("Error: ", error);
+      console.error('Error: ', error);
     } finally {
       setLoading(false); // Set loading to false after the transaction attempt (success or failure)
     }
   };
-
-
-
-
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,12 +120,14 @@ function LoanBid() {
   };
 
   return (
+
     <Layout>
       <Box display="flex" justifyContent="space-between"></Box>
       <Paper elevation={3} style={{ padding: '20px', paddingTop: '100px', maxWidth: '800px', margin: '20px auto', textAlign: 'center', marginLeft: '90px' }}>
         <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.5rem' }}>
           Loan Bid Submission
         </Typography>
+        {/* <ContactArea/> */}
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -132,10 +144,8 @@ function LoanBid() {
               <TextField
                 fullWidth
                 label="Marketplace ID"
-                value={marketplaceId}
-                onChange={(e) => setMarketplaceId(e.target.value)}
-                error={Boolean(errors.marketplaceId)}
-                helperText={errors.marketplaceId}
+                value={MID.market}
+                disabled
               />
             </Grid>
             <Grid item xs={12} sm={6}>
