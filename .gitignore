@@ -4,3 +4,8 @@
 /node_modules
 
 .env
+
+//add .env file to .gitignore
+```
+.env
+```
