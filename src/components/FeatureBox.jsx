@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Web3 from 'web3';
 import contractABI from "../ABIs/marketRegistery.json";
 
+
 import '../css/main.css';
 import { useEffect } from 'react';
 
@@ -34,6 +35,9 @@ function FeatureBox({ delay, title, description, ownerAddress, marketID, onClick
 
     const status = await marketContract.methods.isMarketClosed(marketID).call();
     setisClosed(status);
+    console.log(status)
+    
+   
   };
 
   useEffect(() => {

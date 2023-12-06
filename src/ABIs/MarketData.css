@@ -1,0 +1,68 @@
+/* MarketData.css - Stylish and beautiful design */
+
+/* Background Gradient */
+.market-data-container {
+    padding: 2rem;
+    background: linear-gradient(to bottom, #2a67ce, #ff934a);
+    color: #fff;
+  }
+  
+  /* Main Card Styling */
+  .main-card {
+    margin: 2rem 0;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Typography */
+  .market-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .market-description {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Divider */
+  .divider {
+    margin: 2rem 0;
+    background-color: #ff934a;
+  }
+  
+  /* Card Styling in Grid */
+  .grid-container .MuiCard-root {
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .action-button {
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    margin: 0 1rem;
+    background-color: #ff934a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #ff6b1d;
+  }
+  

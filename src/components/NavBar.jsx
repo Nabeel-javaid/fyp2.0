@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../css/main.css';
 import '../css/animate.css';
 import '../css/bootstrap.min.css';
@@ -69,7 +70,13 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
+<<<<<<< HEAD
                                             <a href="/profile" aria-label="Toggle navigation">Profile</a>
+=======
+                                            <Link to="/profile">
+                                                profile
+                                            </Link>
+>>>>>>> nabeel
                                         </li>
                                     </ul>
                                 </div> {/* navbar collapse */}
