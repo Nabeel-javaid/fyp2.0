@@ -102,7 +102,7 @@ function LoanBid() {
         });
 
         await txEth.wait();
-        console.log('ETH sent successfully');
+        console.log('ETH sent successfully to the escrow');
       }
     } catch (error) {
       console.error('Error: ', error);
