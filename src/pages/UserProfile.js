@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Paper, Button, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import { Container, Grid, Typography, Paper, Button, Button as MUIButton, List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Layout from '../components/Layout';
 import LinkIcon from '@mui/icons-material/Link';
 import { createClient } from '@supabase/supabase-js';
@@ -23,32 +23,15 @@ const UserProfile = () => {
   const [openMarkets, setOpenMarkets] = useState([]);
   const [closedMarkets, setClosedMarkets] = useState([]);
   const [ownerAddress, setOwnerAddress] = useState('');
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [MID, setMID] = useState('');
 
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-
-
-
-
   async function closeMarket(marketID) {
-    try {
-
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-      const txResponse = await contract.closeMarket(marketID);
-
-      await txResponse.wait();
-      console.log('Transaction hash:', txResponse.hash);
-      console.log('Transaction confirmed in block:', txResponse.blockNumber);
-
-
-      // Trigger re-render by fetching updated markets
-      fetchMarkets();
-    } catch (error) {
-      console.error('Error calling closeMarket:', error.message);
-    }
+    setMID(marketID);
+    setCancelDialogOpen(true);
   }
 
   async function isMarketOpen(marketID) {
@@ -99,7 +82,6 @@ const UserProfile = () => {
     }
   }
 
-
   function getWalletAddress() {
     const address = window.ethereum.selectedAddress;
     console.log('Wallet address:', address);
@@ -145,10 +127,6 @@ const UserProfile = () => {
     fetchData();
   }, [supabase, walletAddress]);
 
-
-
-
-
   async function checkENS(walletAddressToCheck) {
     try {
       await Moralis.start({
@@ -171,7 +149,38 @@ const UserProfile = () => {
     }
   }
 
+  const handleCancelCancel = () => {
+    setCancelDialogOpen(false);
+  };
 
+  const handleCancelConfirm = async(MID) => {
+    try {
+
+      const MED = Number(MID);
+
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const txResponse = await contract.closeMarket(MED);
+
+      await txResponse.wait();
+      console.log('Transaction hash:', txResponse.hash);
+      console.log('Transaction confirmed in block:', txResponse.blockNumber);
+
+      // Close market in supabse
+      const { error } = await supabase
+        .from('Markets')
+        .update({ isClosed: true })
+        .eq('id', MED);
+
+        setCancelDialogOpen(false);
+
+      // Trigger re-render by fetching updated markets
+      fetchMarkets();
+    } catch (error) {
+      console.error('Error calling closeMarket:', error.message);
+    }
+  };
 
   return (
     <Layout>
@@ -302,6 +311,20 @@ const UserProfile = () => {
               </ul>
             </Paper>
           </Grid>
+          <Dialog open={cancelDialogOpen} onClose={handleCancelCancel}>
+                    <DialogTitle>Warning</DialogTitle>
+                    <DialogContent>
+                        <p>You have unsaved changes. Are you sure you want to cancel?</p>
+                    </DialogContent>
+                    <DialogActions>
+                        <MUIButton onClick={handleCancelCancel} color="primary">
+                            No
+                        </MUIButton>
+                        <MUIButton onClick={handleCancelConfirm} color="primary">
+                            Yes
+                        </MUIButton>
+                    </DialogActions>
+                </Dialog>
         </Grid>
       </Container>
     </Layout>
