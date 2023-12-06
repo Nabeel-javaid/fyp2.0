@@ -132,7 +132,7 @@ const CreateMarket = () => {
             console.log("Market Description", typeof (marketDescription));
             console.log("User Address", typeof (userAddress));
 
-            await NewMarket(ID, marketName, marketDescription, userAddress);
+            await NewMarket(ID, marketName, marketDescription, userAddress, marketType);
             setIsLoading(false); // Stop loading on success
         } catch (error) {
             setIsLoading(false); // Stop loading on error
@@ -281,7 +281,7 @@ const CreateMarket = () => {
                                 alignItems: "center",
                             }}
                         >
-                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; You make the
+                            &nbsp; &nbsp; &nbsp;  You make the
                             <span
                                 style={{
                                     display: "flex",
