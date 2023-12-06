@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
-import Web3 from 'web3';
-import { createClient } from '@supabase/supabase-js';
-
-import Layout from "../components/Layout";
-// import '../css/main.css';
-import '../css/MarketData.css';
-
-=======
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -29,20 +18,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../ABIs/MarketData.css'; // Custom CSS for styling
 
 // Supabase client initialization
->>>>>>> nabeel
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const MarketData = () => {
-<<<<<<< HEAD
-  const ID = useParams();
-  const marketID = Number(ID.id);
-
-=======
   const { id } = useParams();
   const marketID = Number(id);
->>>>>>> nabeel
   const [marketData, setMarketData] = useState(null);
   const [marketDetails, setMarketDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -55,18 +37,6 @@ const MarketData = () => {
         const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
         const marketContract = new web3.eth.Contract(abi, contractAddress);
 
-<<<<<<< HEAD
-        const marketInfo = await marketContract.methods.getMarketData(marketID).call();
-        setMarketData(marketInfo);
-
-        loadMarketDetails(marketID);
-      } catch (error) {
-        console.error('Error calling marketCount:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-=======
         // Fetch market data
         const marketInfo = await marketContract.methods.getMarketData(marketID).call();
         setMarketData(marketInfo);
@@ -80,33 +50,11 @@ const MarketData = () => {
         setLoading(false);
       }
     };
->>>>>>> nabeel
 
     loadBlockchainData();
   }, [marketID]);
 
   const loadMarketDetails = async (marketID) => {
-<<<<<<< HEAD
-    const { data: Market, error } = await supabase
-      .from('Markets')
-      .select('*')
-      .eq('id', marketID);
-
-      setMarketDetails(Market[0]);
-
-    if (error) {
-      console.log('Error loading data from Supabase. Please try again later.');
-    }
-  }
-
-  // Conditional rendering
-  if (loading) {
-    return (
-      <Layout>
-        <div className="market-data-container">
-          <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json" />
-        </div>
-=======
     try {
       const { data: Market, error } = await supabase
         .from('Markets')
@@ -141,19 +89,10 @@ const MarketData = () => {
             <CircularProgress color="primary" />
           </Grid>
         </Container>
->>>>>>> nabeel
       </Layout>
     );
   }
 
-<<<<<<< HEAD
-  if (marketDetails === null || marketData === null) {
-    return (
-      <Layout>
-        <div className="market-data-container">
-          <iframe title="NoMarketData" src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json" />
-        </div>
-=======
   if (!marketDetails || !marketData) {
     return (
       <Layout>
@@ -167,70 +106,10 @@ const MarketData = () => {
             <Typography variant="h4">No Data Found</Typography>
           </Grid>
         </Container>
->>>>>>> nabeel
       </Layout>
     );
   }
 
-<<<<<<< HEAD
-  const etherscanUrl = `https://goerli.etherscan.io/address/${marketData.owner}`;
-
-  return (
-    <Layout>
-      {/* <h2>NAME</h2>
-      <h2>NAME</h2>
-            <h2>NAME</h2>
-            <h2>NAME</h2>
-            <h2>NAME</h2>
-            <h2>NAME</h2>
-            <h2>NAME</h2>
-            <h2>NAME</h2>
-
-      <div className="market-info-modal" style={{ paddingTop: "2rem" }}>
-        <div className="modal-content">
-          <h2>{marketDetails.name}</h2>
-          <p>{marketDetails.description}</p>
-          <h3>
-            <a href={etherscanUrl} target="_blank" rel="noopener noreferrer">
-              Owner Address
-            </a>
-          </h3>
-
-          
-        </div>
-      </div> */}
-      <hr />
-      <div className="market-data-container">
-        <div className="market-data-box">
-          <h2>{marketDetails.name}</h2>
-          <p>{marketDetails.description}</p>
-          <p>Owner Address: {marketDetails.owner}</p>
-          <p>ID: {marketDetails.id}</p>
-          <div className="values">
-            <div className="market-box">
-              <h4>{marketData.paymentCycleDuration}</h4>
-              <p>Payment Cycle Duration</p>
-            </div>
-            <div className="market-box">
-              <h4>{marketData.paymentDefaultDuration}</h4>
-              <p>Payment Default Duration</p>
-            </div>
-            <div className="market-box">
-              <h4>{marketData.loanExpirationTime}</h4>
-              <p>Loan Expiration Time</p>
-            </div>
-            <div className="market-box">
-              <h4>{marketData.marketplaceFeePercent}</h4>
-              <p>Marketplace Fee Percent</p>
-            </div>
-          </div>
-          <div className="buttons">
-            <button className="view-button">View Loans</button>
-            <button className="create-button">Create Loan</button>
-          </div>
-        </div>
-      </div>
-=======
   return (
     <Layout>
       <br />
@@ -297,13 +176,8 @@ const MarketData = () => {
         </div>
       </Container>
       <ToastContainer />
->>>>>>> nabeel
     </Layout>
   );
 };
 
-<<<<<<< HEAD
 export default MarketData;
-=======
-export default MarketData;
->>>>>>> nabeel

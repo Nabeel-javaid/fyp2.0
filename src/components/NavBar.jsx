@@ -70,13 +70,9 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-<<<<<<< HEAD
-                                            <a href="/profile" aria-label="Toggle navigation">Profile</a>
-=======
                                             <Link to="/profile">
                                                 profile
                                             </Link>
->>>>>>> nabeel
                                         </li>
                                     </ul>
                                 </div> {/* navbar collapse */}
