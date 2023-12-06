@@ -8,12 +8,10 @@ import CreateLoan from './pages/CreateLoan';
 import ViewLoan from './pages/ViewLoan';
 import UserProfile from './pages/UserProfile';
 import MarketData from './pages/MarketData';
-import { ToastProvider } from 'react-toast-notifications';
 
 function App() {
   return (
     <BrowserRouter>
-      <ToastProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/view-market" element={<ViewMarkets />} />
@@ -25,7 +23,6 @@ function App() {
           <Route path="/create-loan/:market" element={<CreateLoan/>}/>
           <Route path="/view-loanS/:market" element={<ViewLoan/>} />
         </Routes>
-      </ToastProvider>
     </BrowserRouter>
 
   );
