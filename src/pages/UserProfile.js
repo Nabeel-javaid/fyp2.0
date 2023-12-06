@@ -39,7 +39,6 @@ const UserProfile = () => {
 
     try {
       const isOpen = await contract.isMarketOpen(marketID);
-      console.log(isOpen);
       return isOpen;
     } catch (error) {
       console.error('Error calling isMarketOpen:', error.message);
