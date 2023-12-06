@@ -5,12 +5,13 @@ const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export default async function NewMarket(marketID, marketName, marketDescription, marketOwner) {
+export default async function NewMarket(marketID, marketName, marketDescription, marketOwner, marketType) {
 
     const ID = Number(marketID);
     const Name = marketName.toString();
     const Description = marketDescription.toString();
     const Owner = marketOwner.toString();
+    const mType = marketType.toString();
 
     console.log("ID:", ID, "|| Name:", Name, "|| Description:", Description, "|| Owner:", Owner);
 
@@ -23,6 +24,7 @@ export default async function NewMarket(marketID, marketName, marketDescription,
                 name: Name,
                 description: Description,
                 owner: Owner,
+                Type: mType,
             },
         ]);
 

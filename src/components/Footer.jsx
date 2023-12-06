@@ -1,6 +1,5 @@
 import React from 'react';
 import '../css/main.css';
-import '../css/main.css';
 
 function Footer() {
     return (
@@ -10,27 +9,24 @@ function Footer() {
                     <div className="inner-content">
                         <div className="row">
                             <div className="col-lg-4 col-md-6 col-12">
-                                <div className="single-footer f-about">
-                                    <div className="logo">
-                                        <a href="index.html">
-                                            {/* <img src="http://localhost:3000/assets/logo/white-logo.svg" alt="#" /> */}
-                                        </a>
-                                    </div>
+                                <div className="single-footer f-about" style={{ marginTop: '-25px' }}>
                                     <p>Making the world a better place through constructing elegant hierarchies.</p>
-                                    <h4 className="social-title">Follow Us On:</h4>
-                                    <ul className="social">
-                                        <li><a href="javascript:void(0)"><i className="lni lni-facebook-filled"></i></a></li>
-                                        <li><a href="javascript:void(0)"><i className="lni lni-instagram"></i></a></li>
-                                        <li><a href="javascript:void(0)"><i className="lni lni-twitter-original"></i></a></li>
-                                        <li><a href="javascript:void(0)"><i className="lni lni-linkedin-original"></i></a></li>
-                                        <li><a href="javascript:void(0)"><i className="lni lni-pinterest"></i></a></li>
-                                        <li><a href="javascript:void(0)"><i className="lni lni-youtube"></i></a></li>
+                                    <h4 className="social-title">Follow Us On: </h4>
+                                    <ul className="social" style={{ marginLeft: '-35px' }}>
+                                        <li><a href="/"><i className="lni lni-facebook-filled"></i></a></li>
+                                        <li><a href="/"><i className="lni lni-instagram"></i></a></li>
+                                        <li><a href="/"><i className="lni lni-twitter-original"></i></a></li>
+                                        <li><a href="/"><i className="lni lni-linkedin-original"></i></a></li>
+                                        <li><a href="/"><i className="lni lni-pinterest"></i></a></li>
+                                        <li><a href="/"><i className="lni lni-youtube"></i></a></li>
                                     </ul>
+
                                 </div>
+
                             </div>
                             <div className="col-lg-2 col-md-6 col-12">
                                 <div className="single-footer f-link">
-                                    <h3>Solutions</h3>
+                                    <h3>&nbsp; &nbsp; &nbsp; Solutions</h3>
                                     <ul>
                                         <li><a href="javascript:void(0)">Marketing</a></li>
                                         <li><a href="javascript:void(0)">Analytics</a></li>
@@ -41,7 +37,7 @@ function Footer() {
                             </div>
                             <div className="col-lg-2 col-md-6 col-12">
                                 <div className="single-footer f-link">
-                                    <h3>Support</h3>
+                                    <h3>&nbsp; &nbsp; &nbsp; Support</h3>
                                     <ul>
                                         <li><a href="javascript:void(0)">Pricing</a></li>
                                         <li><a href="javascript:void(0)">Documentation</a></li>
@@ -71,9 +67,10 @@ function Footer() {
                 <div className="container">
                     <div className="inner-content">
                         <div className="row">
-                            <div className="col-lg-6 col-md-6 col-12 ">
+                            <div className="col-lg-6 col-md-6 col-12" style={{ marginLeft: '500px' }}>
                                 <p className="copyright-text">© 2023 LendNest - All Rights Reserved</p>
                             </div>
+
                         </div>
                     </div>
                 </div>
