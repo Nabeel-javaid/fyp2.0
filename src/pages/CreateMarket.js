@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { toast } from "react-toastify";
 import Web3 from 'web3';
 import { Paper } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -135,11 +134,9 @@ const CreateMarket = () => {
 
             await NewMarket(ID, marketName, marketDescription, userAddress);
             setIsLoading(false); // Stop loading on success
-            toast.success("Market function called successfully!");
         } catch (error) {
             setIsLoading(false); // Stop loading on error
             console.error("Error adding market:", error);
-            toast.error("Error calling market function. Please try again.");
         }
     };
 

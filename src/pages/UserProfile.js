@@ -160,6 +160,7 @@ const UserProfile = () => {
       });
 
       const ensName = response.raw.name;
+      console.log(ensName);
 
       if (ensName) {
         setOwnerAddress(ensName);
