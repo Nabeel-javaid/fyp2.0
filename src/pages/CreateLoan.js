@@ -79,20 +79,6 @@ function LoanBid() {
 
       console.log(JSON.stringify(collateralInfo)); // Check the console for collateralInfo
 
-      await CreateLoanBid(
-        lendingToken,
-        MID.market,
-        principal,
-        duration,
-        APR,
-        metadataURI,
-        receiver,
-        'ERC20',
-        collateralAmount,
-        collateralAddress,
-        'Pending'
-      );
-
       // Send ETH to the smart contract
       if (collateralType === CollateralType.ERC20) {
         const ethAmount = ethers.utils.parseEther(collateralAmount);
@@ -103,6 +89,22 @@ function LoanBid() {
 
         await txEth.wait();
         console.log('ETH sent successfully to the escrow');
+
+        
+        await CreateLoanBid(
+          lendingToken,
+          MID.market,
+          principal,
+          duration,
+          APR,
+          metadataURI,
+          receiver,
+          'ERC20',
+          collateralAmount,
+          collateralAddress,
+          'Pending'
+        );
+        
       }
     } catch (error) {
       console.error('Error: ', error);
