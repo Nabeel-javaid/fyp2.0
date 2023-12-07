@@ -68,7 +68,7 @@ const ViewMarkets = () => {
       } else {
         // Market is open, navigate to the market page
         console.log("Open market ", marketID);
-        window.location.href = `/market/${marketID}`;
+        window.location.href = `./market/${marketID}`;
       }
     };
   };
