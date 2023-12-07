@@ -284,7 +284,7 @@ const CreateMarket = () => {
                                 alignItems: "center",
                             }}
                         >
-                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; You make the
+                            &nbsp; &nbsp; &nbsp;  You make the
                             <span
                                 style={{
                                     display: "flex",
