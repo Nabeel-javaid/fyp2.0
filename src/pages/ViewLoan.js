@@ -141,44 +141,35 @@ const ViewLoan = () => {
               <img src={Avatar} alt="loan" style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }} />
 
               <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '12px' }}>
-                  <p style={{ marginLeft: '12px', marginTop: '12px', fontFamily: 'epilogue', fontWeight: 'medium', fontSize: '12px', color: '#808191' }}>
-                    {data.MetadataURI}
-                  </p>
-                </div>
-  
                 <div style={{ display: 'block' }}>
-                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '16px', color: 'white', textAlign: 'left', lineHeight: '26px', marginBottom: '5px' }}>
-                    APR: {data.APR}
+                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#808191', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
+                    APR: <span style={{ color: '#808191', fontWeight: 'bold' }}>{data.APR}</span>
                   </h3>
-                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'normal', fontSize: '12px', color: '#808191', textAlign: 'left', lineHeight: '18px' }}>
+                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', textAlign: 'left', lineHeight: '22px' }}>
                     Principal: {data.Principal}
                   </p>
                 </div>
   
                 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '2px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '15px', color: '#b2b3bd', lineHeight: '22px' }}>{data.CollateralAmount}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'normal', fontSize: '12px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#808191', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       amount of {data.CollateralAddress}
                     </p>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '15px', color: '#b2b3bd', lineHeight: '22px' }}>{data.Duration}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'normal', fontSize: '12px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#b2b3bd', lineHeight: '24px' }}>{data.Duration}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       Seconds
                     </p>
                   </div>
                 </div>
   
                 <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
-                  <div style={{ width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
                     <img src={Avatar} alt="user" className="w-1/2 h-1/2 object-contain" />
                   </div>
-                  {/* <p style={{ flex: '1', fontFamily: 'epilogue', fontWeight: 'normal', fontSize: '12px', color: '#808191', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    by <span style={{ color: '#b2b3bd' }}>{data.RecieverAddress}</span>
-                  </p> */}
-                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'normal', fontSize: '12px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     by {data.RecieverAddress}
                   </p>
                 </div>
@@ -189,7 +180,7 @@ const ViewLoan = () => {
       </div>
     );
   };
-
+  
   const renderLoanDetailsDialog = () => (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
       <DialogTitle style={{ background: '#4f4f4f', color: 'white' }}>Loan Details</DialogTitle>
