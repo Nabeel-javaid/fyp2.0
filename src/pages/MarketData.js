@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import {styled} from '@mui/system';
+
 import {
   Container,
   Grid,
@@ -9,7 +11,25 @@ import {
   Divider,
   Button,
   CircularProgress,
+  Badge,
+  Box,
+  Paper,
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  IconButton,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+
 } from '@mui/material';
+
 import Layout from '../components/Layout';
 import Web3 from 'web3';
 import { createClient } from '@supabase/supabase-js';
@@ -22,12 +42,34 @@ const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const StyledCard = styled(Card)({
+  marginBottom: '20px',
+  padding: '20px',
+});
+
+const StyledDivider = styled(Divider)({
+  marginBottom: '20px',
+});
+
+const useStyles = () => ({
+  actionButtons: {
+    marginBottom: '20px',
+    '& > *': {
+      marginRight: '10px',
+    },
+  },
+  participantsPaper: {
+    padding: '20px',
+  },
+});
+
 const MarketData = () => {
   const { id } = useParams();
   const marketID = Number(id);
   const [marketData, setMarketData] = useState(null);
   const [marketDetails, setMarketDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const classes = useStyles();
 
   useEffect(() => {
     const loadBlockchainData = async () => {
@@ -44,7 +86,7 @@ const MarketData = () => {
         // Fetch market details from Supabase
         await loadMarketDetails(marketID);
       } catch (error) {
-        console.error('Error loading blockchain data:', error);
+        console.error('Error loading market details:', error);
         toast.error('Error loading blockchain data. Please try again.'); // Display error toast
       } finally {
         setLoading(false);
@@ -79,12 +121,12 @@ const MarketData = () => {
   if (loading) {
     return (
       <Layout>
-        <Container>
+        <Container >
           <Grid
             container
             justifyContent="center"
-            alignItems="center"
-            style={{ height: '80vh' }}
+            alignItems="left"
+            // style={{ height: '100vh', backgroundColor:"red" }}
           >
             <CircularProgress color="primary" />
           </Grid>
@@ -111,72 +153,157 @@ const MarketData = () => {
   }
 
   return (
-    <Layout>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-
-      <Container className="market-data-container">
-        {/* Main Card */}
-        <Card className="main-card" elevation={3}>
-          <CardContent>
 
 
-            <Typography variant="h4" className="market-title">
-              {marketDetails.name}
-            </Typography>
-            <Typography variant="body1" className="market-description">
-              {marketDetails.description}
-            </Typography>
-            <Divider className="divider" />
-            <Typography variant="body1">
-              Owner Address: {marketDetails.owner}
-            </Typography>
-            <Typography variant="body1">ID: {marketDetails.id}</Typography>
-          </CardContent>
-        </Card>
+  
+    <Layout  >
 
-        {/* Grid Container for Market Details */}
-        <Grid container spacing={3} className="grid-container">
-          <Grid item xs={12} md={3}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography variant="h6">paymentCycleDuration</Typography>
-                <Typography variant="body1">{marketDetails.owner}</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          {/* Add more Grid items for other details as needed */}
-        </Grid>
 
-        {/* Action Buttons */}
-        <div className="action-buttons">
-          <Button 
-            variant="contained" 
-            color="primary" 
-            className="action-button"
-            onClick={() => {
-              window.location.href = `/view-loans/${marketID}`;
-            }}
-          >
-            View Loans
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className="action-button"
-            onClick={() => {
-              window.location.href = `/create-loan/${marketID}`;
-            }}
-          >
-            Create Loan
-          </Button>
-        </div>
-      </Container>
-      <ToastContainer />
-    </Layout>
+
+
+    <Typography variant="h5" fontWeight="bold" textcolor="black" sx={{ marginBottom: '20px' }}>
+      Market Details
+    </Typography>
+   
+  
+
+ 
+  
+
+
+  <Container style={{ marginTop: '120px' }}  >
+    
+  <Typography
+  variant="h5"
+  fontWeight="bold"
+  color="black"
+  sx={{
+    marginBottom: '20px',
+    textAlign: 'center', // Align text to the center
+    animation: 'fadeIn 1s ease-in-out', // Apply fade-in animation
+    '@keyframes fadeIn': {
+      from: { opacity: 0 },
+      to: { opacity: 1 },
+    },
+  }}
+>
+  Market Details
+</Typography>
+    <TableContainer component={Paper}>
+      <Table>
+        
+        <TableBody>
+          {/* Market Details */}
+          <TableRow>
+            <TableCell>Market Name</TableCell>
+            <TableCell>
+              {marketDetails.name}{' '}
+              
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Description</TableCell>
+            <TableCell>{marketDetails.description}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Owner Address</TableCell>
+            <TableCell>{marketDetails.owner}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>{marketDetails.id}</TableCell>
+          </TableRow>
+
+          {/* Additional Market Details */}
+          <TableRow>
+            <TableCell>Additional Details</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Payment Cycle Duration</TableCell>
+            <TableCell>{marketDetails.paymentCycle}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Active Loans</TableCell>
+            <TableCell>20</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Total Value Locked</TableCell>
+            <TableCell>$1,000,000</TableCell>
+          </TableRow>
+
+          {/* Action Buttons */}
+         
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <ToastContainer />
+
+    
+  </Container>
+
+  
+
+  {/* Card for Market Participants */}
+  <Card variant="filled">
+  <CardContent>
+    <Box display="flex" justifyContent="center">
+      <div>
+        <Typography variant="h5" marginLeft={"20px"} marginTop={"20px"} fontWeight={"bold"}>Market Participants</Typography>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>U</Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="John Doe"
+              secondary="john.doe@example.com"
+            />
+            <IconButton>{/* Add an icon or action button */}</IconButton>
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>W</Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary="Jane Smith"
+              secondary="jane.smith@example.com"
+            />
+            <IconButton>{/* Add an icon or action button */}</IconButton>
+          </ListItem>
+          {/* Add more ListItems for other participants */}
+        </List>
+      </div>
+    </Box>
+  </CardContent>
+</Card>
+
+{/* //box card */}
+  <Box display="flex" justifyContent="center" >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            window.location.href = `/view-loans/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          View Loans
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            window.location.href = `/create-loan/${marketID}`;
+          }}
+          sx={{marginBottom: '20px'}}
+        >
+          Create Loan
+        </Button>
+        {/* Add more buttons for other actions */}
+      </Box>
+</Layout>
+
   );
 };
 
