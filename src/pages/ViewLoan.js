@@ -7,9 +7,6 @@ import { styled as makeStyles } from '@mui/system';
 import Pagination from '@mui/material/Pagination';
 import '../css/main.css';
 
-import Avatar from "./avatar.jpg";
-
-
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 
@@ -28,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
   pagination: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: theme.spacing(2),
+    marginTop: 'theme.spacing(2)',
+
   },
   dialog: {
     padding: theme.spacing(2),
@@ -39,14 +37,12 @@ const useStyles = makeStyles((theme) => ({
     gap: '30px',
     marginTop: '10px',
   },
-  
   loanImage: {
     width: '100%',
     height: '410px',
     objectFit: 'cover',
     borderRadius: '15px',
   },
-
   progressBarContainer: {
     position: 'relative',
     width: '100%',
@@ -54,13 +50,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#3a3a43',
     marginTop: '2px',
   },
-
   progressBar: {
     position: 'absolute',
     height: '100%',
     backgroundColor: '#4acd8d',
   },
-
   countBoxContainer: {
     display: 'flex',
     width: '100%',
@@ -70,15 +64,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewLoan = () => {
-    const classes = useStyles();
+  const classes = useStyles();
   const [loansData, setLoansData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const loansPerPage = 6;
-
+  const loansPerPage = 1;
   const MID = useParams();
 
   useEffect(() => {
@@ -126,53 +119,74 @@ const ViewLoan = () => {
     return (
       <div className="row">
         {currentLoans.map((data, index) => (
-          <div style={{ width: '30%', marginBottom: '16px' }} key={`loan-${index}`}>
+          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
             <Paper
               style={{
                 padding: '16px',
                 borderRadius: '15px',
                 cursor: 'pointer',
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#DCC7C2', // Add background color here
               }}
               onClick={() => handleLoanDetailsClick(data)}
               elevation={3}
             >
-
-              <img src={Avatar} alt="loan" style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }} />
+              <img
+                src="https://i.ibb.co/ZMwrKZV/Ethereum.png"
+                border="0"
+                alt="loan"
+                style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
+              />
 
               <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
                 <div style={{ display: 'block' }}>
-                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#808191', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
-                    APR: <span style={{ color: '#808191', fontWeight: 'bold' }}>{data.APR}</span>
+                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#000000', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
+                    APR: <span style={{ color: '#000000', fontWeight: 'bold' }}>{data.APR}</span>
                   </h3>
-                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', textAlign: 'left', lineHeight: '22px' }}>
+                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', textAlign: 'left', lineHeight: '22px' }}>
                     Principal: {data.Principal}
                   </p>
                 </div>
-  
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '2px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#808191', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       amount of {data.CollateralAddress}
                     </p>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#b2b3bd', lineHeight: '24px' }}>{data.Duration}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.Duration}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       Seconds
                     </p>
                   </div>
                 </div>
-  
+
                 <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
-                    <img src={Avatar} alt="user" className="w-1/2 h-1/2 object-contain" />
+                    <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
                   </div>
-                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#808191', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     by {data.RecieverAddress}
                   </p>
                 </div>
+              </div>
+
+              {/* Status Indicator */}
+              <div
+                className="status-indicator"
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: '6.8px', // Adjust the value as needed
+                  color: data.Status === 'Pending' ? 'red' : 'green',
+                  textAlign: 'right',
+                  padding: '22px',
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.Status}
               </div>
             </Paper>
           </div>
@@ -180,7 +194,7 @@ const ViewLoan = () => {
       </div>
     );
   };
-  
+
   const renderLoanDetailsDialog = () => (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
       <DialogTitle style={{ background: '#4f4f4f', color: 'white' }}>Loan Details</DialogTitle>
@@ -198,7 +212,7 @@ const ViewLoan = () => {
             >
               {selectedLoan.Status}
             </div>
-  
+
             {/* Loan Details */}
             <Typography variant="body1">
               <strong>Receiver Address:</strong> {selectedLoan.RecieverAddress}
@@ -224,10 +238,10 @@ const ViewLoan = () => {
             <Typography variant="body1">
               <strong>Collateral Address:</strong> {selectedLoan.CollateralAddress}
             </Typography>
-  
+
             {/* Divider */}
             <hr style={{ margin: '16px 0', borderColor: '#5f5f5f' }} />
-  
+
             {/* Lender Details */}
             <DialogTitle style={{ background: '#4f4f4f', color: 'white' }}>Lender Details</DialogTitle>
             <DialogContent className={classes.dialog} dividers style={{ background: '#272727', color: 'white' }}>
@@ -251,17 +265,12 @@ const ViewLoan = () => {
         <Button onClick={handleCloseDialog} color="primary" variant="contained">
           Close
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => acceptLoan(selectedLoan?.LoanID)}
-        >
+        <Button variant="contained" color="primary" onClick={() => acceptLoan(selectedLoan?.LoanID)}>
           Accept
         </Button>
       </DialogActions>
     </Dialog>
   );
-  
 
   return (
     <Layout>
@@ -273,10 +282,7 @@ const ViewLoan = () => {
         <div className="feature section">
           <div className="container">
             {loading && (
-              <iframe
-                title="Loading"
-                src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"
-              ></iframe>
+              <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
             )}
             {error && <p>{error}</p>}
             {!loading && loansData.length > 0 ? (
@@ -292,7 +298,7 @@ const ViewLoan = () => {
               </div>
             )}
 
-            <div className={classes.pagination}>
+            <div className={classes.pagination} style={{ position: 'absolute', right: '45%', bottom: '7%' }}>
               {totalPages > 1 && (
                 <Pagination
                   count={totalPages}
@@ -300,6 +306,8 @@ const ViewLoan = () => {
                   onChange={handlePageChange}
                   color="primary"
                   shape="rounded"
+                  showFirstButton
+                  showLastButton
                 />
               )}
             </div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Web3 from 'web3';
-import { Paper } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 import {
@@ -56,14 +55,6 @@ const CreateMarket = () => {
     const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
 
 
-    const randomTerms = [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        "Pellentesque vel orci vitae sapien varius congue.",
-        "In nec nisl sed tortor luctus gravida.",
-        "Fusce eget dolor et justo bibendum laoreet.",
-        "Nullam feugiat tortor et leo dignissim, in tincidunt quam tempus.",
-    ];
-
 
 
     useEffect(() => {
@@ -95,6 +86,10 @@ const CreateMarket = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate(page)) {
+            return;
+        }
+
         setIsLoading(true); // Start loading
 
 
@@ -126,12 +121,6 @@ const CreateMarket = () => {
             const marketID = await marketContract.methods.marketCount().call();
 
             const ID = Number(marketID);
-
-            console.log("Market ID", typeof (ID));
-            console.log("Market Name", typeof (marketName));
-            console.log("Market Description", typeof (marketDescription));
-            console.log("User Address", typeof (userAddress));
-
             await NewMarket(ID, marketName, marketDescription, userAddress, marketType);
             setIsLoading(false); // Stop loading on success
         } catch (error) {
@@ -159,7 +148,7 @@ const CreateMarket = () => {
             if (defaultLoans === "") {
                 tempErrors.defaultLoans = "This field is required.";
             } else if (defaultLoans < 1000) {
-                tempErrors.defaultLoans = "The minimum amount of default loans is 1000.";
+                tempErrors.defaultLoans = "The minimum amount of default loans is 1000 seconds.";
             }
 
             if (loanPaymentCycle === "") {
@@ -190,6 +179,7 @@ const CreateMarket = () => {
         setPage(page + 1);
 
     };
+
 
     const handleBack = () => {
         setPage(page - 1);
@@ -288,6 +278,7 @@ const CreateMarket = () => {
                                     color: heading === "RULES" ? "#FFEB3B" : "#2196F3",
                                     justifyContent: "center",
                                     padding: "10px",
+
                                 }}
                             >
                                 {heading}
@@ -306,7 +297,7 @@ const CreateMarket = () => {
                             variant="body1"
                             style={{ color: "black", marginRight: "10px" }}
                         >
-                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; These rules impact the borrower’s experience.
+                            &nbsp; &nbsp;  These rules impact the borrower’s experience.
                         </Typography>
                         <Typography variant="body1" style={{ color: "black" }}>
                             All selections made here can be updated in Settings later.
@@ -447,7 +438,7 @@ const CreateMarket = () => {
                                         label={
                                             <div>
                                                 Loan Requests Expire
-                                                <Tooltip title="Add some data">
+                                                <Tooltip title="Time after which the request for Loan bid will expire and no is longer eligible to be accepted">
                                                     <InfoIcon
                                                         disableFocusListener
                                                         disableTouchListener
@@ -475,24 +466,15 @@ const CreateMarket = () => {
                                         InputLabelProps={{ style: { pointerEvents: "auto" } }}
                                         style={{ width: "70%", marginLeft: "30px" }}
                                         label={
-                                            <>
+                                            <div>
                                                 Loan Payment Cycle
-                                                <Tooltip
-                                                    title="The amount of time, after a loan is considered late, a loan should go into default and can be liquidated"
-                                                    open={isToolOpen}
-                                                    onClose={() => {
-                                                        setisToolOpen(false);
-                                                    }}
-                                                    onOpen={() => {
-                                                        setisToolOpen(true);
-                                                    }}
-                                                >
+                                                <Tooltip title="The amount of time, after a loan is considered late, a loan should go into default and can be liquidated">
                                                     <InfoIcon
                                                         color="primary"
                                                         style={{ marginLeft: "5px", fontSize: "16px" }}
                                                     />
                                                 </Tooltip>
-                                            </>
+                                            </div>
                                         }
                                         value={loanPaymentCycle}
                                         onChange={(e) => setLoanPaymentCycle(e.target.value)}
@@ -524,7 +506,7 @@ const CreateMarket = () => {
                                         onChange={(e) => setDefaultLoans(e.target.value)}
                                         margin="normal"
                                         type="number"
-                                        inputProps={{min: 0 }}  // Set the minimum value to 0
+                                        inputProps={{ min: 0 }}  // Set the minimum value to 0
                                         error={Boolean(errors.defaultLoans)}
                                         helperText={errors.defaultLoans}
 
@@ -540,7 +522,7 @@ const CreateMarket = () => {
                                         label={
                                             <div>
                                                 Loan Process Fee
-                                                <Tooltip title="Information about Loan Process Fee">
+                                                <Tooltip title="The percentage fee of loan that the owner of Market will get on every successful loan trade">
                                                     <InfoIcon
                                                         color="primary"
                                                         style={{ marginLeft: "5px", fontSize: "16px" }}
@@ -552,14 +534,13 @@ const CreateMarket = () => {
                                         onChange={(e) => setLoanProcessFee(e.target.value)}
                                         margin="normal"
                                         type="number"
-                                        inputProps={{ max: 100, min: 0 }}  // Set the minimum value to 0
                                         style={{ width: "70%", marginLeft: "30px" }}
                                         error={Boolean(errors.loanProcessFee)}
                                         helperText={errors.loanProcessFee}
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '130px' }}>
+                                <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '50px' }}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -580,35 +561,9 @@ const CreateMarket = () => {
                             </Grid>
                         )}
 
-                        <Grid container spacing={2} >
-                            {page === 3 && (
-                                <Grid item xs={12} sm={8} md={6} style={{ marginLeft: '130px' }}>
-                                    <Paper elevation={3} style={{ padding: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', border: '1px solid #ddd', width: '600px' }}>
-                                        <h2 style={{ fontWeight: 'bold' }}>Terms of Service</h2>
-                                        <ul>
-                                            {randomTerms.map((term, index) => (
-                                                <li key={index}>{term}</li>
-                                            ))}
-                                        </ul>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={termsAccepted}
-                                                    onChange={handleTermsAcceptance}
-                                                    color="primary"
-                                                />
-                                            }
-                                            label="I accept the terms of service."
-                                        />
-                                    </Paper>
-                                </Grid>
-                            )}
-                        </Grid>
 
-
-
-                        <div style={{ marginTop: "12px", paddingLeft: "14rem", paddingTop: "3rem" }}>
-                            {page > 1 && (
+                        <div style={{ marginTop: "12px", paddingLeft: page === 2 ? "12rem" : "12.2rem", paddingTop: "3rem" }}>
+                            {page === 2 && (
                                 <MUIButton
                                     type="button"
                                     onClick={handleBack}
@@ -619,7 +574,7 @@ const CreateMarket = () => {
                                     <ArrowBackIcon /> Back
                                 </MUIButton>
                             )}
-                            {page < 3 && (
+                            {page < 2 && (
                                 <MUIButton
                                     type="button"
                                     onClick={handleNext}
@@ -628,13 +583,15 @@ const CreateMarket = () => {
                                     style={{
                                         borderRadius: "30px",
                                         padding: "10px 30px",
-                                        marginLeft: "10px",
+                                        marginLeft: page === 2 ? "10px" : "0",
+                                        marginRight: "10px", // Add margin to the right
+
                                     }}
                                 >
-                                    {`Continue ${page} of 3`}
+                                    {`Continue ${page} of 2`}
                                 </MUIButton>
                             )}
-                            {page === 3 && (
+                            {page === 2 && (
                                 <MUIButton
                                     type="submit"
                                     variant="contained"
@@ -642,7 +599,7 @@ const CreateMarket = () => {
                                     style={{
                                         borderRadius: "30px",
                                         padding: "10px 30px",
-                                        marginLeft: "10px",
+                                        marginLeft: page === 2 ? "10px" : "0",
                                     }}
                                 >
                                     Submit
@@ -656,7 +613,7 @@ const CreateMarket = () => {
                                 style={{
                                     borderRadius: "30px",
                                     padding: "10px 30px",
-                                    marginLeft: "10px",
+                                    marginLeft: page === 2 ? "10px" : "0",
                                     alignSelf: "flex-end",
                                 }}
                             >
@@ -672,10 +629,10 @@ const CreateMarket = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <img
-                        src="https://v2.teller.org/assets/teller_v2_Step3.0c1ebb64.svg"
-                        alt="Form Illustration"
+                        src="https://i.ibb.co/QpRz6Wf/teller-v2-Step3-0c1ebb64.jpg" alt="teller-v2-Step3-0c1ebb64" border="0"
                         style={{ width: "60%", marginTop: "25%" }}
                     />
+
                 </Grid>
                 <Dialog open={cancelDialogOpen} onClose={handleCancelCancel}>
                     <DialogTitle>Warning</DialogTitle>
