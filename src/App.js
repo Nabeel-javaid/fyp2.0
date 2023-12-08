@@ -21,7 +21,7 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/market/:id" element={<MarketData />} />
           <Route path="/create-loan/:market" element={<CreateLoan/>}/>
-          <Route path="/view-loanS/:market" element={<ViewLoan/>} />
+          <Route path="/view-loans/:market" element={<ViewLoan/>} />
         </Routes>
     </BrowserRouter>
 
