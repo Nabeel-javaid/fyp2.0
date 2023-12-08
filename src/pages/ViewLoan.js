@@ -183,6 +183,9 @@ const ViewLoan = () => {
       }
     } catch (error) {
       console.error('Error accepting loan:', error);
+      setAcceptingLoan(false); // Set loading state to false in case of an error
+
+      
     }
   };
 
@@ -200,7 +203,7 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div className="row">
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
         {loading && (
           <div style={{
             position: 'fixed',
@@ -220,7 +223,7 @@ const ViewLoan = () => {
 
         {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
           <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
-            <Paper
+          <Paper
               style={{
                 padding: '16px',
                 borderRadius: '15px',
