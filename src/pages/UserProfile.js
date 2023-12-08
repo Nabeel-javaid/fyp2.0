@@ -1,80 +1,103 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Paper, Button, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import { Container, Grid, Typography, Paper, Button, Button as MUIButton, List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Layout from '../components/Layout';
 import LinkIcon from '@mui/icons-material/Link';
 import { createClient } from '@supabase/supabase-js';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import contractABI from "../ABIs/marketRegistery.json";
 import { ethers } from "ethers";
+import userImage from '../avatar.jpg';
+import Moralis from 'moralis';
+import ScaleLoader from 'react-spinners/ScaleLoader';
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
+const etherscanApiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const UserProfile = () => {
   const [walletAddress, setWalletAddress] = useState('');
-  const [markets, setMarkets] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const loans = ['Loan 1', 'Loan 2', 'Loan 3'];
   const [openMarkets, setOpenMarkets] = useState([]);
   const [closedMarkets, setClosedMarkets] = useState([]);
+  const [ownerAddress, setOwnerAddress] = useState('');
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [MID, setMID] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  async function initWeb3() {
+  const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+  async function closeMarket(marketID) {
+    setMID(marketID);
+    setCancelDialogOpen(true);
+  }
+
+  async function isMarketOpen(marketID) {
+    const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
     try {
-      await window.ethereum.enable();
+      const isOpen = await contract.isMarketOpen(marketID);
+      return isOpen;
     } catch (error) {
-      console.error('User denied access to their wallet or an error occurred:', error);
+      console.error('Error calling isMarketOpen:', error.message);
+      return false;
     }
   }
 
-  async function closeMarket(marketID, name, description, owner) {
+  async function fetchMarkets() {
     try {
-      const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
-
-      const marketIDAsNumber = parseInt(marketID);
-
-      if (isNaN(marketIDAsNumber)) {
-        console.error('Invalid marketID. Please provide a valid number.');
-        return;
-      }
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-      const txResponse = await contract.closeMarket(marketIDAsNumber);
-
-      await txResponse.wait();
-      console.log('Transaction hash:', txResponse.hash);
-      console.log('Transaction confirmed in block:', txResponse.blockNumber);
-
       const { data, error } = await supabase
         .from('Markets')
-        .upsert([
-          {
-            id: marketID,
-            name: name,
-            description: description,
-            owner: owner,
-            isClosed: true,
-          },
-        ]);
+        .select("*")
+        .ilike('owner', walletAddress);
 
       if (error) {
-        console.error('Error updating Supabase table:', error);
+        throw new Error(`Error fetching markets: ${error.message}`);
+      }
+
+      if (data) {
+        console.log("data from supabase")
+        const markets = data.map(async market => {
+          const isOpen = await isMarketOpen(market.id);
+          return {
+            ...market,
+            isOpen
+          };
+        });
+
+        Promise.all(markets).then(updatedMarkets => {
+          const open = updatedMarkets.filter(market => market.isOpen);
+          const closed = updatedMarkets.filter(market => !market.isOpen);
+
+          setOpenMarkets(open);
+          setClosedMarkets(closed);
+        });
       }
     } catch (error) {
-      console.error('Error calling closeMarket:', error);
+      console.error('Error fetching markets:', error.message);
     }
+  }
+
+  function getWalletAddress() {
+    const address = window.ethereum.selectedAddress;
+    console.log('Wallet address:', address);
+    console.log('Wallet address:', address);
+    setWalletAddress(address);
   }
 
   useEffect(() => {
-    if (window.ethereum && window.ethereum.selectedAddress) {
-      setWalletAddress(window.ethereum.selectedAddress);
+    const fetchData = async () => {
+      try {
+        await getWalletAddress();
 
-      async function fetchTransactions() {
-        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${window.ethereum.selectedAddress}&startblock=0&endblock=99999999&sort=desc&apikey=UXWX37Y2Y4PQM8ZZ1XQ2KBWH6AVZ8J7RYU`);
+        if (!walletAddress) {
+          return;
+        }
+         checkENS(walletAddress);
+
+        const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${walletAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
         const data = await response.json();
 
         if (data.result) {
@@ -84,75 +107,112 @@ const UserProfile = () => {
           }));
           setTransactions(truncatedTransactions);
         }
-      }
 
-      fetchTransactions();
-    }
 
-    if (supabase && walletAddress) {
-      async function fetchMarkets() {
-        const { data, error } = await supabase
-          .from('Markets')
-          .select("*")
-          .ilike('owner', walletAddress);
-
-        if (data) {
-          setMarkets(data);
-
-          const open = data.filter((market) => !market.isClosed);
-          const closed = data.filter((market) => market.isClosed);
-
-          setOpenMarkets(open);
-          setClosedMarkets(closed);
-        } else if (error) {
-          console.error('Error fetching markets:', error);
+        if (supabase && walletAddress) {
+          await fetchMarkets();
         }
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
       }
+    };
+
+    fetchData();
+  }, [supabase, walletAddress]);
+
+  async function checkENS(walletAddressToCheck) {
+    try {
+      await Moralis.start({
+        apiKey: "L3n1fZ8FQnz2QyOZO8rgdf0BBsuR1E7EUMCIRqjzo6Buw5VTeKycdVGWsHxaqE7C",
+      });
+
+      const response = await Moralis.EvmApi.resolve.resolveAddress({
+        "address": walletAddressToCheck,
+      });
+
+      const ensName = response.raw.name;
+      console.log(ensName);
+
+      if (ensName) {
+        setOwnerAddress(ensName);
+      }
+    } catch (e) {
+      console.error(e.message);
+      console.error(e.message);
+    }
+  }
+
+  const handleCancelCancel = () => {
+    setCancelDialogOpen(false);
+  };
+
+  const handleCancelConfirm = async (marketID) => {
+    try {
+      console.log("markettttID", MID);
+
+      // setLoading(true);
+
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const txResponse = await contract.closeMarket(MID);
+
+      await txResponse.wait();
+      console.log('Transaction hash:', txResponse.hash);
+      console.log('Transaction confirmed in block:', txResponse.blockNumber);
+
+      const { error } = await supabase
+        .from('Markets')
+        .update({ isClosed: true })
+        .eq('id', MID);
 
       fetchMarkets();
+    } catch (error) {
+      console.error('Error calling closeMarket:', error.message);
+      // You might want to show an error message to the user or handle it appropriately
+    } finally {
+      setLoading(false);
     }
-  }, [supabase, walletAddress]);
+  };
+
+
+
 
   return (
     <Layout>
       <Container style={{ paddingTop: '9rem', paddingBottom: '7rem' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {/* <Typography variant="h4">User Profile</Typography> */}
-          </Grid>
-
-          <Grid item xs={12}>
-            <Paper elevation={6} style={{ padding: '2rem', borderRadius: '16px', background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}>
-              <Typography variant="h6" style={{ color: 'white', marginBottom: '1rem' }}> <strong>Owner Address: {walletAddress}</strong></Typography>
-              
-              {/* <Typography variant="body1" style={{ marginBottom: '1rem', color: 'white' }}>
-                <strong>Wallet Address: {walletAddress}</strong>
-              </Typography> */}
+            <Paper elevation={6} style={{ position: 'relative', padding: '2rem', borderRadius: '16px', background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}>
+              <img
+                src={userImage}
+                alt="User"
+                style={{
+                  position: 'absolute',
+                  top: '2.5rem',
+                  left: '63rem',
+                  width: '100px',
+                  height: '100px'
+                }}
+              />
+              <Typography variant="h6" style={{ color: 'white', marginBottom: '1rem' }}>
+                <strong>Owner: {ownerAddress || walletAddress}</strong>
+              </Typography>
 
               <Typography variant="body1" style={{ marginBottom: '1rem', color: 'white' }}>
                 <strong>Network:</strong> <strong>Ethereum</strong>
               </Typography>
 
-
               {walletAddress && (
                 <Button
-                  variant="contained"
-                  style={{
-                    borderRadius: '50px',
-                    transition: 'background-color 0.3s',
-                    background: 'linear-gradient(to right, ##0033cc 0%, #ff99cc 100%)', // Corrected the background property
-                  }}
+                  variant="outlined"
+                  color="secondary"
                   href={`https://goerli.etherscan.io/address/${walletAddress}`}
                   target="_blank"
                 >
                   View on Etherscan
                 </Button>
               )}
-
-
-
-
-
             </Paper>
           </Grid>
 
@@ -207,12 +267,12 @@ const UserProfile = () => {
                       <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => closeMarket(market.id, market.name, market.description, market.owner)}
+                        onClick={() => closeMarket(market.id)}
                       >
                         Close Market
                       </Button>
                     </ListItem>
-                    <hr style={{ borderTop: '1px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
+                    <hr style={{ borderTop: '3px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
                   </div>
                 ))}
               </ul>
@@ -231,12 +291,48 @@ const UserProfile = () => {
                       </ListItemIcon>
                       <ListItemText primary={market.name} secondary={market.description} />
                     </ListItem>
-                    <hr style={{ borderTop: '1px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
+                    <hr style={{ borderTop: '3px solid #ccc', marginTop: '1rem', marginBottom: '1rem' }} />
                   </div>
                 ))}
               </ul>
             </Paper>
           </Grid>
+
+          <Dialog open={cancelDialogOpen} onClose={handleCancelCancel}>
+            <DialogTitle>Warning</DialogTitle>
+            <DialogContent>
+              <p>Market Closing is irreversible, do you still want to close your market?</p>
+            </DialogContent>
+            <DialogActions>
+              <MUIButton onClick={handleCancelCancel} color="primary">
+                No
+              </MUIButton>
+              <MUIButton onClick={() => {
+                handleCancelConfirm(MID);
+                setCancelDialogOpen(false);
+                setLoading(true);  
+              }} color="primary">
+                Yes
+              </MUIButton>
+            </DialogActions>
+          </Dialog>
+
+          {loading && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent', // Semi-transparent white background
+              zIndex: 9999,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <ScaleLoader color={"#123abc"} loading={loading} size={22} />
+            </div>
+          )}
         </Grid>
       </Container>
     </Layout>

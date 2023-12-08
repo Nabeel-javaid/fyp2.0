@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../css/main.css';
 import '../css/animate.css';
 import '../css/bootstrap.min.css';
 import '../css/LineIcons.3.0.css';
-import { Link } from "react-router-dom";
 
 import {
     ThirdwebProvider,
@@ -18,20 +18,12 @@ import {
     phantomWallet,
 } from "@thirdweb-dev/react";
 
-
-
 function NavBar() {
     const [walletConnected, setWalletConnected] = useState(false);
 
     const handleConnectWallet = () => {
         setWalletConnected(true);
     }
-
-    // const navigateToUserProfile = () => {
-    //     // You can provide the path you want to navigate to in the 'to' prop
-    //     return <Link to="/user-profile" />;
-    // };
-
 
     return (
         <header className="header navbar-area">
@@ -53,16 +45,13 @@ function NavBar() {
                                 <div className="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                                     <ul id="nav" className="navbar-nav ms-auto">
                                         <li className="nav-item">
-                                            <Link to="/" className="nav-link" aria-label="Toggle navigation">
-                                                Home
-                                            </Link>
+                                            <a href="/" className="active" aria-label="Toggle navigation">Home</a>
                                         </li>
-
                                         <li className="nav-item">
                                             <a href="about-us.html" aria-label="Toggle navigation">About us</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="dd-menu collapsed no-underline" href="/" data-bs-toggle="collapse"
+                                            <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-1" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Market</a>
                                             <ul className="sub-menu collapse" id="submenu-1-1">
@@ -70,7 +59,6 @@ function NavBar() {
                                                 <li className="nav-item"><a href="/create-market">Create Market</a></li>
                                             </ul>
                                         </li>
-
                                         <li className="nav-item">
                                             <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
@@ -82,11 +70,10 @@ function NavBar() {
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <Link to="/profile" className="nav-link" aria-label="Toggle navigation">
-                                                Profile
+                                            <Link to="/profile">
+                                                profile
                                             </Link>
                                         </li>
-
                                     </ul>
                                 </div> {/* navbar collapse */}
                                 <div className="button">
