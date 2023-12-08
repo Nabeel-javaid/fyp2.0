@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { styled as makeStyles } from '@mui/system';
 import Pagination from '@mui/material/Pagination';
+import ScaleLoader from 'react-spinners/ScaleLoader';
 import '../css/main.css';
 // import Web3 from 'web3';
 import { ethers } from 'ethers';
@@ -75,6 +76,7 @@ const ViewLoan = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const loansPerPage = 9;
   const MID = useParams();
 
@@ -96,6 +98,7 @@ const ViewLoan = () => {
     loadLoans();
   }, [MID]);
 
+
   const handleLoanDetailsClick = (loan) => {
     setSelectedLoan(loan);
     setDialogOpen(true);
@@ -105,8 +108,11 @@ const ViewLoan = () => {
     setDialogOpen(false);
   };
 
+
+
   const acceptLoan = async (loanID) => {
     try {
+
       if (window.ethereum) {
         await window.ethereum.enable();
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -142,15 +148,27 @@ const ViewLoan = () => {
             LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
             Status: 'Accepted', // Update the status to indicate that the loan is accepted
           })
-          .eq('LoanID', loanID)
-          .single();
+          .eq('LoanID', loanID);
 
         if (error) {
           console.error('Error updating Supabase:', error);
           return;
         }
 
-        console.log(`Loan ${loanID} accepted. ETH sent: ${ethers.utils.formatEther(amountToSend)}`);
+        setLoansData((prevLoans) => {
+          return prevLoans.map((loan) =>
+            loan.LoanID === loanID
+              ? {
+                ...loan,
+                LenderAddress: senderAddress,
+                LoanLendTime: new Date().toISOString(),
+                Status: 'Accepted',
+              }
+              : loan
+          );
+        });
+
+        setDialogOpen(false); // Close the dialog after accepting the loan
       } else {
         console.error('MetaMask not detected');
       }
@@ -158,6 +176,7 @@ const ViewLoan = () => {
       console.error('Error accepting loan:', error);
     }
   };
+
 
 
   const handlePageChange = (event, page) => {
@@ -172,9 +191,26 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
-        {currentLoans.map((data, index) => (
-          <div style={{ flex: '0 0 calc(30% - 20px)', marginBottom: '20px' }} key={`loan-${index}`}>
+      <div className="row">
+        {loading && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'transparent',
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <ScaleLoader color={"#123abc"} loading={loading} size={22} />
+          </div>
+        )}
+
+        {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
+          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
             <Paper
               style={{
                 padding: '16px',
@@ -246,6 +282,17 @@ const ViewLoan = () => {
             </Paper>
           </div>
         ))}
+
+        {!loading && currentLoans.length === 0 && (
+          <div className="col-md-12 col-sm-12">
+            <div className="feature-box">
+              <div className="icon">
+                <i className="lni lni-rocket"></i>
+              </div>
+              <Typography variant="h5">There are no loans available</Typography>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -340,18 +387,7 @@ const ViewLoan = () => {
               <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
             )}
             {error && <p>{error}</p>}
-            {!loading && loansData.length > 0 ? (
-              renderLoans()
-            ) : (
-              <div className="col-md-12 col-sm-12">
-                <div className="feature-box">
-                  <div className="icon">
-                    <i className="lni lni-rocket"></i>
-                  </div>
-                  <Typography variant="h5">There are no loans available</Typography>
-                </div>
-              </div>
-            )}
+            {renderLoans()}
 
             <div className={classes.pagination} style={{ position: 'absolute', right: '45%', bottom: '7%' }}>
               {totalPages > 1 && (
