@@ -100,6 +100,16 @@ const ViewLoan = () => {
     loadLoans();
   }, [MID]);
 
+  const loanImages = [
+    'https://i.ibb.co/CzzXqK6/7xm-xyz648911.png',
+    'https://i.ibb.co/71Smg2m/7xm-xyz113336.png',
+    'https://i.ibb.co/sJVHJRC/ETH-in-air.png',
+    'https://i.ibb.co/ZMwrKZV/Ethereum.png',
+    'https://i.ibb.co/k88Xny4/7xm-xyz978597.png',
+    'https://i.ibb.co/YBV8nCr/Vector-2646.jpg',
+    'https://i.ibb.co/cN2vqMP/7xm-xyz786284.jpg',
+  ];
+
 
   const handleLoanDetailsClick = (loan) => {
     setSelectedLoan(loan);
@@ -135,9 +145,6 @@ const ViewLoan = () => {
 
         const amountToSend = ethers.utils.parseEther(selectedLoan.Principal);
 
-        console.log('Receiver address:', selectedLoan.RecieverAddress);
-        console.log('Sender address:', senderAddress);
-        console.log('Amount to send:', amountToSend.toString());
 
         const txEth = await signer.sendTransaction({
           to: selectedLoan.RecieverAddress,
@@ -185,7 +192,7 @@ const ViewLoan = () => {
       console.error('Error accepting loan:', error);
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
-      
+
     }
   };
 
@@ -223,7 +230,7 @@ const ViewLoan = () => {
 
         {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
           <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
-          <Paper
+            <Paper
               style={{
                 padding: '16px',
                 borderRadius: '15px',
@@ -235,11 +242,11 @@ const ViewLoan = () => {
               elevation={3}
             >
               <img
-                src="https://i.ibb.co/ZMwrKZV/Ethereum.png"
-                border="0"
-                alt="loan"
-                style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
-              />
+              src={loanImages[index % loanImages.length]} // Use the image based on the index
+              alt={`Loan-${index}`}
+              border="0"
+              style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
+            />
 
               <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
                 <div style={{ display: 'block' }}>
@@ -379,14 +386,19 @@ const ViewLoan = () => {
         <Button onClick={handleCloseDialog} color="primary" variant="contained">
           Close
         </Button>
-        <Button variant="contained" color="primary" onClick={() => acceptLoan(selectedLoan?.LoanID)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => acceptLoan(selectedLoan?.LoanID)}
+          disabled={selectedLoan?.Status === 'Accepted'} // Disable the button if the loan is already accepted
+        >
           Accept
         </Button>
       </DialogActions>
     </Dialog>
   );
 
-   return (
+  return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
         <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
