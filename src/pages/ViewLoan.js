@@ -172,9 +172,9 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div className="row">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
         {currentLoans.map((data, index) => (
-          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
+          <div style={{ flex: '0 0 calc(30% - 20px)', marginBottom: '20px' }} key={`loan-${index}`}>
             <Paper
               style={{
                 padding: '16px',
@@ -203,7 +203,7 @@ const ViewLoan = () => {
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '2px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
                     <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
