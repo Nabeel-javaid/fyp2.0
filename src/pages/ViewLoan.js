@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { styled as makeStyles } from '@mui/system';
 import Pagination from '@mui/material/Pagination';
+import ScaleLoader from 'react-spinners/ScaleLoader';
 import '../css/main.css';
 // import Web3 from 'web3';
 import { ethers } from 'ethers';
@@ -75,6 +76,9 @@ const ViewLoan = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [acceptingLoan, setAcceptingLoan] = useState(false); // New state for loading during acceptance
+
+
   const loansPerPage = 9;
   const MID = useParams();
 
@@ -96,6 +100,7 @@ const ViewLoan = () => {
     loadLoans();
   }, [MID]);
 
+
   const handleLoanDetailsClick = (loan) => {
     setSelectedLoan(loan);
     setDialogOpen(true);
@@ -105,8 +110,15 @@ const ViewLoan = () => {
     setDialogOpen(false);
   };
 
+
+
   const acceptLoan = async (loanID) => {
     try {
+      setAcceptingLoan(true); // Set loading state to true
+      setDialogOpen(false); // Close the dialog after accepting the loan
+
+
+
       if (window.ethereum) {
         await window.ethereum.enable();
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -142,22 +154,41 @@ const ViewLoan = () => {
             LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
             Status: 'Accepted', // Update the status to indicate that the loan is accepted
           })
-          .eq('LoanID', loanID)
-          .single();
+          .eq('LoanID', loanID);
 
         if (error) {
           console.error('Error updating Supabase:', error);
           return;
         }
 
-        console.log(`Loan ${loanID} accepted. ETH sent: ${ethers.utils.formatEther(amountToSend)}`);
+        setLoansData((prevLoans) => {
+          return prevLoans.map((loan) =>
+            loan.LoanID === loanID
+              ? {
+                ...loan,
+                LenderAddress: senderAddress,
+                LoanLendTime: new Date().toISOString(),
+                Status: 'Accepted',
+              }
+              : loan
+          );
+        });
+
+        setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+
       } else {
         console.error('MetaMask not detected');
+        setAcceptingLoan(false); // Set loading state to false in case of an error
+
       }
     } catch (error) {
       console.error('Error accepting loan:', error);
+      setAcceptingLoan(false); // Set loading state to false in case of an error
+
+      
     }
   };
+
 
 
   const handlePageChange = (event, page) => {
@@ -172,10 +203,27 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div className="row">
-        {currentLoans.map((data, index) => (
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
+        {loading && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'transparent',
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <ScaleLoader color={"#123abc"} loading={loading} size={22} />
+          </div>
+        )}
+
+        {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
           <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
-            <Paper
+          <Paper
               style={{
                 padding: '16px',
                 borderRadius: '15px',
@@ -203,7 +251,7 @@ const ViewLoan = () => {
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '2px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
                     <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -246,6 +294,17 @@ const ViewLoan = () => {
             </Paper>
           </div>
         ))}
+
+        {!loading && currentLoans.length === 0 && (
+          <div className="col-md-12 col-sm-12">
+            <div className="feature-box">
+              <div className="icon">
+                <i className="lni lni-rocket"></i>
+              </div>
+              <Typography variant="h5">There are no loans available</Typography>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -327,7 +386,7 @@ const ViewLoan = () => {
     </Dialog>
   );
 
-  return (
+   return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
         <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
@@ -336,10 +395,28 @@ const ViewLoan = () => {
 
         <div className="feature section">
           <div className="container">
+            {acceptingLoan && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'transparent', // Semi-transparent white background
+                zIndex: 9999,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <ScaleLoader color={"#123abc"} loading={acceptingLoan} size={22} />
+              </div>
+            )}
+
             {loading && (
               <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
             )}
             {error && <p>{error}</p>}
+
             {!loading && loansData.length > 0 ? (
               renderLoans()
             ) : (
