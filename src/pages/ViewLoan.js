@@ -120,14 +120,10 @@ const ViewLoan = () => {
     setDialogOpen(false);
   };
 
-
-
   const acceptLoan = async (loanID) => {
     try {
       setAcceptingLoan(true); // Set loading state to true
       setDialogOpen(false); // Close the dialog after accepting the loan
-
-
 
       if (window.ethereum) {
         await window.ethereum.enable();
@@ -386,17 +382,44 @@ const ViewLoan = () => {
         <Button onClick={handleCloseDialog} color="primary" variant="contained">
           Close
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => acceptLoan(selectedLoan?.LoanID)}
-          disabled={selectedLoan?.Status === 'Accepted'} // Disable the button if the loan is already accepted
-        >
-          Accept
-        </Button>
+        {selectedLoan?.Status === 'Pending' ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => acceptLoan(selectedLoan?.LoanID)}
+          >
+            Accept
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            // onClick={() => liquidateLoan(selectedLoan?.LoanID)}
+            disabled={!isLiquidateEnabled(selectedLoan)}
+          >
+            {/* {liquidatingLoan ? 'Liquidating...' : 'Liquidate Loan'} */}
+            Liquidate
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
+
+  const isLiquidateEnabled = (loan) => {
+    if (!loan) {
+      return false;
+    }
+  
+    const loanEndTime = new Date(loan.LoanLendTime).getTime();
+    const currentTime = new Date().getTime();
+    const durationInSeconds = parseInt(loan.Duration, 10);
+  
+    // Calculate the time when liquidation is allowed
+    const liquidationTime = loanEndTime + durationInSeconds * 1000;
+  
+    // Enable the button if the current time is equal to or greater than the liquidation time
+    return currentTime >= liquidationTime;
+  };
 
   return (
     <Layout>
