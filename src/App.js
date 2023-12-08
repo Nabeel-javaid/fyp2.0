@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch, BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import CreateMarket from "./pages/CreateMarket";
 import ViewMarkets from './pages/ViewMarkets';
@@ -24,6 +24,8 @@ function App() {
           <Route path="/view-loans/:market" element={<ViewLoan/>} />
         </Routes>
     </BrowserRouter>
-  );  
+
+  );
+
 }
 export default App;

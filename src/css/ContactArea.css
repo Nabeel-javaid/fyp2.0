@@ -1,0 +1,40 @@
+.bouncing-text {
+    animation: bounce 1s infinite alternate;
+  }
+  
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  /* contactArea.css */
+.contact-area {
+   
+    position: absolute;
+    top: 90px; /* Adjust as needed for the vertical positioning */
+    right: 50px; /* Adjust as needed for the horizontal positioning */
+    width: 450px; /* Set the desired width */
+    height: 900px; /* Set the desired height */
+    background-color: lightblue; /* Example background color */
+    padding: 20px; /* Adjust padding as needed */
+    border-radius: 8px; /* Add border-radius for rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+    transition: transform 0.3s ease-in-out; /* Example transition */
+    
+  }
+
+  .bouncing-text {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 1%; /* Adjust the margin-top value as needed */
+  }
+
+  
+  
+  /* Add any additional styling as needed */
+  
