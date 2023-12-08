@@ -312,9 +312,11 @@ const MarketData = () => {
             container
             justifyContent="center"
             alignItems="left"
+            style={{ paddingTop: '10%' }}
             // style={{ height: '100vh', backgroundColor:"red" }}
           >
-            <CircularProgress color="primary" />
+            {/* <CircularProgress color="primary" /> */}
+            <iframe title='Loading' src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
           </Grid>
         </Container>
       </Layout>
