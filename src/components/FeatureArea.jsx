@@ -1,5 +1,5 @@
 import React from 'react';
-import Feature from './Feature';
+import FeatureBox from './FeatureBox';
 import '../css/main.css';
 import '../css/animate.css';
 
