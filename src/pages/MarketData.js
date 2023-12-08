@@ -86,7 +86,7 @@ const MarketData = () => {
         // Fetch market details from Supabase
         await loadMarketDetails(marketID);
       } catch (error) {
-        console.error('Error loading blockchain data:', error);
+        console.error('Error loading market details:', error);
         toast.error('Error loading blockchain data. Please try again.'); // Display error toast
       } finally {
         setLoading(false);
