@@ -174,7 +174,7 @@ const ViewLoan = () => {
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
         {currentLoans.map((data, index) => (
-          <div style={{ flex: '0 0 calc(30% - 20px)', marginBottom: '20px' }} key={`loan-${index}`}>
+          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
             <Paper
               style={{
                 padding: '16px',
