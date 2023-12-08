@@ -76,6 +76,8 @@ const ViewLoan = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [acceptingLoan, setAcceptingLoan] = useState(false); // New state for loading during acceptance
+
 
   const loansPerPage = 9;
   const MID = useParams();
@@ -112,6 +114,10 @@ const ViewLoan = () => {
 
   const acceptLoan = async (loanID) => {
     try {
+      setAcceptingLoan(true); // Set loading state to true
+      setDialogOpen(false); // Close the dialog after accepting the loan
+
+
 
       if (window.ethereum) {
         await window.ethereum.enable();
@@ -168,9 +174,12 @@ const ViewLoan = () => {
           );
         });
 
-        setDialogOpen(false); // Close the dialog after accepting the loan
+        setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+
       } else {
         console.error('MetaMask not detected');
+        setAcceptingLoan(false); // Set loading state to false in case of an error
+
       }
     } catch (error) {
       console.error('Error accepting loan:', error);
@@ -374,7 +383,7 @@ const ViewLoan = () => {
     </Dialog>
   );
 
-  return (
+   return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
         <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
@@ -383,11 +392,40 @@ const ViewLoan = () => {
 
         <div className="feature section">
           <div className="container">
+            {acceptingLoan && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'transparent', // Semi-transparent white background
+                zIndex: 9999,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <ScaleLoader color={"#123abc"} loading={acceptingLoan} size={22} />
+              </div>
+            )}
+
             {loading && (
               <iframe title="Loading" src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
             )}
             {error && <p>{error}</p>}
-            {renderLoans()}
+
+            {!loading && loansData.length > 0 ? (
+              renderLoans()
+            ) : (
+              <div className="col-md-12 col-sm-12">
+                <div className="feature-box">
+                  <div className="icon">
+                    <i className="lni lni-rocket"></i>
+                  </div>
+                  <Typography variant="h5">There are no loans available</Typography>
+                </div>
+              </div>
+            )}
 
             <div className={classes.pagination} style={{ position: 'absolute', right: '45%', bottom: '7%' }}>
               {totalPages > 1 && (
