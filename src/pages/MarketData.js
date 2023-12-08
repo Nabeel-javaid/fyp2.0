@@ -126,7 +126,7 @@ const MarketData = () => {
             container
             justifyContent="center"
             alignItems="left"
-            style={{ height: '100vh', backgroundColor:"red" }}
+            // style={{ height: '100vh', backgroundColor:"red" }}
           >
             <CircularProgress color="primary" />
           </Grid>

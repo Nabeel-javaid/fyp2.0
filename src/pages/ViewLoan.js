@@ -6,6 +6,10 @@ import { Button, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogAc
 import { styled as makeStyles } from '@mui/system';
 import Pagination from '@mui/material/Pagination';
 import '../css/main.css';
+// import Web3 from 'web3';
+import { ethers } from 'ethers';
+
+
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
@@ -71,7 +75,7 @@ const ViewLoan = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const loansPerPage = 1;
+  const loansPerPage = 9;
   const MID = useParams();
 
   useEffect(() => {
@@ -101,9 +105,60 @@ const ViewLoan = () => {
     setDialogOpen(false);
   };
 
-  const acceptLoan = (loanID) => {
-    console.log(`Loan ${loanID} accepted`);
+  const acceptLoan = async (loanID) => {
+    try {
+      if (window.ethereum) {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        const selectedLoan = loansData.find((loan) => loan.LoanID === loanID);
+        const accounts = await provider.listAccounts();
+        const senderAddress = accounts[0];
+
+        if (!senderAddress) {
+          console.error('MetaMask account not available');
+          return;
+        }
+
+        const amountToSend = ethers.utils.parseEther(selectedLoan.Principal);
+
+        console.log('Receiver address:', selectedLoan.RecieverAddress);
+        console.log('Sender address:', senderAddress);
+        console.log('Amount to send:', amountToSend.toString());
+
+        const txEth = await signer.sendTransaction({
+          to: selectedLoan.RecieverAddress,
+          value: amountToSend,
+        });
+
+        await txEth.wait();
+
+        // Update Supabase fields after successful transaction
+        const { data: updatedLoan, error } = await supabase
+          .from('LoanBid')
+          .update({
+            LenderAddress: senderAddress,
+            LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
+            Status: 'Accepted', // Update the status to indicate that the loan is accepted
+          })
+          .eq('LoanID', loanID)
+          .single();
+
+        if (error) {
+          console.error('Error updating Supabase:', error);
+          return;
+        }
+
+        console.log(`Loan ${loanID} accepted. ETH sent: ${ethers.utils.formatEther(amountToSend)}`);
+      } else {
+        console.error('MetaMask not detected');
+      }
+    } catch (error) {
+      console.error('Error accepting loan:', error);
+    }
   };
+
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
@@ -205,7 +260,7 @@ const ViewLoan = () => {
             <div
               className="status-indicator"
               style={{
-                color: selectedLoan.Status === 'Pending' ? 'green' : 'red',
+                color: selectedLoan.Status === 'Pending' ? 'red' : 'green',
                 textAlign: 'right',
                 display: 'flex-right',
               }}
