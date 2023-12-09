@@ -328,7 +328,6 @@ const ViewLoan = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
-
         const selectedLoan = loansData.find((loan) => loan.LoanID === loanID);
         const accounts = await provider.listAccounts();
         const senderAddress = accounts[0];
@@ -359,40 +358,6 @@ const ViewLoan = () => {
           console.error('Error updating database:', error);
           return;
         }
-
-
-
-
-
-        const contract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        );
-
-        const txResponse = await contract.withdrawETH(
-          senderAddress,
-          parseInt(loanPaymentCycle),
-          parseInt(defaultLoans),
-          parseInt(loanRequestsExpire),
-          parseInt(loanProcessFee),
-          false,
-          false,
-          " "
-        );
-        await txResponse.wait();
-        console.log("Market added successfully!");
-
-
-
-
-
-
-
-
-
-
-
 
         setLoansData((prevLoans) => {
           return prevLoans.map((loan) =>
