@@ -4,6 +4,8 @@ import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, Typ
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import Layout from '../components/Layout';
 import CreateLoanBid from '../ABIs/store/CreateLoanBid';
+import { toast, ToastContainer } from 'react-toastify';
+import Web3 from 'web3';
 
 import YOUR_CONTRACT_ABI from '../ABIs/tellerv2.json';
 import { useParams } from 'react-router';
@@ -31,9 +33,25 @@ function LoanBid() {
   const [collateralAmount, setCollateralAmount] = useState('');
   const [tokenId, setTokenId] = useState('');
   const [collateralAddress, setCollateralAddress] = useState('');
+  const minAPR = 0;
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const loadBlockchainData = async () => {
+    try {
+      const abi = require('../ABIs/marketRegistery.json');
+      const web3 = new Web3(window.ethereum);
+      const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
+      const marketContract = new web3.eth.Contract(abi, contractAddress);
+
+      // Fetch market data
+      const marketInfo = await marketContract.methods.getMarketData(Number(MID.market)).call();
+      console.log('MArketAPR: ', marketInfo);
+    } catch (error) {
+      console.error('Error: ', error);
+    }
+  }
 
   useEffect(() => {
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -45,25 +63,34 @@ function LoanBid() {
       web3Provider.getSigner()
     );
     setContract(contractInstance);
+    loadBlockchainData();
   }, []);
 
   const validate = () => {
     let tempErrors = {};
-    tempErrors.lendingToken = lendingToken ? '' : 'This field is required.';
-    tempErrors.principal = principal ? '' : 'This field is required.';
-    tempErrors.duration = duration ? '' : 'This field is required.';
-    tempErrors.APR = APR ? '' : 'This field is required.';
-    tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
-    tempErrors.receiver = receiver ? '' : 'This field is required.';
-    tempErrors.collateralAmount = collateralAmount ? '' : 'This field is required.';
-    tempErrors.collateralAddress = collateralAddress ? '' : 'This field is required.';
-
+    tempErrors.lendingToken = lendingToken ? (isValidAddress(lendingToken) ? '' : 'Must start with "0x".') : 'This field is required.';
+    tempErrors.principal = principal ? (isNumeric(principal) ? '' : 'Must be a number.') : 'This field is required.';
+    tempErrors.duration = duration ? (isNumeric(duration) ? '' : 'Must be a number.') : 'This field is required.';
+    tempErrors.APR = APR ? (isNumeric(APR) ? '' : 'Must be a number.') : 'This field is required.';
+    // tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
+    tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
+    tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
+    tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
+  
     if (collateralType !== CollateralType.ERC20) {
       tempErrors.tokenId = tokenId ? '' : 'This field is required.';
     }
-
+  
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === '');
+  };
+  
+  const isNumeric = (value) => {
+    return /^\d+$/.test(value);
+  };
+  
+  const isValidAddress = (address) => {
+    return /^0x[0-9a-fA-F]{40}$/.test(address);
   };
 
   const handleBidSubmission = async () => {
@@ -89,8 +116,7 @@ function LoanBid() {
 
         await txEth.wait();
         console.log('ETH sent successfully to the escrow');
-
-        
+    
         await CreateLoanBid(
           lendingToken,
           MID.market,
@@ -104,10 +130,12 @@ function LoanBid() {
           collateralAddress,
           'Pending'
         );
-        
+
+        toast.success("Bid Created Successfully");
       }
     } catch (error) {
       console.error('Error: ', error);
+      toast.error("Error Creating Bid");
     } finally {
       setLoading(false); // Set loading to false after the transaction attempt (success or failure)
     }
@@ -180,7 +208,7 @@ function LoanBid() {
                 helperText={errors.APR}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Metadata URI"
@@ -189,7 +217,7 @@ function LoanBid() {
                 error={Boolean(errors.metadataURI)}
                 helperText={errors.metadataURI}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -278,6 +306,19 @@ function LoanBid() {
           </div>
         )}
       </Paper>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
     </Layout>
   );
 }

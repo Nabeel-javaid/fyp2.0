@@ -227,14 +227,10 @@ const ViewLoan = () => {
     setDialogOpen(false);
   };
 
-
-
   const acceptLoan = async (loanID) => {
     try {
       setAcceptingLoan(true); // Set loading state to true
       setDialogOpen(false); // Close the dialog after accepting the loan
-
-
 
       if (window.ethereum) {
         await window.ethereum.enable();
@@ -251,6 +247,11 @@ const ViewLoan = () => {
         }
 
         const amountToSend = ethers.utils.parseEther(selectedLoan.Principal);
+
+        console.log("amountToSend", selectedLoan.Principal);
+        console.log("RecieverAddress", selectedLoan.RecieverAddress);
+        console.log("senderAddress", senderAddress);
+
 
 
         const txEth = await signer.sendTransaction({
@@ -349,11 +350,11 @@ const ViewLoan = () => {
               elevation={3}
             >
               <img
-              src={loanImages[index % loanImages.length]} // Use the image based on the index
-              alt={`Loan-${index}`}
-              border="0"
-              style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
-            />
+                src={loanImages[index % loanImages.length]} // Use the image based on the index
+                alt={`Loan-${index}`}
+                border="0"
+                style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
+              />
 
               <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
                 <div style={{ display: 'block' }}>
@@ -397,7 +398,7 @@ const ViewLoan = () => {
                   position: 'absolute',
                   bottom: 0,
                   right: '6.8px', // Adjust the value as needed
-                  color: data.Status === 'Pending' ? 'red' : 'green',
+                  color: data.Status === 'Pending' ? 'Purple' : (data.Status === 'Accepted' ? 'Green' : 'Red'),
                   textAlign: 'right',
                   padding: '22px',
                   fontWeight: 'bold',
@@ -405,6 +406,7 @@ const ViewLoan = () => {
               >
                 {data.Status}
               </div>
+
             </Paper>
           </div>
         ))}
@@ -423,6 +425,109 @@ const ViewLoan = () => {
     );
   };
 
+  const liquidateLoan = async (loanID) => {
+    try {
+      setAcceptingLoan(true); // Set loading state to true
+      setDialogOpen(false); // Close the dialog after accepting the loan
+
+      if (window.ethereum) {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+
+        const selectedLoan = loansData.find((loan) => loan.LoanID === loanID);
+        const accounts = await provider.listAccounts();
+        const senderAddress = accounts[0];
+
+        if (!senderAddress) {
+          console.error('MetaMask account not available');
+          return;
+        }
+
+        const amountToSend = ethers.utils.parseEther(selectedLoan.Principal);
+
+        const txEth = await signer.sendTransaction({
+          to: selectedLoan.LenderAddress,
+          value: amountToSend,
+        });
+
+        await txEth.wait();
+
+        // Update Supabase fields after successful transaction
+        const { data: updatedLoan, error } = await supabase
+          .from('LoanBid')
+          .update({
+            Status: 'Liquidated', // Update the status to indicate that the loan is accepted
+          })
+          .eq('LoanID', loanID);
+
+        if (error) {
+          console.error('Error updating database:', error);
+          return;
+        }
+
+
+
+
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        const txResponse = await contract.withdrawETH(
+          senderAddress,
+          parseInt(loanPaymentCycle),
+          parseInt(defaultLoans),
+          parseInt(loanRequestsExpire),
+          parseInt(loanProcessFee),
+          false,
+          false,
+          " "
+        );
+        await txResponse.wait();
+        console.log("Market added successfully!");
+
+
+
+
+
+
+
+
+
+
+
+
+        setLoansData((prevLoans) => {
+          return prevLoans.map((loan) =>
+            loan.LoanID === loanID
+              ? {
+                ...loan,
+                Status: 'Liquidated',
+              }
+              : loan
+          );
+        });
+
+        setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+
+      } else {
+        console.error('MetaMask not detected');
+        setAcceptingLoan(false); // Set loading state to false in case of an error
+
+      }
+    } catch (error) {
+      console.error('Error accepting loan:', error);
+      setAcceptingLoan(false); // Set loading state to false in case of an error
+
+
+    }
+  };
+
+
   const renderLoanDetailsDialog = () => (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
       <DialogTitle style={{ background: '#4f4f4f', color: 'white' }}>Loan Details</DialogTitle>
@@ -433,7 +538,7 @@ const ViewLoan = () => {
             <div
               className="status-indicator"
               style={{
-                color: selectedLoan.Status === 'Pending' ? 'red' : 'green',
+                color: selectedLoan.Status === 'Pending' ? 'Purple' : (selectedLoan.Status === 'Accepted' ? 'Green' : 'Red'),
                 textAlign: 'right',
                 display: 'flex-right',
               }}
@@ -493,17 +598,44 @@ const ViewLoan = () => {
         <Button onClick={handleCloseDialog} color="primary" variant="contained">
           Close
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => acceptLoan(selectedLoan?.LoanID)}
-          disabled={selectedLoan?.Status === 'Accepted'} // Disable the button if the loan is already accepted
-        >
-          Accept
-        </Button>
+        {selectedLoan?.Status === 'Pending' ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => acceptLoan(selectedLoan?.LoanID)}
+          >
+            Accept
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => liquidateLoan(selectedLoan?.LoanID)}
+            disabled={selectedLoan?.Status === 'Liquidated' || !isLiquidateEnabled(selectedLoan)}
+          >
+            {selectedLoan?.Status === 'Liquidated' ? 'Already Liquidated' : 'Liquidate'}
+          </Button>
+
+        )}
       </DialogActions>
     </Dialog>
   );
+
+  const isLiquidateEnabled = (loan) => {
+    if (!loan) {
+      return false;
+    }
+
+    const loanEndTime = new Date(loan.LoanLendTime).getTime();
+    const currentTime = new Date().getTime();
+    const durationInSeconds = parseInt(loan.Duration, 10);
+
+    // Calculate the time when liquidation is allowed
+    const liquidationTime = loanEndTime + durationInSeconds * 1000;
+
+    // Enable the button if the current time is equal to or greater than the liquidation time
+    return currentTime >= liquidationTime;
+  };
 
   const acceptedLoans = loansData.filter(loan => loan.Status === 'Accepted');
 const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
