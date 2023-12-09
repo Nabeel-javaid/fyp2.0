@@ -230,78 +230,82 @@ const ViewLoan = () => {
         )}
 
         {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
-          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
-            <Paper
-              style={{
-                padding: '16px',
-                borderRadius: '15px',
-                cursor: 'pointer',
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                backgroundColor: '#DCC7C2', // Add background color here
-              }}
-              onClick={() => handleLoanDetailsClick(data)}
-              elevation={3}
-            >
-              <img
-                src={loanImages[index % loanImages.length]} // Use the image based on the index
-                alt={`Loan-${index}`}
-                border="0"
-                style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
-              />
-
-              <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
-                <div style={{ display: 'block' }}>
-                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#000000', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
-                    APR: <span style={{ color: '#000000', fontWeight: 'bold' }}>{data.APR}</span>
-                  </h3>
-                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', textAlign: 'left', lineHeight: '22px' }}>
-                    Principal: {data.Principal}
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      amount of {data.CollateralAddress}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.Duration}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      Seconds
-                    </p>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
-                    <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
-                  </div>
-                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    by {data.RecieverAddress}
-                  </p>
-                </div>
-              </div>
-
-              {/* Status Indicator */}
-              <div
-                className="status-indicator"
+          // if loan.Status is 'Cancelled;, do not show the loan
+          data.Status !== 'Cancelled' && 
+          (
+            <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
+              <Paper
                 style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: '6.8px', // Adjust the value as needed
-                  color: data.Status === 'Pending' ? 'Purple' : (data.Status === 'Accepted' ? 'Green' : 'Red'),
-                  textAlign: 'right',
-                  padding: '22px',
-                  fontWeight: 'bold',
+                  padding: '16px',
+                  borderRadius: '15px',
+                  cursor: 'pointer',
+                  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                  backgroundColor: '#DCC7C2', // Add background color here
                 }}
+                onClick={() => handleLoanDetailsClick(data)}
+                elevation={3}
               >
-                {data.Status}
-              </div>
+                <img
+                  src={loanImages[index % loanImages.length]} // Use the image based on the index
+                  alt={`Loan-${index}`}
+                  border="0"
+                  style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
+                />
 
-            </Paper>
-          </div>
+                <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
+                  <div style={{ display: 'block' }}>
+                    <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#000000', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
+                      APR: <span style={{ color: '#000000', fontWeight: 'bold' }}>{data.APR}</span>
+                    </h3>
+                    <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', textAlign: 'left', lineHeight: '22px' }}>
+                      Principal: {data.Principal}
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
+                      <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        amount of {data.CollateralAddress}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.Duration}</h4>
+                      <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        Seconds
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
+                      <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
+                    </div>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      by {data.RecieverAddress}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status Indicator */}
+                <div
+                  className="status-indicator"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: '6.8px', // Adjust the value as needed
+                    color: data.Status === 'Pending' ? 'Purple' : (data.Status === 'Accepted' ? 'Green' : 'Red'),
+                    textAlign: 'right',
+                    padding: '22px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {data.Status}
+                </div>
+
+              </Paper>
+            </div>
+          )
         ))}
 
         {!loading && currentLoans.length === 0 && (
@@ -385,6 +389,38 @@ const ViewLoan = () => {
     }
   };
 
+  const [currentAccountAddress, setCurrentAccountAddress] = useState(null); // Add state for current account address
+
+  useEffect(() => {
+    const fetchAccountAddress = async () => {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const accountAddress = await signer.getAddress();
+
+        console.log('Account Address:', accountAddress);
+        setCurrentAccountAddress(accountAddress);
+      }
+    };
+
+    fetchAccountAddress();
+  }, []);
+
+  const cancelLoan = async (loanID) => {
+    // Update Supabase fields to update status to cancelled
+    const { data: updatedLoan, error } = await supabase
+      .from('LoanBid')
+      .update({
+        Status: 'Cancelled',
+      })
+      .eq('LoanID', loanID);
+
+    if (error) {
+      console.error('Error updating database:', error);
+      return;
+    }
+  }
+
 
   const renderLoanDetailsDialog = () => (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
@@ -456,24 +492,34 @@ const ViewLoan = () => {
         <Button onClick={handleCloseDialog} color="primary" variant="contained">
           Close
         </Button>
-        {selectedLoan?.Status === 'Pending' ? (
+        {selectedLoan?.BorrowerAddress === currentAccountAddress && selectedLoan?.Status === 'Pending' ? (
           <Button
             variant="contained"
             color="primary"
-            onClick={() => acceptLoan(selectedLoan?.LoanID)}
+            onClick={() => cancelLoan(selectedLoan.LoanID)}
           >
-            Accept
+            Cancel
           </Button>
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => liquidateLoan(selectedLoan?.LoanID)}
-            disabled={selectedLoan?.Status === 'Liquidated' || !isLiquidateEnabled(selectedLoan)}
-          >
-            {selectedLoan?.Status === 'Liquidated' ? 'Already Liquidated' : 'Liquidate'}
-          </Button>
-
+          selectedLoan?.Status === 'Pending' ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => acceptLoan(selectedLoan?.LoanID)}
+            >
+              Accept
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => liquidateLoan(selectedLoan?.LoanID)}
+              disabled={selectedLoan?.Status === 'Liquidated' || !isLiquidateEnabled(selectedLoan)}
+            >
+              {selectedLoan?.Status === 'Accepted' ? 'Liquidate' : 'Liquidated'}
+            </Button>
+  
+          )
         )}
       </DialogActions>
     </Dialog>
