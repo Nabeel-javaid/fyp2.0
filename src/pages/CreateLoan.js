@@ -110,7 +110,7 @@ function LoanBid() {
       if (collateralType === CollateralType.ERC20) {
         const ethAmount = ethers.utils.parseEther(collateralAmount);
         const txEth = await provider.getSigner().sendTransaction({
-          to: '0x875724a9f77437827a7cc8d3145957296619cf86',
+          to: '0x53c1f38ad0e8c6c3589abb6707ddd50d98022021',
           value: ethAmount,
         });
 
