@@ -10,7 +10,6 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@supabase/supabase-js": "^2.38.2",
     "@thirdweb-dev/react": "^3",
-    "@thirdweb-dev/sdk": "^3",
     "assert": "^2.0.0",
     "bootstrap": "^5.3.2",
     "browserify-zlib": "latest",

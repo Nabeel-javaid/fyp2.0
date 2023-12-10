@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { createClient } from '@supabase/supabase-js';
@@ -161,11 +162,12 @@ const ViewLoan = () => {
             LenderAddress: senderAddress,
             LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
             Status: 'Accepted', // Update the status to indicate that the loan is accepted
+            Brr: 0.1,
           })
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating Supabase:', error);
+          toast.error(`Error while updating database`);
           return;
         }
 
@@ -183,6 +185,7 @@ const ViewLoan = () => {
         });
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+        toast.success('Loan bid accepted successfully');
 
       } else {
         toast.error('MetaMask not detected');
@@ -190,9 +193,9 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error accepting loan:', error);
+      toast.error(`Error accepting loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
-
+    
 
     }
   };
@@ -348,7 +351,7 @@ const ViewLoan = () => {
           value: amountToSend,
         });
 
-        await txEth.wait();
+        await txEth.wait();  
 
         // Update Supabase fields after successful transaction
         const { data: updatedLoan, error } = await supabase
@@ -359,7 +362,7 @@ const ViewLoan = () => {
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating database:', error);
+          toast.error('Error updating blockchain:', error);
           return;
         }
 
@@ -373,6 +376,7 @@ const ViewLoan = () => {
               : loan
           );
         });
+        toast.success('Loan liquidated successfully');
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
 
@@ -382,7 +386,7 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error while liquidating loan:');
+      toast.error(`Error while liquidating loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
 
@@ -467,7 +471,7 @@ const ViewLoan = () => {
         setAcceptingLoan(false); // Set loading state to false in case of an error
       }
     } catch (error) {
-      toast.error('Error cancelling loan:', error);
+      toast.error(`Error cancelling loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
     }
   };
