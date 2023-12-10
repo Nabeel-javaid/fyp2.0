@@ -102,7 +102,7 @@ const ViewMarkets = () => {
         </Typography>
 
         {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}
@@ -113,12 +113,13 @@ const ViewMarkets = () => {
             )}
           />
           <Autocomplete
+          
             options={['Loan', 'Wholesale', 'Asset']}
             getOptionLabel={(option) => option}
             value={assetClassFilter}
             onChange={(event, newValue) => setAssetClassFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Market Type" variant="outlined" />
+              <TextField {...params} label="Type" variant="outlined" />
             )}
           />
         </div>
