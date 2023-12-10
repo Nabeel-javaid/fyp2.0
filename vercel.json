@@ -1,10 +1,10 @@
 {
-    "rewrites": [
-        { "source": "/(.*)", "destination": "/index.html" }
-    ],
     "routes": [
-        { "handle": "filesystem" },
-        { "src": "/static/(.*)", "dest": "/static/$1" },
-        { "src": "/market/:id", "dest": "/index.html" }
+      { "handle": "filesystem" },
+      { "src": "/static/(.*)", "dest": "/static/$1" },
+      { "src": "/market/:id", "dest": "/index.html" },
+      { "src": "/create-loan/:market", "dest": "/index.html" },
+      { "src": "/view-loans/:market", "dest": "/index.html" },
+      { "src": "/(.*)", "dest": "/index.html" }
     ]
 }
