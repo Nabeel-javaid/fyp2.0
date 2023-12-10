@@ -38,7 +38,7 @@ export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, 
             },
         ]);
 
-    console.log("Lending Token Address:", lendingTokenAddress, "|| Market ID:", marketID, "|| Principal:", principal, "|| Duration:", duration, "|| APR:", apr, "|| Metadata URI:", uri, "|| Recipient Address:", recipientAddress, "|| Collateral Type:", collateralType, "|| Collateral Amount:", collateralAmount, "|| Collateral Address:", collateralAddress, "|| Status:", status);
+    console.log("Lending Token Address:", lendingTokenAddress, "|| Market ID:", marketID, "|| Principal:", principal, "|| Duration:", duration, "|| APR:", apr, "|| Metadata URI:", uri, "|| Recipient Address:", recipientAddress, "|| Collateral Type:", collateralType, "|| Collateral Amount:", collateralAmount, "|| Collateral Address:", collateralAddress, "|| Status:", status, "|| Borrower Address:", borrowerAddress);
 
     if (error) {
         console.error('Error inserting data:', error);
