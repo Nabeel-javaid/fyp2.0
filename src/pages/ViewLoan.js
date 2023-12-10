@@ -468,39 +468,6 @@ const ViewLoan = () => {
         }
 
 
-
-
-
-        const contract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        );
-
-        const txResponse = await contract.withdrawETH(
-          senderAddress,
-          parseInt(loanPaymentCycle),
-          parseInt(defaultLoans),
-          parseInt(loanRequestsExpire),
-          parseInt(loanProcessFee),
-          false,
-          false,
-          " "
-        );
-        await txResponse.wait();
-        console.log("Market added successfully!");
-
-
-
-
-
-
-
-
-
-
-
-
         setLoansData((prevLoans) => {
           return prevLoans.map((loan) =>
             loan.LoanID === loanID
