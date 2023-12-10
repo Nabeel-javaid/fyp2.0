@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Web3 from 'web3';
 import ScaleLoader from "react-spinners/ScaleLoader";
+import { toast, ToastContainer } from "react-toastify";
 
 import {
     FormControl,
@@ -123,9 +124,11 @@ const CreateMarket = () => {
             const ID = Number(marketID);
             await NewMarket(ID, marketName, marketDescription, userAddress, marketType);
             setIsLoading(false); // Stop loading on success
+            toast.success("Market Created Successfully!");
         } catch (error) {
             setIsLoading(false); // Stop loading on error
             console.error("Error adding market:", error);
+            toast.error("Error Creating Market!");
         }
     };
 
@@ -649,6 +652,19 @@ const CreateMarket = () => {
                     </DialogActions>
                 </Dialog>
             </Grid>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
+
         </Layout>
     )
 }

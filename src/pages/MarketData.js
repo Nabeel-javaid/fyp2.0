@@ -65,11 +65,36 @@ const useStyles = () => ({
 
 const MarketData = () => {
   const { id } = useParams();
+  console.log(id);
   const marketID = Number(id);
   const [marketData, setMarketData] = useState(null);
   const [marketDetails, setMarketDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
+
+  const [marketParticipants, setMarketParticipants] = useState([]);
+
+  useEffect(() => {
+    const fetchMarketParticipants = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('LoanBid')
+          .select('*')
+          .eq('MarketplaceID', marketID)
+          .range(0, 1);
+
+        if (error) {
+          console.error('Error fetching market participants:', error);
+        } else {
+          setMarketParticipants(data.slice(0, 5)); // Take the latest 5 rows
+        }
+      } catch (error) {
+        console.error('Error in fetchMarketParticipants:', error);
+      }
+    };
+
+    fetchMarketParticipants();
+  }, []);
 
   useEffect(() => {
     const loadBlockchainData = async () => {
@@ -126,9 +151,11 @@ const MarketData = () => {
             container
             justifyContent="center"
             alignItems="left"
+            style={{ paddingTop: '10%' }}
             // style={{ height: '100vh', backgroundColor:"red" }}
           >
-            <CircularProgress color="primary" />
+            {/* <CircularProgress color="primary" /> */}
+            <iframe title='Loading' src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>
           </Grid>
         </Container>
       </Layout>
@@ -251,27 +278,18 @@ const MarketData = () => {
       <div>
         <Typography variant="h5" marginLeft={"20px"} marginTop={"20px"} fontWeight={"bold"}>Market Participants</Typography>
         <List>
-          <ListItem>
+        {marketParticipants.map((participant, index) => (
+          <ListItem key={index}>
             <ListItemAvatar>
-              <Avatar>U</Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="John Doe"
-              secondary="john.doe@example.com"
-            />
-            <IconButton>{/* Add an icon or action button */}</IconButton>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>W</Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="Jane Smith"
-              secondary="jane.smith@example.com"
-            />
-            <IconButton>{/* Add an icon or action button */}</IconButton>
-          </ListItem>
-          {/* Add more ListItems for other participants */}
+              <Avatar>{/* You can customize the avatar based on the participant data */}</Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={'Borrower'}
+                  secondary={participant.BorrowerAddress}
+                />
+                  <IconButton>{/* Add an icon or action button */}</IconButton>
+                </ListItem>
+        ))}
         </List>
       </div>
     </Box>
