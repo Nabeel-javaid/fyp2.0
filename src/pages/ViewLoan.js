@@ -78,9 +78,6 @@ const ViewLoan = () => {
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [acceptingLoan, setAcceptingLoan] = useState(false); // New state for loading during acceptance
-  const [showAccepted, setShowAccepted] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('All');
- 
 
 
   const loansPerPage = 9;
@@ -119,110 +116,6 @@ const ViewLoan = () => {
     setSelectedLoan(loan);
     setDialogOpen(true);
   };
-
-  const toggleShowAcceptedLoans = () => {
-    setShowAccepted((prevValue) => !prevValue);
-   
-  };
-
-  const handleFilterChange = (event) => {
-    setFilterStatus(event.target.value);
-  };
-
-
-
-  
-  // Function to filter loans based on their status
-  const filterLoansByStatus = () => {
-    let filteredLoans = loansData;
-
-    if (filterStatus !== 'All') {
-      filteredLoans = loansData.filter((loan) => {
-        return filterStatus === 'Accepted' ? loan.Status === 'Accepted' : loan.Status === 'Pending';
-      });
-    }
-
-    return (
-      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
-        {filteredLoans.map((data, index) => (
-          <div key={`loan-${index}`}>
-           <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} >
-            <Paper
-              style={{
-                padding: '16px',
-                borderRadius: '15px',
-                cursor: 'pointer',
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                backgroundColor: '#DCC7C2', // Add background color here
-              }}
-              onClick={() => handleLoanDetailsClick(data)}
-              elevation={3}
-            >
-              <img
-              src={loanImages[index % loanImages.length]} // Use the image based on the index
-              alt={`Loan-${index}`}
-              border="0"
-              style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
-            />
-
-              <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
-                <div style={{ display: 'block' }}>
-                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#000000', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
-                    APR: <span style={{ color: '#000000', fontWeight: 'bold' }}>{data.APR}</span>
-                  </h3>
-                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', textAlign: 'left', lineHeight: '22px' }}>
-                    Principal: {data.Principal}
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      amount of {data.CollateralAddress}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.Duration}</h4>
-                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      Seconds
-                    </p>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
-                    <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
-                  </div>
-                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    by {data.RecieverAddress}
-                  </p>
-                </div>
-              </div>
-
-              {/* Status Indicator */}
-              <div
-                className="status-indicator"
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: '6.8px', // Adjust the value as needed
-                  color: data.Status === 'Pending' ? 'red' : 'green',
-                  textAlign: 'right',
-                  padding: '22px',
-                  fontWeight: 'bold',
-                }}
-              >
-                {data.Status}
-              </div>
-            </Paper>
-          </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -705,49 +598,12 @@ const ViewLoan = () => {
     return currentTime >= liquidationTime;
   };
 
-  const acceptedLoans = loansData.filter(loan => loan.Status === 'Accepted');
-const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
-
   return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
         <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
           <strong>Loans in Market</strong>
         </Typography>
-
-        <div>
-      <select value={filterStatus} onChange={handleFilterChange}>
-        <option value="All">Show All Loans</option>
-        <option value="Accepted">Show Accepted Loans</option>
-        <option value="Pending">Show Pending Loans</option>
-      </select>
-      {filterStatus === 'All' && loansData.length > 0 ? renderLoans() : null}
-      {filterStatus === 'All' && loansData.length === 0 ? (
-        <div className="col-md-12 col-sm-12">
-          <div className="feature-box">
-            <div className="icon">
-              <i className="lni lni-rocket"></i>
-            </div>
-            <Typography variant="h5">There are no loans available</Typography>
-          </div>
-        </div>
-      ) : null}
-      
-          
-
-      
-      {((filterStatus === 'Accepted' && acceptedLoans.length === 0) || (filterStatus === 'Pending' && pendingLoans.length === 0)) ? (
-        <div className="col-md-12 col-sm-12">
-          <div className="feature-box">
-            <div className="icon">
-              <i className="lni lni-rocket"></i>
-            </div>
-            <Typography variant="h5">There are no {filterStatus === 'Accepted' ? 'Accepted' : 'Pending'} loans available</Typography>
-          </div>
-        </div>
-      ) : null}
-      {filterStatus !== 'All' ? filterLoansByStatus() : null}
-    </div>
 
         <div className="feature section">
           <div className="container">
@@ -773,7 +629,7 @@ const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
             )}
             {error && <p>{error}</p>}
 
-            {/* {filterStatus === 'All' && loansData.length > 0 ? (
+            {!loading && loansData.length > 0 ? (
               renderLoans()
             ) : (
               <div className="col-md-12 col-sm-12">
@@ -784,7 +640,7 @@ const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
                   <Typography variant="h5">There are no loans available</Typography>
                 </div>
               </div>
-            )} */}
+            )}
 
             <div className={classes.pagination} style={{ position: 'absolute', right: '45%', bottom: '7%' }}>
               {totalPages > 1 && (
