@@ -127,7 +127,7 @@ const ViewMarkets = () => {
         <div className="feature section">
           <div className="container">
             <div className="row">
-              {loading && <iframe title='Loading' src="https://lottie.host/?file=474793e3-81ee-474c-bc0b-78562b8fa02e/dwOgWo0OlT.json"></iframe>}
+              {loading && <iframe title='Loading' src="https://lottie.host/embed/2bb1d9c7-c859-42c3-a978-47b8057e708f/u9sfk3p35s.json"></iframe>}
               {error && <p>{error}</p>}
               {marketCount !== null && !loading && !error && (
                 currentMarkets.length > 0 ? (
