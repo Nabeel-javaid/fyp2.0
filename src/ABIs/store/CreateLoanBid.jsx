@@ -5,7 +5,7 @@ const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, URI, RA, CType, CAmount, CAddress, Status) {
+export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, URI, RA, CType, CAmount, CAddress, Status, Borrower) {
     const lendingTokenAddress = LTA.toString();
     const marketID = MID.toString();
     const principal = Principal.toString();
@@ -17,6 +17,7 @@ export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, 
     const collateralAmount = CAmount.toString();
     const collateralAddress = CAddress.toString();
     const status = Status.toString();
+    const borrowerAddress = Borrower.toString();
 
     const { data, error } = await supabase
         .from('LoanBid')
@@ -33,6 +34,7 @@ export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, 
                 CollateralAmount: collateralAmount,
                 CollateralAddress: collateralAddress,
                 Status: status,
+                BorrowerAddress: borrowerAddress
             },
         ]);
 

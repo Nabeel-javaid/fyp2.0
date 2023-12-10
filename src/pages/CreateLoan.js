@@ -116,6 +116,11 @@ function LoanBid() {
 
         await txEth.wait();
         console.log('ETH sent successfully to the escrow');
+
+        const signer = provider.getSigner();
+        const accountAddress = await signer.getAddress();
+
+        console.log("Acc. Address", accountAddress);
     
         await CreateLoanBid(
           lendingToken,
@@ -128,7 +133,8 @@ function LoanBid() {
           'ERC20',
           collateralAmount,
           collateralAddress,
-          'Pending'
+          'Pending',
+          accountAddress
         );
 
         toast.success("Bid Created Successfully");
