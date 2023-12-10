@@ -7,8 +7,8 @@ import { styled as makeStyles } from '@mui/system';
 import Pagination from '@mui/material/Pagination';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import '../css/main.css';
-// import Web3 from 'web3';
 import { ethers } from 'ethers';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 
@@ -135,7 +135,7 @@ const ViewLoan = () => {
         const senderAddress = accounts[0];
 
         if (!senderAddress) {
-          console.error('MetaMask account not available');
+          toast.error('MetaMask account not available');
           return;
         }
 
@@ -165,7 +165,7 @@ const ViewLoan = () => {
           .eq('LoanID', loanID);
 
         if (error) {
-          console.error('Error updating Supabase:', error);
+          toast.error('Error updating Supabase:', error);
           return;
         }
 
@@ -185,12 +185,12 @@ const ViewLoan = () => {
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
 
       } else {
-        console.error('MetaMask not detected');
+        toast.error('MetaMask not detected');
         setAcceptingLoan(false); // Set loading state to false in case of an error
 
       }
     } catch (error) {
-      console.error('Error accepting loan:', error);
+      toast.error('Error accepting loan:', error);
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
 
@@ -231,7 +231,7 @@ const ViewLoan = () => {
 
         {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
           // if loan.Status is 'Cancelled;, do not show the loan
-          data.Status !== 'Cancelled' && 
+          data.Status !== 'Cancelled' &&
           (
             <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
               <Paper
@@ -282,7 +282,7 @@ const ViewLoan = () => {
                       <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
                     </div>
                     <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      by {data.RecieverAddress}
+                      by {data.BorrowerAddress}
                     </p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ const ViewLoan = () => {
         const senderAddress = accounts[0];
 
         if (!senderAddress) {
-          console.error('MetaMask account not available');
+          toast.error('MetaMask account not available');
           return;
         }
 
@@ -359,7 +359,7 @@ const ViewLoan = () => {
           .eq('LoanID', loanID);
 
         if (error) {
-          console.error('Error updating database:', error);
+          toast.error('Error updating database:', error);
           return;
         }
 
@@ -377,12 +377,12 @@ const ViewLoan = () => {
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
 
       } else {
-        console.error('MetaMask not detected');
+        toast.error('MetaMask not detected');
         setAcceptingLoan(false); // Set loading state to false in case of an error
 
       }
     } catch (error) {
-      console.error('Error accepting loan:', error);
+      toast.error('Error while liquidating loan:');
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
 
@@ -407,19 +407,72 @@ const ViewLoan = () => {
   }, []);
 
   const cancelLoan = async (loanID) => {
-    // Update Supabase fields to update status to cancelled
-    const { data: updatedLoan, error } = await supabase
-      .from('LoanBid')
-      .update({
-        Status: 'Cancelled',
-      })
-      .eq('LoanID', loanID);
+    try {
+      setAcceptingLoan(true); // Set loading state to true
+      setDialogOpen(false); // Close the dialog after accepting the loan
+  
+      if (window.ethereum) {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+  
+        const accounts = await provider.listAccounts();
+        const senderAddress = accounts[0];
+  
+        if (!senderAddress) {
+          toast.error('MetaMask account not available');
+          return;
+        }
+  
+        // Prompt the user to sign the cancellation message
+        const cancellationMessage = `Cancel loan ${loanID}`;
+        const signature = await signer.signMessage(cancellationMessage);
+  
+        // Update Supabase fields after successful cancellation
+        const { data: updatedLoan, error } = await supabase
+          .from('LoanBid')
+          .update({
+            Status: 'Cancelled',    
+          })
+          .eq('LoanID', loanID);
+  
+        if (error) {
+          toast.error( 'Error while verifying signature Please try again' );
+         
+          setAcceptingLoan(false); // Set loading state to false in case of an error
 
-    if (error) {
-      console.error('Error updating database:', error);
-      return;
+          return;
+        }
+  
+        setLoansData((prevLoans) => {
+          return prevLoans.map((loan) =>
+            loan.LoanID === loanID
+              ? {
+                  ...loan,
+                  Status: 'Cancelled',
+                  Signature: signature, // Update the local state with the signature
+                }
+              : loan
+          );
+        });
+  
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+        
+        toast.success('Loan bid cancelled successfully');
+        setAcceptingLoan(false); // Set loading state back to false after loan cancellation
+      } else {
+        toast.error('MetaMask not detected');
+        setAcceptingLoan(false); // Set loading state to false in case of an error
+      }
+    } catch (error) {
+      toast.error('Error cancelling loan:', error);
+      setAcceptingLoan(false); // Set loading state to false in case of an error
     }
-  }
+  };
+  
+  
 
 
   const renderLoanDetailsDialog = () => (
@@ -498,7 +551,7 @@ const ViewLoan = () => {
             color="primary"
             onClick={() => cancelLoan(selectedLoan.LoanID)}
           >
-            Cancel
+            Cancel Loan bid
           </Button>
         ) : (
           selectedLoan?.Status === 'Pending' ? (
@@ -507,7 +560,7 @@ const ViewLoan = () => {
               color="primary"
               onClick={() => acceptLoan(selectedLoan?.LoanID)}
             >
-              Accept
+              Accept Loan Bid
             </Button>
           ) : (
             <Button
@@ -518,7 +571,7 @@ const ViewLoan = () => {
             >
               {selectedLoan?.Status === 'Accepted' ? 'Liquidate' : 'Liquidated'}
             </Button>
-  
+
           )
         )}
       </DialogActions>
@@ -603,6 +656,19 @@ const ViewLoan = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
     </Layout>
   );
 };
