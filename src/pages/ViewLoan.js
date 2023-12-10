@@ -142,10 +142,10 @@ const ViewLoan = () => {
     }
 
     return (
-      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
         {filteredLoans.map((data, index) => (
-          <div key={`loan-${index}`}>
-           <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} >
+          
+           <div key={`loan-${index}`} style={{ width: '30%', marginBottom: '16px', marginLeft: "20px", position: 'relative', top: '30px' }} >
             <Paper
               style={{
                 padding: '16px',
@@ -216,7 +216,7 @@ const ViewLoan = () => {
               </div>
             </Paper>
           </div>
-          </div>
+        
         ))}
       </div>
     );
