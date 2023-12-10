@@ -97,12 +97,12 @@ const ViewMarkets = () => {
   return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
-        <Typography variant="h3" style={{ color: 'black', textAlign: 'center'}}>
+        <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
           <strong>Browse the <span style={{ color: 'Red' }}>Markets</span></strong>
         </Typography>
 
         {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '12%' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '15%' }}>
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}
