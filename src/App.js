@@ -10,6 +10,8 @@ import UserProfile from './pages/UserProfile';
 import MarketData from './pages/MarketData';
 import CreateInstantLoan from './pages/CreateInstantLoan';
 import ViewInstantLoan from './pages/ViewInstantLoan';
+import { Analytics } from '@vercel/analytics/react';
+
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/pre-commit-loan/:market" element={<CreateInstantLoan/>} />
           <Route path="/view-instant-loans/:market" element={<ViewInstantLoan/>} />
         </Routes>
+        <Analytics />
+
     </BrowserRouter>
 
   );
