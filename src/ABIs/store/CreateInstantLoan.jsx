@@ -5,21 +5,20 @@ const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, RA, CType, CAmount, CAddress, Status, Borrower) {
+export default async function CreateInstantLoan(LTA, MID, Principal, Duration, APR, CType, CAmount, CAddress, Status, Lender) {
     const lendingTokenAddress = LTA.toString();
     const marketID = MID.toString();
     const principal = Principal.toString();
     const duration = Duration.toString();
     const apr = APR.toString();
-    const recipientAddress = RA.toString();
     const collateralType = CType.toString();
     const collateralAmount = CAmount.toString();
     const collateralAddress = CAddress.toString();
     const status = Status.toString();
-    const borrowerAddress = Borrower.toString();
+    const lenderAddress = Lender.toString();
 
     const { data, error } = await supabase
-        .from('LoanBid')
+        .from('InstantLoanBid')
         .insert([
             {
                 LendingTokenAddress: lendingTokenAddress,
@@ -27,16 +26,15 @@ export default async function CreateLoanBid(LTA, MID, Principal, Duration, APR, 
                 Principal: principal,
                 Duration: duration,
                 APR: apr,
-                RecieverAddress: recipientAddress,
                 CollateralType: collateralType,
                 CollateralAmount: collateralAmount,
                 CollateralAddress: collateralAddress,
                 Status: status,
-                BorrowerAddress: borrowerAddress
+                LenderAddress: lenderAddress
             },
         ]);
 
-    console.log("Lending Token Address:", lendingTokenAddress, "|| Market ID:", marketID, "|| Principal:", principal, "|| Duration:", duration, "|| APR:", apr, "|| Recipient Address:", recipientAddress, "|| Collateral Type:", collateralType, "|| Collateral Amount:", collateralAmount, "|| Collateral Address:", collateralAddress, "|| Status:", status, "|| Borrower Address:", borrowerAddress);
+    console.log("Lending Token Address:", lendingTokenAddress, "|| Market ID:", marketID, "|| Principal:", principal, "|| Duration:", duration, "|| APR:", apr, "|| Collateral Type:", collateralType, "|| Collateral Amount:", collateralAmount, "|| Collateral Address:", collateralAddress, "|| Status:", status, "|| Lender Address:", lenderAddress);
 
     if (error) {
         console.error('Error inserting data:', error);

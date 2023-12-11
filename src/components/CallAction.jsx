@@ -2,6 +2,7 @@ import React from 'react';
 import '../css/main.css';
 import '../css/main.css';
 
+
 function CallAction() {
     return (
         <section className="call-action">
