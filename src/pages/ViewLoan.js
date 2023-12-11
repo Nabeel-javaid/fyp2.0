@@ -318,7 +318,7 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '2%' }}>
         {loading && (
           <div style={{
             position: 'fixed',
@@ -337,7 +337,7 @@ const ViewLoan = () => {
         )}
 
         {!loading && currentLoans.length > 0 && currentLoans.map((data, index) => (
-          <div style={{ width: '30%', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
+          <div style={{ width: '25%',marginLeft: '40px', marginBottom: '16px', position: 'relative' }} key={`loan-${index}`}>
             <Paper
               style={{
                 padding: '16px',
