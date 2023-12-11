@@ -1,20 +1,3 @@
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/market/:id",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/create-loan/(.*)",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/view-loans/(.*)",
-        "destination": "/index.html"
-      }
-    ]
+  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
 }
