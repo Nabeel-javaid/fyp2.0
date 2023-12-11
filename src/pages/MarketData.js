@@ -470,7 +470,7 @@ const MarketData = () => {
   <Box display="flex" justifyContent="center" >
         <Button
           variant="contained"
-          color="primary"
+          color="info"
           onClick={() => {
             window.location.href = `/view-loans/${marketID}`;
           }}
@@ -480,7 +480,27 @@ const MarketData = () => {
         </Button>
         <Button
           variant="contained"
-          color="secondary"
+          color="info"
+          onClick={() => {
+            window.location.href = `/view-loans/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          View Instant Loans
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            window.location.href = `/view-loans/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          Create Instant Loan
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
           onClick={() => {
             window.location.href = `/create-loan/${marketID}`;
           }}
