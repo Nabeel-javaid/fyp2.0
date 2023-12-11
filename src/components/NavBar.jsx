@@ -32,9 +32,9 @@ function NavBar() {
                     <div className="col-lg-12">
                         <div className="nav-inner">
                             <nav className="navbar navbar-expand-lg">
-                                <a className="navbar-brand" href="index.html">
+                                <Link className="navbar-brand" to="/">
                                     {/* <img src="http://localhost:3000/assets/logo/logo.svg" alt="Logo" className='Logo' /> */}
-                                </a>
+                                </Link>
                                 <button className="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                     aria-expanded="false" aria-label="Toggle navigation">
@@ -45,18 +45,18 @@ function NavBar() {
                                 <div className="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                                     <ul id="nav" className="navbar-nav ms-auto">
                                         <li className="nav-item">
-                                            <a href="/" className="active" aria-label="Toggle navigation">Home</a>
+                                            <Link to="/" className="active" aria-label="Toggle navigation">Home</Link>
                                         </li>
                                         <li className="nav-item">
-                                            <a href="about-us.html" aria-label="Toggle navigation">About us</a>
+                                            <Link to="/about-us" aria-label="Toggle navigation">About us</Link>
                                         </li>
                                         <li className="nav-item">
                                             <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                 data-bs-target="#submenu-1-1" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Market</a>
                                             <ul className="sub-menu collapse" id="submenu-1-1">
-                                                <li className="nav-item"><a href="/view-market">View All Markets</a></li>
-                                                <li className="nav-item"><a href="/create-market">Create Market</a></li>
+                                                <li className="nav-item"><Link to="/view-market">View All Markets</Link></li>
+                                                <li className="nav-item"><Link to="/create-market">Create Market</Link></li>
                                             </ul>
                                         </li>
                                         <li className="nav-item">
@@ -64,15 +64,12 @@ function NavBar() {
                                                 data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
                                                 aria-expanded="false" aria-label="Toggle navigation">Blog</a>
                                             <ul className="sub-menu collapse" id="submenu-1-2">
-                                                <li className="nav-item"><a href="blog-grid.html">Blog Grid</a>
-                                                </li>
-                                                <li className="nav-item"><a href="blog-single.html">Blog Single</a></li>
+                                                <li className="nav-item"><Link to="/blog-grid">Blog Grid</Link></li>
+                                                <li className="nav-item"><Link to="/blog-single">Blog Single</Link></li>
                                             </ul>
                                         </li>
                                         <li className="nav-item">
-                                            <Link to="/profile">
-                                                profile
-                                            </Link>
+                                            <Link to="/profile">Profile</Link>
                                         </li>
                                     </ul>
                                 </div> {/* navbar collapse */}
@@ -117,4 +114,4 @@ function NavBar() {
     );
 }
 
-export default NavBar;
+export default React.memo(NavBar);

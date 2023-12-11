@@ -46,7 +46,8 @@ const UserProfile = () => {
     }
   }
 
-  async function fetchMarkets() {
+  const fetchMarkets = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('Markets')
@@ -58,7 +59,6 @@ const UserProfile = () => {
       }
 
       if (data) {
-        console.log("data from supabase")
         const markets = data.map(async market => {
           const isOpen = await isMarketOpen(market.id);
           return {
@@ -77,12 +77,13 @@ const UserProfile = () => {
       }
     } catch (error) {
       console.error('Error fetching markets:', error.message);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   function getWalletAddress() {
     const address = window.ethereum.selectedAddress;
-    console.log('Wallet address:', address);
     console.log('Wallet address:', address);
     setWalletAddress(address);
   }
@@ -95,7 +96,8 @@ const UserProfile = () => {
         if (!walletAddress) {
           return;
         }
-         checkENS(walletAddress);
+
+        checkENS(walletAddress);
 
         const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=txlist&address=${walletAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${etherscanApiKey}`);
         const data = await response.json();
@@ -107,7 +109,6 @@ const UserProfile = () => {
           }));
           setTransactions(truncatedTransactions);
         }
-
 
         if (supabase && walletAddress) {
           await fetchMarkets();
@@ -138,7 +139,6 @@ const UserProfile = () => {
       }
     } catch (e) {
       console.error(e.message);
-      console.error(e.message);
     }
   }
 
@@ -148,14 +148,13 @@ const UserProfile = () => {
 
   const handleCancelConfirm = async (marketID) => {
     try {
-      console.log("markettttID", MID);
-
-      // setLoading(true);
-
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      const txResponse = await contract.closeMarket(MID);
+      // Move setLoading inside the try block
+      setLoading(true);
+
+      const txResponse = await contract.closeMarket(marketID);
 
       await txResponse.wait();
       console.log('Transaction hash:', txResponse.hash);
@@ -164,19 +163,18 @@ const UserProfile = () => {
       const { error } = await supabase
         .from('Markets')
         .update({ isClosed: true })
-        .eq('id', MID);
+        .eq('id', marketID);
 
       fetchMarkets();
     } catch (error) {
       console.error('Error calling closeMarket:', error.message);
       // You might want to show an error message to the user or handle it appropriately
     } finally {
+      // Move setLoading inside the finally block
       setLoading(false);
+      setCancelDialogOpen(false);
     }
   };
-
-
-
 
   return (
     <Layout>
@@ -307,11 +305,7 @@ const UserProfile = () => {
               <MUIButton onClick={handleCancelCancel} color="primary">
                 No
               </MUIButton>
-              <MUIButton onClick={() => {
-                handleCancelConfirm(MID);
-                setCancelDialogOpen(false);
-                setLoading(true);  
-              }} color="primary">
+              <MUIButton onClick={() => handleCancelConfirm(MID)} color="primary">
                 Yes
               </MUIButton>
             </DialogActions>

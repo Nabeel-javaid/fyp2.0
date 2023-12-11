@@ -5,12 +5,12 @@ const RoundedButton = ({ label }) => {
   const [isHovered, setHovered] = useState(false);
 
   const buttonStyle = {
-    borderRadius: '50%', // Make the button round
-    width: '50px', // Set the button's width
-    height: '50px', // Set the button's height
-    backgroundColor: isHovered ? 'blue' : 'black', // Set the button color to black
+    borderRadius: '50%',
+    width: '50px',
+    height: '50px',
+    backgroundColor: isHovered ? 'blue' : 'black',
     transition: 'background-color 0.3s',
-    color: 'white', // Set the text color to white
+    color: 'white',
   };
 
   return (
@@ -24,4 +24,4 @@ const RoundedButton = ({ label }) => {
   );
 };
 
-export default RoundedButton;
+export default React.memo(RoundedButton);

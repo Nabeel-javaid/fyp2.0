@@ -18,7 +18,7 @@ const CollateralType = {
   ERC1155: 2,
 };
 
-function CreateLoan() {
+const CreateLoan = () => {
   const MID = useParams();
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
@@ -37,6 +37,8 @@ function CreateLoan() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const parseFloatValue = (value) => parseFloat(value) || '';
+
   const loadBlockchainData = async () => {
     try {
       const abi = require('../ABIs/marketRegistery.json');
@@ -44,15 +46,12 @@ function CreateLoan() {
       const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
       const marketContract = new web3.eth.Contract(abi, contractAddress);
 
-      // Fetch market data
       const marketInfo = await marketContract.methods.getMarketData(Number(MID.market)).call();
-      console.log('Market APR', marketInfo.marketplaceFeePercent)
       minAPR = marketInfo.marketplaceFeePercent;
-      console.log('APR', minAPR)
     } catch (error) {
       console.error('Error: ', error);
     }
-  }
+  };
 
   useEffect(() => {
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -72,24 +71,23 @@ function CreateLoan() {
     tempErrors.lendingToken = lendingToken ? (isValidAddress(lendingToken) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.principal = principal ? (isNumeric(principal) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.duration = duration ? (isNumeric(duration) ? '' : 'Must be a number.') : 'This field is required.';
-    tempErrors.APR = APR ? (isNumeric(APR) ? '' (APR>=minAPR ? '' : `APR should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
-    // tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
+    tempErrors.APR = APR ? (isNumeric(APR) ? (APR >= minAPR ? '' : `APR should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
     tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
-  
+
     if (collateralType !== CollateralType.ERC20) {
       tempErrors.tokenId = tokenId ? '' : 'This field is required.';
     }
-  
+
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === '');
   };
-  
+
   const isNumeric = (value) => {
     return /^\d+$/.test(value);
   };
-  
+
   const isValidAddress = (address) => {
     return /^0x[0-9a-fA-F]{40}$/.test(address);
   };
@@ -105,9 +103,8 @@ function CreateLoan() {
         _collateralAddress: collateralAddress,
       };
 
-      console.log(JSON.stringify(collateralInfo)); // Check the console for collateralInfo
+      console.log(JSON.stringify(collateralInfo));
 
-      // Send ETH to the smart contract
       if (collateralType === CollateralType.ERC20) {
         const ethAmount = ethers.utils.parseEther(collateralAmount);
         const txEth = await provider.getSigner().sendTransaction({
@@ -122,7 +119,7 @@ function CreateLoan() {
         const accountAddress = await signer.getAddress();
 
         console.log("Acc. Address", accountAddress);
-    
+
         await CreateLoanBid(
           lendingToken,
           MID.market,
@@ -143,27 +140,25 @@ function CreateLoan() {
       console.error('Error: ', error);
       toast.error("Error Creating Bid");
     } finally {
-      setLoading(false); // Set loading to false after the transaction attempt (success or failure)
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      setLoading(true); // Set loading to true when submitting
+      setLoading(true);
       await handleBidSubmission();
     }
   };
 
   return (
-
     <Layout>
       <Box display="flex" justifyContent="space-between"></Box>
       <Paper elevation={3} style={{ padding: '20px', paddingTop: '100px', maxWidth: '800px', margin: '20px auto', textAlign: 'center', marginLeft: '90px' }}>
         <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.5rem' }}>
           Loan Bid Submission
         </Typography>
-        {/* <ContactArea/> */}
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -215,16 +210,6 @@ function CreateLoan() {
                 helperText={errors.APR}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Metadata URI"
-                value={metadataURI}
-                onChange={(e) => setMetadataURI(e.target.value)}
-                error={Boolean(errors.metadataURI)}
-                helperText={errors.metadataURI}
-              />
-            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -236,12 +221,9 @@ function CreateLoan() {
               />
             </Grid>
 
-
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel
-                  style={{ fontWeight: 'normal', marginLeft: '-2px', }}
-                >
+                <InputLabel style={{ fontWeight: 'normal', marginLeft: '-2px', }}>
                   Collateral Type
                 </InputLabel>
                 <Select
@@ -325,7 +307,6 @@ function CreateLoan() {
         pauseOnHover
         theme="colored"
       />
-
     </Layout>
   );
 }

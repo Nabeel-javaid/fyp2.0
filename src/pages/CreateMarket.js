@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import Web3 from 'web3';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { toast, ToastContainer } from "react-toastify";
-
 import {
     FormControl,
     InputLabel,
@@ -24,14 +23,8 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Layout from "../components/Layout";
-
-
 import contractABI from "../ABIs/marketRegistery.json";
 import NewMarket from "../ABIs/store/NewMarket";
-
-
-
-
 
 const CreateMarket = () => {
     const [marketName, setMarketName] = useState("");
@@ -48,7 +41,6 @@ const CreateMarket = () => {
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-    const [isToolOpen, setisToolOpen] = useState(false);
     const [heading, setHeading] = useState("RULES");
     const [isMobileView, setIsMobileView] = useState(false);
     const [errors, setErrors] = useState({});

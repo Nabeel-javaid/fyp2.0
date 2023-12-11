@@ -16,6 +16,7 @@ const MarketData = ({
   const [marketData, setMarketData] = useState(null);
   const [marketDetails, setMarketDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadBlockchainData = async () => {
@@ -25,7 +26,6 @@ const MarketData = ({
 
         // Connect to the Ethereum network
         const web3 = new Web3(window.ethereum);
-        // await window.ethereum.enable(); // Request user permission to connect
 
         // Load the contract
         const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
@@ -35,45 +35,61 @@ const MarketData = ({
 
       } catch (error) {
         console.error('Error calling marketCount:', error);
-      } 
-      finally {
+        setError('Error loading blockchain data. Please try again later.');
+      } finally {
         setLoading(false);
       }
     }
 
     loadBlockchainData();
-  },[marketID]);
+  }, [marketID]);
 
   const getMarketData = async (contract, index) => {
     try {
       const marketInfo = await contract.methods.getMarketData(index).call();
       setMarketData(marketInfo);
-      console.log("Market Data:", marketInfo); // Log the marketInfo, not marketData
-  
+      console.log("Market Data:", marketInfo);
+
       loadMarketDetails(index);
     } catch (error) {
       console.error(`Error getting data for Market ${index}:`, error);
+      setError(`Error getting data for Market ${index}. Please try again later.`);
     }
   };
-  
-  const loadMarketDetails = async(marketID) => {
-    const { data: Market, error } = await supabase
-      .from('Markets')
-      .select('*')
-      .eq('id', marketID);
-  
-    if (error) {
-      console.log('Error loading data from blockchain. Please try again later.');
-    } else {
-      setMarketDetails(Market);
-      console.log("Details:", Market); // Log the Market, not marketDetails
+
+  const loadMarketDetails = async (marketID) => {
+    try {
+      const { data: Market, error } = await supabase
+        .from('Markets')
+        .select('*')
+        .eq('id', marketID);
+
+      if (error) {
+        console.log('Error loading data from Supabase. Please try again later.');
+        setError('Error loading data from Supabase. Please try again later.');
+      } else {
+        setMarketDetails(Market);
+        console.log("Details:", Market);
+      }
+    } catch (error) {
+      console.error('Error loading data from Supabase:', error);
+      setError('Error loading data from Supabase. Please try again later.');
     }
   }
-  
-  if (marketDetails === null || marketData === null) {
-    // Render an iframe or any other content you want when data is not available
+
+  if (error) {
     return (
-      <iframe title="NoMarketData" src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json" />
+      <div>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (marketDetails === null || marketData === null) {
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
     );
   }
 
@@ -91,11 +107,9 @@ const MarketData = ({
             Owner Address
           </a>
         </h3>
-
-        {/* MarketBox components go here */}
       </div>
     </div>
   );
 };
 
-export default MarketData;
+export default React.memo(MarketData);

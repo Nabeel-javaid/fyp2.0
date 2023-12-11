@@ -101,15 +101,14 @@ const ViewMarkets = () => {
           <strong>Browse the <span style={{ color: 'Red' }}>Markets</span></strong>
         </Typography>
 
-        {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '15%' }}>
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}
             value={statusFilter}
             onChange={(event, newValue) => setStatusFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Status" variant="outlined" />
+              <TextField {...params} label="Status" variant="outlined" style={{ width: '120px' }} />
             )}
           />
           <Autocomplete
@@ -118,7 +117,7 @@ const ViewMarkets = () => {
             value={assetClassFilter}
             onChange={(event, newValue) => setAssetClassFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Market Type" variant="outlined" />
+              <TextField {...params} label="Market Type" variant="outlined" style={{ width: '140px' }} />
             )}
           />
         </div>
