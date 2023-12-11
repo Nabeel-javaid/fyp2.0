@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, Typography, Paper, Box } from '@mui/material';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import Layout from '../components/Layout';
-import CreateLoanBid from '../ABIs/store/CreateLoanBid';
+import CreateInstantLoan from '../ABIs/store/CreateInstantLoan';
 import { toast, ToastContainer } from 'react-toastify';
 import Web3 from 'web3';
 
@@ -18,7 +18,7 @@ const CollateralType = {
   ERC1155: 2,
 };
 
-function CreateLoan() {
+function CreateInstantLoanBid() {
   const MID = useParams();
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
@@ -27,6 +27,7 @@ function CreateLoan() {
   const [principal, setPrincipal] = useState('');
   const [duration, setDuration] = useState('');
   const [APR, setAPR] = useState('');
+  // const [metadataURI, setMetadataURI] = useState('');
   const [receiver, setReceiver] = useState('');
   const [collateralType, setCollateralType] = useState(CollateralType.ERC20);
   const [collateralAmount, setCollateralAmount] = useState('');
@@ -123,13 +124,12 @@ function CreateLoan() {
 
         console.log("Acc. Address", accountAddress);
     
-        await CreateLoanBid(
+        await CreateInstantLoan(
           lendingToken,
           MID.market,
           principal,
           duration,
           APR,
-          receiver,
           'ERC20',
           collateralAmount,
           collateralAddress,
@@ -161,7 +161,7 @@ function CreateLoan() {
       <Box display="flex" justifyContent="space-between"></Box>
       <Paper elevation={3} style={{ padding: '20px', paddingTop: '100px', maxWidth: '800px', margin: '20px auto', textAlign: 'center', marginLeft: '90px' }}>
         <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.5rem' }}>
-          Loan Bid Submission
+          Instant Loan Submission
         </Typography>
         {/* <ContactArea/> */}
         <form onSubmit={handleSubmit}>
@@ -225,7 +225,7 @@ function CreateLoan() {
                 helperText={errors.metadataURI}
               />
             </Grid> */}
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Receiver Address"
@@ -234,7 +234,7 @@ function CreateLoan() {
                 error={Boolean(errors.receiver)}
                 helperText={errors.receiver}
               />
-            </Grid>
+            </Grid> */}
 
 
             <Grid item xs={12}>
@@ -330,4 +330,4 @@ function CreateLoan() {
   );
 }
 
-export default CreateLoan;
+export default CreateInstantLoanBid;
