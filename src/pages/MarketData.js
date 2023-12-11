@@ -312,7 +312,7 @@ const MarketData = () => {
           variant="contained"
           color="info"
           onClick={() => {
-            window.location.href = `/view-loans/${marketID}`;
+            window.location.href = `/view-instant-loans/${marketID}`;
           }}
           sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
         >
@@ -322,7 +322,7 @@ const MarketData = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            window.location.href = `/view-loans/${marketID}`;
+            window.location.href = `/pre-commit-loan/${marketID}`;
           }}
           sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
         >
