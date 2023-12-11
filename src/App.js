@@ -11,6 +11,8 @@ import MarketData from './pages/MarketData';
 import CreateInstantLoan from './pages/CreateInstantLoan';
 import ViewInstantLoan from './pages/ViewInstantLoan';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
           <Route path="/view-instant-loans/:market" element={<ViewInstantLoan/>} />
         </Routes>
         <Analytics />
+        <SpeedInsights />
+
 
     </BrowserRouter>
 
