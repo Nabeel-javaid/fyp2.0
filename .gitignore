@@ -11,6 +11,9 @@
 # Ignore logs
 /logs
 
+# ignore package-lock.json
+package-lock.json
+
 # Ignore editor specific files
 .vscode
 .idea
