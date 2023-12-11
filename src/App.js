@@ -8,6 +8,8 @@ import CreateLoan from './pages/CreateLoan';
 import ViewLoan from './pages/ViewLoan';
 import UserProfile from './pages/UserProfile';
 import MarketData from './pages/MarketData';
+import CreateInstantLoan from './pages/CreateInstantLoan';
+import ViewInstantLoan from './pages/ViewInstantLoan';
 
 function App() {
   return (
@@ -17,11 +19,15 @@ function App() {
           <Route path="/view-market" element={<ViewMarkets />} />
           <Route path="/create-market" element={<CreateMarket />} />
           <Route path="/view-loan" element={<ViewLoan />} />
-          
           <Route path="/profile" element={<UserProfile />} />
+
           <Route path="/market/:id" element={<MarketData />} />
+          
           <Route path="/create-loan/:market" element={<CreateLoan/>}/>
           <Route path="/view-loans/:market" element={<ViewLoan/>} />
+          
+          <Route path="/pre-commit-loan/:market" element={<CreateInstantLoan/>} />
+          <Route path="/view-instant-loans/:market" element={<ViewInstantLoan/>} />
         </Routes>
     </BrowserRouter>
 
