@@ -14,8 +14,6 @@ import { Alchemy, Network } from "alchemy-sdk";
 import ListItemIcon from '@mui/material/ListItemIcon';
 import COINS_LIST from '../ABIs/store/uniswap.json';
 
-
-
 import YOUR_CONTRACT_ABI from '../ABIs/tellerv2.json';
 import { useParams } from 'react-router';
 
@@ -48,21 +46,69 @@ function CreateLoan() {
   const [duration, setDuration] = useState('');
   const [APR, setAPR] = useState('');
   const [receiver, setReceiver] = useState('');
-  const [collateralType, setCollateralType] = useState(CollateralType.ERC20);
+  const [collateralType, setCollateralType] = useState('');
   const [collateralAmount, setCollateralAmount] = useState('');
   const [tokenId, setTokenId] = useState('');
   const [collateralAddress, setCollateralAddress] = useState('');
   const [top200Coins, setTop200Coins] = useState([]);
+  const [metaData, setMetaData] = useState([]);
 
   let minAPR = 0;
+  let maxCollateral = 0;
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+
+    const getCoins = async () => {
+      try {
+
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+
+        console.log("Account Address: ", address);
+
+        const balances = await alchemy.core.getTokenBalances(address);
+
+        const nonZeroBalances = balances.tokenBalances.filter((token) => {
+          return token.tokenBalance !== "0";
+        });
+
+        let i = 1;
+        let metadataArray = [];
+
+
+        for (let token of nonZeroBalances) {
+          // Get balance of token
+
+          // Get metadata of token
+          const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
+
+
+
+          // Game
+          const coinLogo = await COINS_LIST.tokens.filter((taken) => taken.address === token.contractAddress);
+
+          metadataArray.push({
+            id: i++,
+            name: metadata.name,
+            logo: coinLogo[0].logoURI,
+            address: token.contractAddress,
+          });
+        }
+
+        setMetaData(metadataArray);
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     const initMoralis = async () => {
       try {
         const signer = provider.getSigner();
+
         const accountAddress = await signer.getAddress();
 
         const nfts = await alchemy.nft.getNftsForOwner(accountAddress);
@@ -79,6 +125,9 @@ function CreateLoan() {
     if (collateralType === CollateralType.ERC721 || collateralType === CollateralType.ERC1155) {
       setFetchingNFTs(true);
       initMoralis();
+    }
+    if (collateralType === CollateralType.ERC20) {
+      getCoins();
     }
   }, [collateralType]);
 
@@ -121,23 +170,24 @@ function CreateLoan() {
     // tempErrors.lendingToken = lendingToken ? (isValidAddress(lendingToken) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.principal = principal ? (isNumeric(principal) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.duration = duration ? (isNumeric(duration) ? '' : 'Must be a number.') : 'This field is required.';
-    tempErrors.APR = APR ? (isNumeric(APR) ? ''(APR >= minAPR ? '' : APR`should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
+    tempErrors.APR = APR ? (isNumeric(APR) ? (APR >= minAPR ? '' : `APR should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
     // tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
     tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
-    tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
-    tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
+    // tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
+    // tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
 
-    if (collateralType !== CollateralType.ERC20) {
-      tempErrors.tokenId = tokenId ? '' : 'This field is required.';
-    }
+    // if (collateralType !== CollateralType.ERC20) {
+    //   tempErrors.tokenId = tokenId ? '' : 'This field is required.';
+    // }
 
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === '');
   };
 
   const isNumeric = (value) => {
-    return /^\d+$/.test(value);
+    return /^-?\d*\.?\d+$/.test(value);
   };
+
 
   const isValidAddress = (address) => {
     return /^0x[0-9a-fA-F]{40}$/.test(address);
@@ -147,12 +197,6 @@ function CreateLoan() {
     if (!provider || !contract) return;
 
     try {
-      const collateralInfo = {
-        _collateralType: collateralType,
-        _amount: collateralAmount,
-        _tokenId: collateralType === CollateralType.ERC20 ? '0' : tokenId,
-        _collateralAddress: collateralAddress,
-      };
 
 
       // Send ETH to the smart contract
@@ -167,6 +211,7 @@ function CreateLoan() {
         toast.success('ETH sent successfully to the escrow');
 
         const signer = provider.getSigner();
+
         const accountAddress = await signer.getAddress();
 
 
@@ -195,6 +240,7 @@ function CreateLoan() {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Submit");
     e.preventDefault();
     if (validate()) {
       setLoading(true); // Set loading to true when submitting
@@ -234,10 +280,12 @@ function CreateLoan() {
                   >
                     {top200Coins.map((coin) => (
                       <MenuItem key={coin.address} value={coin.address}>
-                        <ListItemIcon>
-                          <img src={coin.logoURI} width="20" height="20" />
-                        </ListItemIcon>
-                        <Typography variant="inherit">{coin.name}</Typography>
+                        <Typography variant="inherit">
+                          <img src={coin.logoURI} width="26" height="26" />
+
+                          <span style={{ marginLeft: '8px' }}>{coin.name}</span>
+                          <span style={{ marginLeft: '4px', color: '#888' }}> ({coin.symbol})</span>
+                        </Typography>
                       </MenuItem>
                     ))}
                   </Select>
@@ -338,8 +386,8 @@ function CreateLoan() {
                                 src={
                                   nft.contract.openSeaMetadata.imageUrl === undefined ? nft.image.originalUrl : nft.contract.openSeaMetadata.imageUrl
                                 }
-                                width="50"
-                                height="50" />
+                                width="30"
+                                height="30" />
                             </ListItemIcon>
                             <Typography variant="inherit">{nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId}</Typography>
                           </MenuItem>
@@ -370,8 +418,8 @@ function CreateLoan() {
                                   src={
                                     nft.contract.openSeaMetadata.imageUrl === undefined ? nft.image.originalUrl : nft.contract.openSeaMetadata.imageUrl
                                   }
-                                  width="50"
-                                  height="50" />
+                                  width="20"
+                                  height="20" />
                               </ListItemIcon>
                               <Typography variant="inherit">
                                 {nft.contract.openSeaMetadata.collectionName === undefined ?
@@ -397,21 +445,41 @@ function CreateLoan() {
                         helperText={errors.collateralAmount}
                       />
                     </Grid>
+
                     <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label={"Collateral Address"}
-                        value={collateralAddress}
-                        onChange={(e) => setCollateralAddress(e.target.value)}
-                        error={Boolean(errors.collateralAddress)}
-                        helperText={errors.collateralAddress}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel
+                          style={{ fontWeight: 'normal', marginLeft: '-2px', }}
+                        >
+                          {metaData.length === 0 ? "No Coins Found" : "Collateral Address"}
+                        </InputLabel>
+                        <Select
+                          value={collateralAddress}
+                          onChange={(e) => setCollateralAddress(e.target.value)}
+                          label={metaData.length === 0 ? "No Coins Found" : "Collateral Address"}
+                        >
+                          {metaData.map((data, index) => (
+                            <MenuItem value={data.address} key={index}>
+                              <Typography variant="inherit">
+
+                                <img
+                                  src={data.logo}
+                                  width="20"
+                                  height="20" />
+                                &nbsp;
+                                {data.name}
+                              </Typography>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                   </>
                 ))}
 
               <Grid item xs={12}>
                 <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px' }}>
+                  
                   Submit Bid
                 </Button>
               </Grid>
