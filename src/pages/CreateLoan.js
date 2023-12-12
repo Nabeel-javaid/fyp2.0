@@ -64,6 +64,9 @@ function CreateLoan() {
     const getCoins = async () => {
       try {
 
+        toast.success("Please wait while we fetch the tokens in your wallet!")
+        setLoading(true);
+
         const signer = provider.getSigner();
         const address = await signer.getAddress();
 
@@ -99,14 +102,20 @@ function CreateLoan() {
         }
 
         setMetaData(metadataArray);
+        setLoading(false);
 
       } catch (err) {
         console.error(err);
       }
+
     }
 
     const initMoralis = async () => {
       try {
+        toast.success("Please wait while we fetch your NFTs!")
+
+        setLoading(true);
+
         const signer = provider.getSigner();
 
         const accountAddress = await signer.getAddress();
@@ -114,7 +123,7 @@ function CreateLoan() {
         const nfts = await alchemy.nft.getNftsForOwner(accountAddress);
 
         setUserNFTs(nfts.ownedNfts);
-        console.log("NFTs Fetched Successfully!")
+        setLoading(false);
       } catch (e) {
         console.error(e);
       } finally {
