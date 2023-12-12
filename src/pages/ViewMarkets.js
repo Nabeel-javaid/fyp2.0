@@ -102,7 +102,7 @@ const ViewMarkets = () => {
         </Typography>
 
         {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '15%' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '71%', marginRight: '12%' }}>
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}

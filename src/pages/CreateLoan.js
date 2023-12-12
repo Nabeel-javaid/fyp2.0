@@ -262,9 +262,11 @@ function CreateLoan() {
 
 
       <Box display="flex" justifyContent="space-between" style={{ marginTop: '10%', marginBottom: '6%' }}>
-        <Paper elevation={3} style={{ padding: '20px', paddingTop: '35px', paddingBottom: '20px', maxWidth: '700px', margin: '20px auto', textAlign: 'center', marginLeft: '90px', marginTop: '28px' }}>
 
-          <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.4rem', marginTop: '-50px' }}>
+      
+        <Paper elevation={3} style={{ padding: '20px', paddingTop: '80px', paddingBottom: '20px', maxWidth: '650px',  margin: '20px auto', textAlign: 'center', marginLeft: '90px', marginTop: '28px' }}>
+
+          <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.4rem', marginTop: '-50px', marginBottom: '50px' }}>
             Loan Bid Submission
           </Typography>
 
