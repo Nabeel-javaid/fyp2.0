@@ -287,17 +287,6 @@ return (
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Collateral Amount"
-                value={collateralAmount}
-                onChange={(e) => setCollateralAmount(e.target.value)}
-                error={Boolean(errors.collateralAmount)}
-                helperText={errors.collateralAmount}
-              />
-            </Grid>
-
             {collateralType === CollateralType.ERC721 && !fetchingNFTs ? (
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -356,8 +345,8 @@ return (
                             </ListItemIcon>
                             <Typography variant="inherit">
                               {nft.contract.openSeaMetadata.collectionName === undefined ? 
-                                nft.collection.name + " #" + nft.tokenId : 
-                                nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId
+                                nft.collection.name : 
+                                nft.contract.openSeaMetadata.collectionName
                               }
                             </Typography>
                           </MenuItem>
@@ -367,16 +356,28 @@ return (
                   </FormControl>
                 </Grid>
               ):(
-              <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label={"Collateral Address"}
-                value={collateralAddress}
-                onChange={(e) => setCollateralAddress(e.target.value)}
-                error={Boolean(errors.collateralAddress)}
-                helperText={errors.collateralAddress}
-              />
-            </Grid>
+                <>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Collateral Amount"
+                      value={collateralAmount}
+                      onChange={(e) => setCollateralAmount(e.target.value)}
+                      error={Boolean(errors.collateralAmount)}
+                      helperText={errors.collateralAmount}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label={"Collateral Address"}
+                      value={collateralAddress}
+                      onChange={(e) => setCollateralAddress(e.target.value)}
+                      error={Boolean(errors.collateralAddress)}
+                      helperText={errors.collateralAddress}
+                    />
+                </Grid>
+              </>
             ))}
 
             <Grid item xs={12}>
