@@ -93,13 +93,16 @@ function CreateLoan() {
           // Game
           const coinLogo = await COINS_LIST.tokens.filter((taken) => taken.address === token.contractAddress);
 
+          const logo = coinLogo ? coinLogo.logoURI : getRandomLogoFromCOINS_LIST();
+
           metadataArray.push({
             id: i++,
             name: metadata.name,
-            logo: coinLogo[0].logoURI,
+            logo: logo,
             address: token.contractAddress,
           });
         }
+
 
         setMetaData(metadataArray);
         setLoading(false);
@@ -108,6 +111,13 @@ function CreateLoan() {
         console.error(err);
       }
 
+    }
+
+    function getRandomLogoFromCOINS_LIST() {
+      // Assuming COINS_LIST has at least one token
+      const randomIndex = Math.floor(Math.random() * COINS_LIST.tokens.length);
+      console.log("Random Index: ", randomIndex);
+      return COINS_LIST.tokens[randomIndex].logoURI;
     }
 
     const initMoralis = async () => {
@@ -263,8 +273,8 @@ function CreateLoan() {
 
       <Box display="flex" justifyContent="space-between" style={{ marginTop: '10%', marginBottom: '6%' }}>
 
-      
-        <Paper elevation={3} style={{ padding: '20px', paddingTop: '80px', paddingBottom: '20px', maxWidth: '650px',  margin: '20px auto', textAlign: 'center', marginLeft: '90px', marginTop: '28px' }}>
+
+        <Paper elevation={3} style={{ padding: '20px', paddingTop: '80px', paddingBottom: '20px', maxWidth: '650px', margin: '20px auto', textAlign: 'center', marginLeft: '90px', marginTop: '28px' }}>
 
           <Typography variant="h5" gutterBottom style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '1.4rem', marginTop: '-50px', marginBottom: '50px' }}>
             Loan Bid Submission
@@ -392,15 +402,16 @@ function CreateLoan() {
                       {userNFTs.map((nft, index) => (
                         (nft.contract.isSpam === false || nft.contract.isSpam === undefined) && nft.tokenType === 'ERC721' ? (
                           <MenuItem value={nft.tokenId} key={index}>
-                            <ListItemIcon>
+                            <Typography variant="inherit">
                               <img
                                 src={
                                   nft.contract.openSeaMetadata.imageUrl === undefined ? nft.image.originalUrl : nft.contract.openSeaMetadata.imageUrl
                                 }
-                                width="30"
-                                height="30" />
-                            </ListItemIcon>
-                            <Typography variant="inherit">{nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId}</Typography>
+                                width="35"
+                                height="35" />
+                              &nbsp;
+                              &nbsp;
+                              {nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId}</Typography>
                           </MenuItem>
                         ) : null
                       ))}
@@ -489,8 +500,8 @@ function CreateLoan() {
                 ))}
 
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px',borderRadius: '404px'}}>
-                  
+                <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px', borderRadius: '404px' }}>
+
                   Submit Bid
                 </Button>
               </Grid>
