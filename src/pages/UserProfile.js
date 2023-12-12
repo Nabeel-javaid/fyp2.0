@@ -6,8 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import contractABI from "../ABIs/marketRegistery.json";
 import { ethers } from "ethers";
-import userImage from '../avatar.jpg';
-import Moralis from 'moralis';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import { Alchemy, Network } from "alchemy-sdk";
 
