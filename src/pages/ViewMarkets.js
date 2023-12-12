@@ -113,6 +113,7 @@ const ViewMarkets = () => {
             )}
           />
           <Autocomplete
+          
             options={['Loan', 'Wholesale', 'Asset']}
             getOptionLabel={(option) => option}
             value={assetClassFilter}

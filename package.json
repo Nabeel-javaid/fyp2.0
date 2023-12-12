@@ -24,6 +24,7 @@
     "http-browserify": "latest",
     "https": "npm:https-browserify",
     "https-browserify": "latest",
+    "lottie-react": "^2.4.0",
     "moralis": "^2.23.1",
     "react": "^18.2",
     "react-dom": "^18.2",
