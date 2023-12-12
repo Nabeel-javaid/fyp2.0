@@ -9,7 +9,10 @@ import UserProfile from './pages/UserProfile';
 import MarketData from './pages/MarketData';
 import CreateInstantLoan from './pages/CreateInstantLoan';
 import ViewInstantLoan from './pages/ViewInstantLoan';
-import NotFound from './pages/NotFound'; // Create a NotFound component for 404 handling
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+
+
 
 function App() {
   return (
@@ -21,17 +24,18 @@ function App() {
         <Route path="/view-loan" element={<ViewLoan />} />
         <Route path="/profile" element={<UserProfile />} />
 
-        <Route path="/market/:id" element={<MarketData />} />
+          <Route path="/market/:id" element={<MarketData />} />
+          
+          <Route path="/create-loan/:market" element={<CreateLoan/>}/>
+          <Route path="/view-loans/:market" element={<ViewLoan/>} />
+          
+          <Route path="/pre-commit-loan/:market" element={<CreateInstantLoan/>} />
+          <Route path="/view-instant-loans/:market" element={<ViewInstantLoan/>} />
+        </Routes>
+        <Analytics />
+        <SpeedInsights />
 
-        <Route path="/create-loan/:market" element={<CreateLoan />} />
-        <Route path="/view-loans/:market" element={<ViewLoan />} />
 
-        <Route path="/pre-commit-loan/:market" element={<CreateInstantLoan />} />
-        <Route path="/view-instant-loans/:market" element={<ViewInstantLoan />} />
-
-        {/* Catch-all route for 404 handling */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
     </BrowserRouter>
   );
 }

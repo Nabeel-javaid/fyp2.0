@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { createClient } from '@supabase/supabase-js';
@@ -116,6 +117,110 @@ const ViewLoan = () => {
     setDialogOpen(true);
   };
 
+  const toggleShowAcceptedLoans = () => {
+    setShowAccepted((prevValue) => !prevValue);
+   
+  };
+
+  const handleFilterChange = (event) => {
+    setFilterStatus(event.target.value);
+  };
+
+
+
+  
+  // Function to filter loans based on their status
+  const filterLoansByStatus = () => {
+    let filteredLoans = loansData;
+
+    if (filterStatus !== 'All') {
+      filteredLoans = loansData.filter((loan) => {
+        return filterStatus === 'Accepted' ? loan.Status === 'Accepted' : loan.Status === 'Pending';
+      });
+    }
+
+    return (
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+        {filteredLoans.map((data, index) => (
+          
+           <div key={`loan-${index}`} style={{ width: '30%', marginBottom: '16px', marginLeft: "20px", position: 'relative', top: '30px' }} >
+            <Paper
+              style={{
+                padding: '16px',
+                borderRadius: '15px',
+                cursor: 'pointer',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#DCC7C2', // Add background color here
+              }}
+              onClick={() => handleLoanDetailsClick(data)}
+              elevation={3}
+            >
+              <img
+              src={loanImages[index % loanImages.length]} // Use the image based on the index
+              alt={`Loan-${index}`}
+              border="0"
+              style={{ width: '100%', height: '158px', objectFit: 'cover', borderRadius: '15px', marginBottom: '12px' }}
+            />
+
+              <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '12px' }}>
+                <div style={{ display: 'block' }}>
+                  <h3 style={{ fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '18px', color: '#000000', textAlign: 'left', lineHeight: '30px', marginBottom: '5px' }}>
+                    APR: <span style={{ color: '#000000', fontWeight: 'bold' }}>{data.APR}</span>
+                  </h3>
+                  <p style={{ marginTop: '5px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', textAlign: 'left', lineHeight: '22px' }}>
+                    Principal: {data.Principal}
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginTop: '15px', gap: '8px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.CollateralAmount}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      amount of {data.CollateralAddress}
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h4 style={{ fontFamily: 'epilogue', fontWeight: 'semibold', fontSize: '24px', color: '#000000', lineHeight: '24px' }}>{data.Duration}</h4>
+                    <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      Seconds
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#13131a' }}>
+                    <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
+                  </div>
+                  <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    by {data.RecieverAddress}
+                  </p>
+                </div>
+              </div>
+
+              {/* Status Indicator */}
+              <div
+                className="status-indicator"
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: '6.8px', // Adjust the value as needed
+                  color: data.Status === 'Pending' ? 'red' : 'green',
+                  textAlign: 'right',
+                  padding: '22px',
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.Status}
+              </div>
+            </Paper>
+          </div>
+        
+        ))}
+      </div>
+    );
+  };
+
+
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
@@ -161,11 +266,12 @@ const ViewLoan = () => {
             LenderAddress: senderAddress,
             LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
             Status: 'Accepted', // Update the status to indicate that the loan is accepted
+            Brr: 0.1,
           })
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating Supabase:', error);
+          toast.error(`Error while updating database`);
           return;
         }
 
@@ -183,6 +289,7 @@ const ViewLoan = () => {
         });
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+        toast.success('Loan bid accepted successfully');
 
       } else {
         toast.error('MetaMask not detected');
@@ -190,9 +297,9 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error accepting loan:', error);
+      toast.error(`Error accepting loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
-
+    
 
     }
   };
@@ -211,7 +318,7 @@ const ViewLoan = () => {
 
   const renderLoans = () => {
     return (
-      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '50px' }}>
+      <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '2%' }}>
         {loading && (
           <div style={{
             position: 'fixed',
@@ -348,7 +455,7 @@ const ViewLoan = () => {
           value: amountToSend,
         });
 
-        await txEth.wait();
+        await txEth.wait();  
 
         // Update Supabase fields after successful transaction
         const { data: updatedLoan, error } = await supabase
@@ -359,7 +466,7 @@ const ViewLoan = () => {
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating database:', error);
+          toast.error('Error updating blockchain:', error);
           return;
         }
 
@@ -373,6 +480,7 @@ const ViewLoan = () => {
               : loan
           );
         });
+        toast.success('Loan liquidated successfully');
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
 
@@ -382,7 +490,7 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error while liquidating loan:');
+      toast.error(`Error while liquidating loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
 
@@ -467,7 +575,7 @@ const ViewLoan = () => {
         setAcceptingLoan(false); // Set loading state to false in case of an error
       }
     } catch (error) {
-      toast.error('Error cancelling loan:', error);
+      toast.error(`Error cancelling loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
     }
   };

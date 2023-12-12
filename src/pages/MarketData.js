@@ -1,6 +1,10 @@
+/* eslint-disable */
+
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { styled } from '@mui/system';
+
+import { useParams } from 'react-router-dom';
+import {styled} from '@mui/system';
+
 import {
   Container,
   Grid,
@@ -276,50 +280,52 @@ const MarketData = () => {
           </CardContent>
         </Card>
 
-        <Box display="flex" justifyContent="center">
-          <Button
-            variant="contained"
-            color="info"
-            onClick={() => {
-              history.push(`/view-loans/${marketID}`);
-            }}
-            sx={{ marginRight: '16px', marginBottom: '20px' }}
-          >
-            View Loans
-          </Button>
-          <Button
-            variant="contained"
-            color="info"
-            onClick={() => {
-              history.push(`/view-instant-loans/${marketID}`);
-            }}
-            sx={{ marginRight: '16px', marginBottom: '20px' }}
-          >
-            View Instant Loans
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              history.push(`/pre-commit-loan/${marketID}`);
-            }}
-            sx={{ marginRight: '16px', marginBottom: '20px' }}
-          >
-            Create Instant Loan
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              history.push(`/create-loan/${marketID}`);
-            }}
-            sx={{ marginBottom: '20px' }}
-          >
-            Create Loan
-          </Button>
-        </Box>
-      </Container>
-    </Layout>
+{/* //box card */}
+  <Box display="flex" justifyContent="center" >
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => {
+            window.location.href = `/view-loans/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          View Loans
+        </Button>
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => {
+            window.location.href = `/view-instant-loans/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          View Instant Loans
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            window.location.href = `/pre-commit-loan/${marketID}`;
+          }}
+          sx={{ marginRight: '16px', marginBottom: '20px' }} // Add margin between buttons
+        >
+          Create Instant Loan
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            window.location.href = `/create-loan/${marketID}`;
+          }}
+          sx={{marginBottom: '20px'}}
+        >
+          Create Loan
+        </Button>
+        {/* Add more buttons for other actions */}
+      </Box>
+</Layout>
+
   );
 };
 

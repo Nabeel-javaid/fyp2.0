@@ -292,7 +292,7 @@ const CreateMarket = () => {
                             variant="body1"
                             style={{ color: "black", marginRight: "10px" }}
                         >
-                            &nbsp; &nbsp;  These rules impact the borrower’s experience.
+                            &nbsp; &nbsp; &nbsp;  These rules impact the borrower’s experience.
                         </Typography>
                         <Typography variant="body1" style={{ color: "black" }}>
                             All selections made here can be updated in Settings later.
@@ -557,7 +557,7 @@ const CreateMarket = () => {
                         )}
 
 
-                        <div style={{ marginTop: "12px", paddingLeft: page === 2 ? "12rem" : "12.2rem", paddingTop: "3rem" }}>
+                        <div style={{ marginTop: "12px", paddingLeft: page === 2 ? "14.3rem" : "14rem", paddingTop: "3rem" }}>
                             {page === 2 && (
                                 <MUIButton
                                     type="button"
