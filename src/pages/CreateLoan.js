@@ -489,7 +489,7 @@ function CreateLoan() {
                 ))}
 
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px' }}>
+                <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px',borderRadius: '404px'}}>
                   
                   Submit Bid
                 </Button>
