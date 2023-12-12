@@ -102,14 +102,14 @@ const ViewMarkets = () => {
         </Typography>
 
         {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '15%' }}>
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}
             value={statusFilter}
             onChange={(event, newValue) => setStatusFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Status" variant="outlined" />
+              <TextField {...params} label="Status" variant="outlined" style={{ width: '120px' }} />
             )}
           />
           <Autocomplete
@@ -119,10 +119,11 @@ const ViewMarkets = () => {
             value={assetClassFilter}
             onChange={(event, newValue) => setAssetClassFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Type" variant="outlined" />
+              <TextField {...params} label="Market Type" variant="outlined" style={{ width: '140px' }} />
             )}
           />
         </div>
+
 
         <div className="feature section">
           <div className="container">
@@ -139,17 +140,14 @@ const ViewMarkets = () => {
                       description={data.description}
                       ownerAddress={data.owner}
                       marketID={data.id}
-
                       onClick={handleFeatureBoxClick}
                     />
                   ))
                 ) : (
-
                   <iframe title='NoMarketData' src="https://lottie.host/?file=650d2381-d113-4865-80a7-5f8f3217c5b7/dUlOdERsRD.json"></iframe>
                 )
               )}
             </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div style={{ textAlign: 'center', marginTop: '20px', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
               <Pagination
                 count={totalPages}

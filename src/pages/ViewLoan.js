@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { createClient } from '@supabase/supabase-js';
@@ -77,9 +78,6 @@ const ViewLoan = () => {
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [acceptingLoan, setAcceptingLoan] = useState(false); // New state for loading during acceptance
-  const [showAccepted, setShowAccepted] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('All');
- 
 
 
   const loansPerPage = 9;
@@ -268,11 +266,12 @@ const ViewLoan = () => {
             LenderAddress: senderAddress,
             LoanLendTime: new Date().toISOString(), // You might want to format this date according to your needs
             Status: 'Accepted', // Update the status to indicate that the loan is accepted
+            Brr: 0.1,
           })
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating Supabase:', error);
+          toast.error(`Error while updating database`);
           return;
         }
 
@@ -290,6 +289,7 @@ const ViewLoan = () => {
         });
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
+        toast.success('Loan bid accepted successfully');
 
       } else {
         toast.error('MetaMask not detected');
@@ -297,9 +297,9 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error accepting loan:', error);
+      toast.error(`Error accepting loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
-
+    
 
     }
   };
@@ -455,7 +455,7 @@ const ViewLoan = () => {
           value: amountToSend,
         });
 
-        await txEth.wait();
+        await txEth.wait();  
 
         // Update Supabase fields after successful transaction
         const { data: updatedLoan, error } = await supabase
@@ -466,7 +466,7 @@ const ViewLoan = () => {
           .eq('LoanID', loanID);
 
         if (error) {
-          toast.error('Error updating database:', error);
+          toast.error('Error updating blockchain:', error);
           return;
         }
 
@@ -480,6 +480,7 @@ const ViewLoan = () => {
               : loan
           );
         });
+        toast.success('Loan liquidated successfully');
 
         setAcceptingLoan(false); // Set loading state back to false after loan acceptance
 
@@ -489,7 +490,7 @@ const ViewLoan = () => {
 
       }
     } catch (error) {
-      toast.error('Error while liquidating loan:');
+      toast.error(`Error while liquidating loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
 
 
@@ -574,7 +575,7 @@ const ViewLoan = () => {
         setAcceptingLoan(false); // Set loading state to false in case of an error
       }
     } catch (error) {
-      toast.error('Error cancelling loan:', error);
+      toast.error(`Error cancelling loan`);
       setAcceptingLoan(false); // Set loading state to false in case of an error
     }
   };
@@ -701,49 +702,12 @@ const ViewLoan = () => {
     return currentTime >= liquidationTime;
   };
 
-  const acceptedLoans = loansData.filter(loan => loan.Status === 'Accepted');
-const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
-
   return (
     <Layout>
       <div style={{ paddingTop: '10%' }}>
         <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
           <strong>Loans in Market</strong>
         </Typography>
-
-        <div>
-      <select value={filterStatus} onChange={handleFilterChange}>
-        <option value="All">Show All Loans</option>
-        <option value="Accepted">Show Accepted Loans</option>
-        <option value="Pending">Show Pending Loans</option>
-      </select>
-      {filterStatus === 'All' && loansData.length > 0 ? renderLoans() : null}
-      {filterStatus === 'All' && loansData.length === 0 ? (
-        <div className="col-md-12 col-sm-12">
-          <div className="feature-box">
-            <div className="icon">
-              <i className="lni lni-rocket"></i>
-            </div>
-            <Typography variant="h5">There are no loans available</Typography>
-          </div>
-        </div>
-      ) : null}
-      
-          
-
-      
-      {((filterStatus === 'Accepted' && acceptedLoans.length === 0) || (filterStatus === 'Pending' && pendingLoans.length === 0)) ? (
-        <div className="col-md-12 col-sm-12">
-          <div className="feature-box">
-            <div className="icon">
-              <i className="lni lni-rocket"></i>
-            </div>
-            <Typography variant="h5">There are no {filterStatus === 'Accepted' ? 'Accepted' : 'Pending'} loans available</Typography>
-          </div>
-        </div>
-      ) : null}
-      {filterStatus !== 'All' ? filterLoansByStatus() : null}
-    </div>
 
         <div className="feature section">
           <div className="container">
@@ -769,7 +733,7 @@ const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
             )}
             {error && <p>{error}</p>}
 
-            {/* {filterStatus === 'All' && loansData.length > 0 ? (
+            {!loading && loansData.length > 0 ? (
               renderLoans()
             ) : (
               <div className="col-md-12 col-sm-12">
@@ -780,7 +744,7 @@ const pendingLoans = loansData.filter(loan => loan.Status === 'Pending');
                   <Typography variant="h5">There are no loans available</Typography>
                 </div>
               </div>
-            )} */}
+            )}
 
             <div className={classes.pagination} style={{ position: 'absolute', right: '45%', bottom: '7%' }}>
               {totalPages > 1 && (

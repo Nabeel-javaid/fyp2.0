@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, Typography, Paper, Box } from '@mui/material';
@@ -9,6 +11,8 @@ import Web3 from 'web3';
 import animationData from '../ABIs/store/LottieAnimation.json';
 import Lottie from "lottie-react";
 
+import Moralis from 'moralis';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 import YOUR_CONTRACT_ABI from '../ABIs/tellerv2.json';
 import { useParams } from 'react-router';
@@ -21,10 +25,22 @@ const CollateralType = {
   ERC1155: 2,
 };
 
+import { Alchemy, Network } from "alchemy-sdk";
+
+const config = {
+  apiKey: "owPQ3CAm4xkJ7gukesUl4w7iqUpNHVIb",
+  network: Network.ETH_MAINNET,
+};
+const alchemy = new Alchemy(config);
+
 function CreateLoan() {
   const MID = useParams();
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
+
+  // Moralis user NFTs state
+  const [userNFTs, setUserNFTs] = useState([]);
+  const [fetchingNFTs, setFetchingNFTs] = useState(false);
 
   const [lendingToken, setLendingToken] = useState('');
   const [principal, setPrincipal] = useState('');
@@ -40,6 +56,51 @@ function CreateLoan() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const initMoralis = async () => {
+      try {
+        // await Moralis.start({
+        //   apiKey: "L3n1fZ8FQnz2QyOZO8rgdf0BBsuR1E7EUMCIRqjzo6Buw5VTeKycdVGWsHxaqE7C",
+        // });
+
+        // const response = await Moralis.EvmApi.nft.getWalletNFTs({
+        //   "chain": "0x1",
+        //   "format": "decimal",
+        //   "limit": 30,
+        //   "excludeSpam": true,
+        //   "mediaItems": true,
+        //   "address": "0x773c652FF2C4578d747FAE9BbC9066d37A45D3A6" //@todo: change this to user's address
+        // });
+        // console.log(response.raw) ;
+        const nfts = await alchemy.nft.getNftsForOwner("0x773c652FF2C4578d747FAE9BbC9066d37A45D3A6");
+        
+        for (let i = 0; i < nfts.ownedNfts.length; i++) {
+          const nft = nfts.ownedNfts[i];
+          // if(contract.isSpam === true) {
+          //   continue;
+          // }
+          // if(i===0) {
+            // console.log(nft);
+          // }
+          console.log("NFT: ", nft);
+        }
+
+        setUserNFTs(nfts.ownedNfts);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setFetchingNFTs(false);
+      }
+    };
+
+    if (collateralType === CollateralType.ERC721) {
+      setFetchingNFTs(true);
+      initMoralis();
+    }
+  }, [collateralType]);
+
+
+
   const loadBlockchainData = async () => {
     try {
       const abi = require('../ABIs/marketRegistery.json');
@@ -49,13 +110,13 @@ function CreateLoan() {
 
       // Fetch market data
       const marketInfo = await marketContract.methods.getMarketData(Number(MID.market)).call();
-      console.log('Market APR', marketInfo.marketplaceFeePercent)
+      console.log('Market APR', marketInfo.marketplaceFeePercent);
       minAPR = marketInfo.marketplaceFeePercent;
-      console.log('APR', minAPR)
+      console.log('APR', minAPR);
     } catch (error) {
       console.error('Error: ', error);
     }
-  }
+  };
 
   useEffect(() => {
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -70,29 +131,30 @@ function CreateLoan() {
     loadBlockchainData();
   }, []);
 
+
   const validate = () => {
     let tempErrors = {};
     tempErrors.lendingToken = lendingToken ? (isValidAddress(lendingToken) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.principal = principal ? (isNumeric(principal) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.duration = duration ? (isNumeric(duration) ? '' : 'Must be a number.') : 'This field is required.';
-    tempErrors.APR = APR ? (isNumeric(APR) ? '' (APR>=minAPR ? '' : `APR should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
+    tempErrors.APR = APR ? (isNumeric(APR) ? ''(APR >= minAPR ? '' : APR `should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
     // tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
     tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
-  
+
     if (collateralType !== CollateralType.ERC20) {
       tempErrors.tokenId = tokenId ? '' : 'This field is required.';
     }
-  
+
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === '');
   };
-  
+
   const isNumeric = (value) => {
     return /^\d+$/.test(value);
   };
-  
+
   const isValidAddress = (address) => {
     return /^0x[0-9a-fA-F]{40}$/.test(address);
   };
@@ -125,7 +187,7 @@ function CreateLoan() {
         const accountAddress = await signer.getAddress();
 
         console.log("Acc. Address", accountAddress);
-    
+
         await CreateLoanBid(
           lendingToken,
           MID.market,
@@ -158,8 +220,7 @@ function CreateLoan() {
     }
   };
 
-  return (
-
+return (
     <Layout>
       
       
@@ -224,16 +285,6 @@ function CreateLoan() {
                 helperText={errors.APR}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Metadata URI"
-                value={metadataURI}
-                onChange={(e) => setMetadataURI(e.target.value)}
-                error={Boolean(errors.metadataURI)}
-                helperText={errors.metadataURI}
-              />
-            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -275,28 +326,51 @@ function CreateLoan() {
                 helperText={errors.collateralAmount}
               />
             </Grid>
-            {collateralType !== CollateralType.ERC20 && (
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Token ID"
-                  value={tokenId}
-                  onChange={(e) => setTokenId(e.target.value)}
-                  error={Boolean(errors.tokenId)}
-                  helperText={errors.tokenId}
-                />
+
+            {collateralType === CollateralType.ERC721 && !fetchingNFTs ? (
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    style={{ fontWeight: 'normal', marginLeft: '-2px', }}
+                  >
+                    Collateral NFT
+                  </InputLabel>
+                  <Select
+                    value={tokenId}
+                    onChange={(e) => setTokenId(e.target.value)}
+                    label="Collateral NFT"
+                  >
+                    {userNFTs.map((nft, index) => (
+                      nft.contract.isSpam === false || nft.contract.isSpam === undefined ? (
+                        <MenuItem value={nft.tokenId} key={index}>
+                          <ListItemIcon>
+                            <img
+                            src={
+                              nft.contract.openSeaMetadata.imageUrl === undefined ? nft.image.originalUrl : nft.contract.openSeaMetadata.imageUrl
+                            }
+                            width="50"
+                            height="50"/>
+                          </ListItemIcon>
+                          <Typography variant="inherit">{"     " + nft.contract.openSeaMetadata.collectionName}</Typography>
+                        </MenuItem>
+                      ) : null
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-            )}
-            <Grid item xs={12}>
+            ):(
+              <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Collateral Address"
+                label={"Collateral Address"}
                 value={collateralAddress}
                 onChange={(e) => setCollateralAddress(e.target.value)}
                 error={Boolean(errors.collateralAddress)}
                 helperText={errors.collateralAddress}
               />
             </Grid>
+            )}
+
             <Grid item xs={12}>
               <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px' }}>
                 Submit Bid
@@ -345,7 +419,6 @@ function CreateLoan() {
         pauseOnHover
         theme="colored"
       />
-
     </Layout>
   );
 }

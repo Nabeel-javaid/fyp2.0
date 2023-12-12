@@ -185,7 +185,7 @@ const UserProfile = () => {
           <Grid item xs={12}>
             <Paper elevation={6} style={{ position: 'relative', padding: '2rem', borderRadius: '16px', background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}>
               <img
-                src={userImage}
+                src="https://i.ibb.co/DL3dtSj/avatar2-0.png"
                 alt="User"
                 style={{
                   position: 'absolute',
@@ -301,7 +301,7 @@ const UserProfile = () => {
           <Dialog open={cancelDialogOpen} onClose={handleCancelCancel}>
             <DialogTitle>Warning</DialogTitle>
             <DialogContent>
-              <p>Market Closing is irreversible, do you still want to close your market?</p>
+              <p>Market Closing is irreversible and trading cannot happen in closed markets, do you still want to close your market?</p>
             </DialogContent>
             <DialogActions>
               <MUIButton onClick={handleCancelCancel} color="primary">
