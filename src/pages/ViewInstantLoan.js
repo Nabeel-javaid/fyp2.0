@@ -281,7 +281,7 @@ const ViewInstantLoan = () => {
                       <img src="https://i.ibb.co/DL3dtSj/avatar2-0.png" border="0" alt="user" className="w-1/2 h-1/2 object-contain" />
                     </div>
                     <p style={{ marginTop: '3px', fontFamily: 'epilogue', fontWeight: 'bold', fontSize: '14px', color: '#000000', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      by {data.BorrowerAddress}
+                      by {data.LenderAddress}
                     </p>
                   </div>
                 </div>
@@ -532,7 +532,7 @@ const ViewInstantLoan = () => {
                     <strong>Lender Address:</strong> {selectedLoan.LenderAddress}
                   </Typography>
                   <Typography variant="body1">
-                    <strong>Loan Lent at:</strong> {selectedLoan.LoanLendTime}
+                    <strong>Loan borrowed at:</strong> {selectedLoan.LoanLendTime}
                   </Typography>
                 </>
               )}

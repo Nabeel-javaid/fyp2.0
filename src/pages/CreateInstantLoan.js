@@ -181,18 +181,11 @@ function CreateInstantLoanBid() {
 
   const validate = () => {
     let tempErrors = {};
-    tempErrors.lendingToken = lendingToken ? (isValidAddress(lendingToken) ? '' : 'Must start with "0x".') : 'This field is required.';
     tempErrors.principal = principal ? (isNumeric(principal) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.duration = duration ? (isNumeric(duration) ? '' : 'Must be a number.') : 'This field is required.';
     tempErrors.APR = APR ? (isNumeric(APR) ? (APR >= minAPR ? '' : `APR should be greater than ${minAPR}`) : 'Must be a number.') : 'This field is required.';
-    // tempErrors.metadataURI = metadataURI ? '' : 'This field is required.';
-    tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
-    tempErrors.collateralAmount = collateralAmount ? (isNumeric(collateralAmount) ? '' : 'Must be a number.') : 'This field is required.';
-    tempErrors.collateralAddress = collateralAddress ? (isValidAddress(collateralAddress) ? '' : 'Must start with "0x".') : 'This field is required.';
-
-    if (collateralType !== CollateralType.ERC20) {
-      tempErrors.tokenId = tokenId ? '' : 'This field is required.';
-    }
+    // tempErrors.receiver = receiver ? (isValidAddress(receiver) ? '' : 'Must start with "0x".') : 'This field is required.';
+    
 
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === '');
@@ -202,21 +195,11 @@ function CreateInstantLoanBid() {
     return /^\d+$/.test(value);
   };
 
-  const isValidAddress = (address) => {
-    return /^0x[0-9a-fA-F]{40}$/.test(address);
-  };
-
+  
   const handleBidSubmission = async () => {
     if (!provider || !contract) return;
 
     try {
-      const collateralInfo = {
-        _collateralType: collateralType,
-        _amount: collateralAmount,
-        _tokenId: tokenId,
-        _collateralAddress: collateralAddress,
-      };
-
 
       // Send ETH to the smart contract
       if (collateralType === CollateralType.ERC20) {
@@ -466,13 +449,13 @@ function CreateInstantLoanBid() {
                           {metaData.length === 0 ? "No Coins Found" : "Lending Token Address"}
                         </InputLabel>
                         <Select
-                          value={tokenId}
-                          onChange={(e) => setTokenId(e.target.value)}
+                          value={collateralAddress}
+                          onChange={(e) => setCollateralAddress(e.target.value)}
                           label={metaData.length === 0 ? "No Coins Found" : "Lending Token Address"}
                         >
                           {metaData.map((data, index) => (
                             <MenuItem value={data.address} key={index}>
-                              {/* <ListItemIcon>
+                              {/* <ListItemIcon>  
                                 <img
                                   src={data.logo}
                                   width="20"
@@ -487,7 +470,6 @@ function CreateInstantLoanBid() {
                                 &nbsp;
                                 {data.name}
                               </Typography>
-                              {console.log("METADATA: ", data)}
                             </MenuItem>
                           ))}
                         </Select>
