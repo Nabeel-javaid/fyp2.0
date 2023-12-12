@@ -56,33 +56,13 @@ function CreateLoan() {
   useEffect(() => {
     const initMoralis = async () => {
       try {
-        // await Moralis.start({
-        //   apiKey: "L3n1fZ8FQnz2QyOZO8rgdf0BBsuR1E7EUMCIRqjzo6Buw5VTeKycdVGWsHxaqE7C",
-        // });
+        const signer = provider.getSigner();
+        const accountAddress = await signer.getAddress();
 
-        // const response = await Moralis.EvmApi.nft.getWalletNFTs({
-        //   "chain": "0x1",
-        //   "format": "decimal",
-        //   "limit": 30,
-        //   "excludeSpam": true,
-        //   "mediaItems": true,
-        //   "address": "0x773c652FF2C4578d747FAE9BbC9066d37A45D3A6" //@todo: change this to user's address
-        // });
-        // console.log(response.raw) ;
-        const nfts = await alchemy.nft.getNftsForOwner("0x773c652FF2C4578d747FAE9BbC9066d37A45D3A6");
-        
-        for (let i = 0; i < nfts.ownedNfts.length; i++) {
-          const nft = nfts.ownedNfts[i];
-          // if(contract.isSpam === true) {
-          //   continue;
-          // }
-          // if(i===0) {
-            // console.log(nft);
-          // }
-          console.log("NFT: ", nft);
-        }
+        const nfts = await alchemy.nft.getNftsForOwner(accountAddress);
 
         setUserNFTs(nfts.ownedNfts);
+        console.log("NFTs Fetched Successfully!")
       } catch (e) {
         console.error(e);
       } finally {
@@ -90,7 +70,7 @@ function CreateLoan() {
       }
     };
 
-    if (collateralType === CollateralType.ERC721) {
+    if (collateralType === CollateralType.ERC721 || collateralType === CollateralType.ERC1155) {
       setFetchingNFTs(true);
       initMoralis();
     }
@@ -324,15 +304,15 @@ return (
                   <InputLabel
                     style={{ fontWeight: 'normal', marginLeft: '-2px', }}
                   >
-                    Collateral NFT
+                    {userNFTs.length === 0 ? "No NFTS Found" : "Collateral NFT"}
                   </InputLabel>
                   <Select
                     value={tokenId}
                     onChange={(e) => setTokenId(e.target.value)}
-                    label="Collateral NFT"
+                    label={userNFTs.length === 0 ? "No NFTS Found" : "Collateral NFT"}
                   >
                     {userNFTs.map((nft, index) => (
-                      nft.contract.isSpam === false || nft.contract.isSpam === undefined ? (
+                      (nft.contract.isSpam === false || nft.contract.isSpam === undefined) && nft.tokenType === 'ERC721' ? (
                         <MenuItem value={nft.tokenId} key={index}>
                           <ListItemIcon>
                             <img
@@ -342,7 +322,7 @@ return (
                             width="50"
                             height="50"/>
                           </ListItemIcon>
-                          <Typography variant="inherit">{"     " + nft.contract.openSeaMetadata.collectionName}</Typography>
+                          <Typography variant="inherit">{nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId}</Typography>
                         </MenuItem>
                       ) : null
                     ))}
@@ -350,6 +330,43 @@ return (
                 </FormControl>
               </Grid>
             ):(
+              collateralType === CollateralType.ERC1155 && !fetchingNFTs ? (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      style={{ fontWeight: 'normal', marginLeft: '-2px', }}
+                    >
+                      {userNFTs.length === 0 ? "No NFTS Found" : "Collateral NFT"}
+                    </InputLabel>
+                    <Select
+                      value={tokenId}
+                      onChange={(e) => setTokenId(e.target.value)}
+                      label={userNFTs.length === 0 ? "No NFTS Found" : "Collateral NFT"}
+                    >
+                      {userNFTs.map((nft, index) => (
+                        (nft.contract.isSpam === false || nft.contract.isSpam === undefined) && nft.tokenType === 'ERC1155' ? (
+                          <MenuItem value={nft.tokenId} key={index}>
+                            <ListItemIcon>
+                              <img
+                              src={
+                                nft.contract.openSeaMetadata.imageUrl === undefined ? nft.image.originalUrl : nft.contract.openSeaMetadata.imageUrl
+                              }
+                              width="50"
+                              height="50"/>
+                            </ListItemIcon>
+                            <Typography variant="inherit">
+                              {nft.contract.openSeaMetadata.collectionName === undefined ? 
+                                nft.collection.name + " #" + nft.tokenId : 
+                                nft.contract.openSeaMetadata.collectionName + " #" + nft.tokenId
+                              }
+                            </Typography>
+                          </MenuItem>
+                        ) : null
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              ):(
               <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -360,7 +377,7 @@ return (
                 helperText={errors.collateralAddress}
               />
             </Grid>
-            )}
+            ))}
 
             <Grid item xs={12}>
               <Button variant="contained" color="primary" type="submit" style={{ marginTop: '20px' }}>

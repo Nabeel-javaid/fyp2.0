@@ -9,6 +9,8 @@ import { ethers } from "ethers";
 import userImage from '../avatar.jpg';
 import Moralis from 'moralis';
 import ScaleLoader from 'react-spinners/ScaleLoader';
+import { Alchemy, Network } from "alchemy-sdk";
+
 
 const supabaseUrl = process.env.REACT_APP_Supabase_Url;
 const supabaseKey = process.env.REACT_APP_Supabase_Anon_Key;
@@ -122,19 +124,22 @@ const UserProfile = () => {
 
   async function checkENS(walletAddressToCheck) {
     try {
-      await Moralis.start({
-        apiKey: "L3n1fZ8FQnz2QyOZO8rgdf0BBsuR1E7EUMCIRqjzo6Buw5VTeKycdVGWsHxaqE7C",
+      const config = {
+        apiKey: "owPQ3CAm4xkJ7gukesUl4w7iqUpNHVIb",
+        network: Network.ETH_MAINNET,
+      };
+      const alchemy = new Alchemy(config);
+      
+      const ensContractAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+      const nfts = await alchemy.nft.getNftsForOwner(walletAddressToCheck, {
+        contractAddresses: [ensContractAddress],
       });
+      
+      console.log("nfts", nfts.ownedNfts[0].name);
 
-      const response = await Moralis.EvmApi.resolve.resolveAddress({
-        "address": walletAddressToCheck,
-      });
 
-      const ensName = response.raw.name;
-      console.log(ensName);
-
-      if (ensName) {
-        setOwnerAddress(ensName);
+      if (nfts) {
+        setOwnerAddress(nfts.ownedNfts[0].name);
       }
     } catch (e) {
       console.error(e.message);
