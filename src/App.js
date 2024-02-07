@@ -10,6 +10,11 @@ import UserProfile from './pages/UserProfile';
 import MarketData from './pages/MarketData';
 import CreateInstantLoan from './pages/CreateInstantLoan';
 import ViewInstantLoan from './pages/ViewInstantLoan';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import NotFound from './pages/NotFound';
+
+
 
 function App() {
   return (
@@ -20,6 +25,8 @@ function App() {
           <Route path="/create-market" element={<CreateMarket />} />
           <Route path="/view-loan" element={<ViewLoan />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="*" element={<NotFound />} />
+
 
           <Route path="/market/:id" element={<MarketData />} />
           
@@ -29,6 +36,10 @@ function App() {
           <Route path="/pre-commit-loan/:market" element={<CreateInstantLoan/>} />
           <Route path="/view-instant-loans/:market" element={<ViewInstantLoan/>} />
         </Routes>
+        <Analytics />
+        <SpeedInsights />
+
+
     </BrowserRouter>
 
   );

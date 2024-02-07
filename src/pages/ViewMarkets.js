@@ -96,13 +96,15 @@ const ViewMarkets = () => {
 
   return (
     <Layout>
-      <div style={{ paddingTop: '10%' }}>
-        <Typography variant="h3" style={{ color: 'black', textAlign: 'center' }}>
+      
+      <div style={{ paddingTop: '10%', paddingLeft: '8%', display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center' }}>
+        <Typography variant="h3" style={{ color: 'black', textAlign: 'center', marginTop: ' 15px' }}>
           <strong>Browse the <span style={{ color: 'Red' }}>Markets</span></strong>
         </Typography>
 
         {/* Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginLeft: '70%', marginRight: '15%' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end',marginRight: '200%', marginTop: '20%' }}>
+
           <Autocomplete
             options={['Open', 'Closed']}
             getOptionLabel={(option) => option}
@@ -112,15 +114,16 @@ const ViewMarkets = () => {
               <TextField {...params} label="Status" variant="outlined" style={{ width: '120px' }} />
             )}
           />
-          <Autocomplete
+          {/* <Autocomplete
+
             options={['Loan', 'Wholesale', 'Asset']}
             getOptionLabel={(option) => option}
             value={assetClassFilter}
             onChange={(event, newValue) => setAssetClassFilter(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Market Type" variant="outlined" style={{ width: '140px' }} />
+              <TextField {...params} label="Market Type" variant="outlined" style={{ width: '140px', height: '0px' }} />
             )}
-          />
+          /> */}
         </div>
 
 
