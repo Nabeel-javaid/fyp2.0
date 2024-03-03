@@ -649,40 +649,54 @@ const ViewLoan = () => {
           </>
         )}
       </DialogContent>
-      <DialogActions style={{ background: '#4f4f4f', justifyContent: 'center' }}>
-        <Button onClick={handleCloseDialog} color="primary" variant="contained">
-          Close
-        </Button>
-        {selectedLoan?.BorrowerAddress === currentAccountAddress && selectedLoan?.Status === 'Pending' ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => cancelLoan(selectedLoan.LoanID)}
-          >
-            Cancel Loan bid
-          </Button>
-        ) : (
-          selectedLoan?.Status === 'Pending' ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => acceptLoan(selectedLoan?.LoanID)}
-            >
-              Accept Loan Bid
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => liquidateLoan(selectedLoan?.LoanID)}
-              disabled={selectedLoan?.Status === 'Liquidated' || !isLiquidateEnabled(selectedLoan)}
-            >
-              {selectedLoan?.Status === 'Accepted' ? 'Liquidate' : 'Liquidated'}
-            </Button>
 
-          )
-        )}
-      </DialogActions>
+      
+
+      <DialogActions style={{ background: '#4f4f4f', justifyContent: 'center' }}>
+  <Button onClick={handleCloseDialog} color="primary" variant="contained">
+    Close
+  </Button>
+  {selectedLoan?.BorrowerAddress === currentAccountAddress && selectedLoan?.Status === 'Pending' && (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => cancelLoan(selectedLoan.LoanID)}
+    >
+      Cancel Loan Bid
+    </Button>
+  )}
+  {selectedLoan?.Status === 'Pending'  && selectedLoan?.BorrowerAddress !== currentAccountAddress && (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => acceptLoan(selectedLoan?.LoanID)}
+    >
+      Accept Loan Bid
+    </Button>
+  )}
+  {selectedLoan?.Status === 'Accepted' && selectedLoan?.BorrowerAddress !== currentAccountAddress && (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => liquidateLoan(selectedLoan?.LoanID)}
+      disabled={!isLiquidateEnabled(selectedLoan)}
+    >
+      Liquidate
+    </Button>
+  )}
+  {selectedLoan?.BorrowerAddress === currentAccountAddress && selectedLoan?.Status.toLowerCase() === 'accepted' && (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => {/* Function to handle repayment */}}
+    >
+      Repay Loan
+    </Button>
+  )}
+</DialogActions>
+
+
+
     </Dialog>
   );
 
